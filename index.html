@@ -9,16 +9,169 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="icon" href="https://cdn.luogu.com.cn/upload/image_hosting/1uuybito.png" type="image/png" sizes="32x32">
     
-    <!-- 在这里引用CSS文件 -->
     <link rel="stylesheet" href="style.css">
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ===== 模态框样式 ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+        .modal-content.dark {
+            background: #2d2d3a;
+            color: #f0f0f0;
+        }
+        .modal-content.dark textarea,
+        .modal-content.dark input,
+        .modal-content.dark select {
+            background: #3d3d4a;
+            color: #f0f0f0;
+            border-color: #555;
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+        .close-btn:hover {
+            color: #333;
+        }
+        .modal-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .modal-content.dark .modal-title {
+            color: #f0f0f0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(20px); opacity: 0; }
+        }
+
+        /* 其他样式 */
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; background: rgba(255,255,255,0.7); padding: 20px; border-radius: 16px; margin-bottom: 20px; backdrop-filter: blur(10px); }
+        .site-title { font-size: 28px; margin: 0; }
+        .site-subtitle { font-size: 14px; color: #666; }
+        .time-section { font-size: 14px; color: #555; background: rgba(0,0,0,0.05); padding: 8px 16px; border-radius: 8px; }
+        .card { background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: box-shadow 0.3s; }
+        .card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        .card-title { font-size: 20px; margin-bottom: 16px; color: #2c3e50; }
+        .card-title i { margin-right: 10px; color: #4a90d9; }
+        .counter-section { text-align: center; }
+        #count-display { font-size: 56px; font-weight: 700; color: #2c3e50; margin: 10px 0; }
+        .counter-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .counter-btn { padding: 10px 24px; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; transition: all 0.3s; }
+        .counter-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn-primary { background: #4a90d9; color: white; }
+        .btn-primary:hover { background: #357abd; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; }
+        .luck-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .luck-display { text-align: center; padding: 20px; background: #f8f9fa; border-radius: 12px; }
+        #luck-level { font-size: 32px; font-weight: 700; padding: 10px; border-radius: 8px; }
+        .level-0 { color: #dc3545; }
+        .level-1 { color: #fd7e14; }
+        .level-2 { color: #ffc107; }
+        .level-3 { color: #8bc34a; }
+        .level-4 { color: #4caf50; }
+        .level-5 { color: #2196f3; }
+        .level-6 { color: #9c27b0; }
+        .level-7 { color: #e91e63; }
+        #luck-desc { color: #666; margin-top: 8px; }
+        .history-item { padding: 8px 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .history-item .time-tag { color: #999; font-size: 12px; }
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+        .tool-card { background: #f8f9fa; border-radius: 12px; padding: 16px; text-align: center; transition: all 0.3s; cursor: pointer; border: none; text-decoration: none; color: inherit; display: block; }
+        .tool-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); background: #fff; }
+        .tool-icon { font-size: 28px; color: #4a90d9; margin-bottom: 8px; }
+        .tool-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+        .tool-btn { background: #4a90d9; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.3s; display: inline-block; text-decoration: none; }
+        .tool-btn:hover { background: #357abd; transform: translateY(-2px); }
+        .result-box { word-break: break-all; }
+        .input-group { margin-bottom: 10px; }
+        .input-group select { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 14px; }
+        .tool-section { margin-bottom: 20px; }
+        .tool-section h4 { margin-bottom: 8px; color: #495057; }
+        footer { text-align: center; padding: 20px; color: #999; font-size: 14px; }
+
+        /* 暗色主题适配 */
+        body.dark-theme .card { background: rgba(40, 40, 50, 0.9); color: #e0e0e0; }
+        body.dark-theme .card-title { color: #e0e0e0; }
+        body.dark-theme .card-title i { color: #6ab0f7; }
+        body.dark-theme header { background: rgba(30, 30, 40, 0.8); color: #e0e0e0; }
+        body.dark-theme .site-subtitle { color: #aaa; }
+        body.dark-theme .time-section { background: rgba(255,255,255,0.08); color: #ccc; }
+        body.dark-theme #count-display { color: #e0e0e0; }
+        body.dark-theme .tool-card { background: #3d3d4a; color: #e0e0e0; }
+        body.dark-theme .tool-card:hover { background: #4d4d5a; }
+        body.dark-theme .luck-display { background: #3d3d4a; }
+        body.dark-theme #luck-desc { color: #bbb; }
+        body.dark-theme .history-item { border-color: #444; }
+        body.dark-theme .modal-content { background: #2d2d3a; color: #e0e0e0; }
+        body.dark-theme .modal-content textarea,
+        body.dark-theme .modal-content input,
+        body.dark-theme .modal-content select { background: #3d3d4a; color: #e0e0e0; border-color: #555; }
+        body.dark-theme .modal-title { color: #e0e0e0; }
+        body.dark-theme .close-btn:hover { color: #fff; }
+        body.dark-theme .result-box { background: #3d3d4a !important; color: #e0e0e0; border-color: #555 !important; }
+
+        @media (max-width: 768px) {
+            .luck-grid { grid-template-columns: 1fr; }
+            .tools-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+            header { flex-direction: column; text-align: center; gap: 10px; }
+            .site-title { font-size: 22px; }
+        }
+    </style>
 </head>
-<body>
-    <!-- 页面内容 -->
-</body>
-</html>
 <body>
 <div class="container">
     <!-- 头部 -->
@@ -67,82 +220,72 @@
     <div class="card">
         <h2 class="card-title"><i class="fas fa-tools"></i> 实用工具</h2>
         <div class="tools-grid">
-            <!-- 便签备忘录 —— 建议用“脑洞捕捉器” -->
-		<div class="tool-card">
-			<div class="tool-icon"><i class="fas fa-sticky-note"></i></div>
-			<div class="tool-title">便签</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">记录神人灵感与抽象想法</p>
-			<button class="tool-btn" id="openNotesBtn">打开便签</button>
-		</div>
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-sticky-note"></i></div>
+                <div class="tool-title">便签</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">记录神人灵感与抽象想法</p>
+                <button class="tool-btn" id="openNotesBtn">打开便签</button>
+            </div>
 
-		<!-- 主题切换 —— “精神换肤” -->
-		<div class="tool-card">
-			<div class="tool-icon"><i class="fas fa-fill-drip"></i></div>
-			<div class="tool-title">换肤</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">切换网站精神颜色</p>
-			<button class="tool-btn" id="themeToggleBtn">切换主题</button>
-		</div>
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-fill-drip"></i></div>
+                <div class="tool-title">换肤</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">切换网站精神颜色</p>
+                <button class="tool-btn" id="themeToggleBtn">切换主题</button>
+            </div>
 
-		<!-- 密码生成器 —— “虚空密钥” -->
-		<div class="tool-card">
-			<div class="tool-icon"><i class="fas fa-key"></i></div>
-			<div class="tool-title">密钥</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">生成神人级高强度密码</p>
-			<button class="tool-btn" id="openPasswordGeneratorBtn">生成密码</button>
-		</div>
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-key"></i></div>
+                <div class="tool-title">密钥</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">生成神人级高强度密码</p>
+                <button class="tool-btn" id="openPasswordGeneratorBtn">生成密码</button>
+            </div>
 
-		<!-- 绘画板 —— “抽象涂鸦板” -->
-		<div class="tool-card">
-			<div class="tool-icon"><i class="fas fa-paint-brush"></i></div>
-			<div class="tool-title">涂鸦板</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">画画 · 请将页面调至87%</p>
-			<a href="工具/画板/index.html" class="tool-btn" target="_blank">开始</a>
-		</div>
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-paint-brush"></i></div>
+                <div class="tool-title">涂鸦板</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">画画 · 请将页面调至87%</p>
+                <a href="工具/画板/index.html" class="tool-btn" target="_blank">开始</a>
+            </div>
 
-		<!-- 摩斯密码工具 —— “神人密电码” -->
-		<div class="tool-card">
-			<div class="tool-icon"><i class="fas fa-code"></i></div>
-			<div class="tool-title">密电码</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">摩斯密码 · 神人间暗号</p>
-			<a href="工具/密码/index.html" class="tool-btn" target="_blank">进入工具</a>
-		</div>
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-code"></i></div>
+                <div class="tool-title">密电码</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">摩斯密码 · 神人间暗号</p>
+                <a href="工具/密码/index.html" class="tool-btn" target="_blank">进入工具</a>
+            </div>
 
-		<!-- 2048小游戏 —— “合体2048” -->
-		<div class="tool-card">
-			<div class="tool-icon"><i class="fas fa-th"></i></div>
-			<div class="tool-title">合体2048</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">合成神人数字块</p>
-			<a href="小游戏/2048/index.html" class="tool-btn" target="_blank">开始游戏</a>
-		</div>
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-th"></i></div>
+                <div class="tool-title">合体2048</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">合成神人数字块</p>
+                <a href="小游戏/2048/index.html" class="tool-btn" target="_blank">开始游戏</a>
+            </div>
 
-		<!-- 时间显示 —— “时空观测” -->
-		<div class="tool-card">
-			<div class="tool-icon"><i class="fas fa-clock"></i></div>
-			<div class="tool-title">时空观测</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">观测当前时间维度</p>
-			<a href="工具/时间/index.html" class="tool-btn" target="_blank">开始</a>
-		</div>
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-clock"></i></div>
+                <div class="tool-title">时空观测</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">观测当前时间维度</p>
+                <a href="工具/时间/index.html" class="tool-btn" target="_blank">开始</a>
+            </div>
 
-		<!-- oi教练模拟器 —— “oi教练 · 魔改” -->
-		<div class="tool-card">
-			<div class="tool-icon"><i class="fas fa-robot"></i></div>
-			<div class="tool-title">oi教练 · 魔改</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">神人教练模拟器</p>
-			<a href="https://xiaoziyi111.github.io/oi/index.html" class="tool-btn" target="_blank">开始</a>
-		</div>
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-robot"></i></div>
+                <div class="tool-title">oi教练 · 魔改</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">神人教练模拟器</p>
+                <a href="https://xiaoziyi111.github.io/oi/index.html" class="tool-btn" target="_blank">开始</a>
+            </div>
 
-		<!-- 视频 -->
-		<div class="tool-card">
-			<div class="tool-icon"><i class="fas fa-robot"></i></div>
-			<div class="tool-title">在线看视频</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">视频</p>
-			<a href="/视频/index.html" class="tool-btn" target="_blank">开始</a>
-		</div>
-			
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-video"></i></div>
+                <div class="tool-title">在线看视频</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">视频</p>
+                <a href="/视频/index.html" class="tool-btn" target="_blank">开始</a>
+            </div>
         </div>
     </div>
 
-    <!-- 快捷卡片 (全部改为 tool-card 样式) -->
+    <!-- 快捷链接 -->
     <div class="card">
         <h2 class="card-title"><i class="fas fa-link"></i> 快捷链接</h2>
         <div class="tools-grid">
@@ -166,143 +309,70 @@
                 <div class="tool-title">GitHub</div>
                 <p style="color:#666; font-size:14px; margin-bottom:10px;">代码托管平台</p>
             </a>
-            <a href="https://xiaoziyi11{$rthSuffix}/" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-                <div class="tool-icon"><i class="fas fa-terminal"></i></div>
-                <div class="tool-title">C++编译器(寄)</div>
-                <p style="color:#666; font-size:14px; margin-bottom:10px;">在线编程环境</p>
-            </a>
             <a href="https://www.luogu.com.cn/user/1332014" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
                 <div class="tool-icon"><i class="fas fa-user-graduate"></i></div>
                 <div class="tool-title">我的洛谷</div>
                 <p style="color:#666; font-size:14px; margin-bottom:10px;">个人洛谷主页</p>
             </a>
-            <a href="https://evoker444{$rthSuffix}/" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-                <div class="tool-icon"><i class="fas fa-code"></i></div>
-                <div class="tool-title">副站</div>
-                <p style="color:#666; font-size:14px; margin-bottom:10px;">Evoker444!</p>
+        </div>
+    </div>
+
+    <!-- 文章大全 -->
+    <div class="card">
+        <h2 class="card-title"><i class="fas fa-link"></i> 文章大全</h2>
+        <div class="tools-grid">
+            <a href="文章/精神状态良好.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
+                <div class="tool-icon"><i class="fas fa-brain"></i></div>
+                <div class="tool-title">精神状态良好</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">当代xiaoziyi11抽象实录</p>
+            </a>
+            <a href="文章/饿就吃饭.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
+                <div class="tool-icon"><i class="fas fa-hamburger"></i></div>
+                <div class="tool-title">饿就吃饭</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">吃饭才是人生大事</p>
+            </a>
+            <a href="文章/止战之殇.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
+                <div class="tool-icon"><i class="fas fa-skull-crossbones"></i></div>
+                <div class="tool-title">止战之殇</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">雷德王与汉堡之约</p>
+            </a>
+            <a href="文章/藏头诗.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
+                <div class="tool-icon"><i class="fas fa-scroll"></i></div>
+                <div class="tool-title">神人0分作文</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">高考感怀七十二韵</p>
+            </a>
+            <a href="文章/神人对话.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
+                <div class="tool-icon"><i class="fas fa-comment-dots"></i></div>
+                <div class="tool-title">神人对话100则</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">精神状态良好日常</p>
+            </a>
+            <a href="文章/神人对话2.0.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
+                <div class="tool-icon"><i class="fas fa-comment"></i></div>
+                <div class="tool-title">神人对话2.0</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">再续100则抽象语录</p>
+            </a>
+            <a href="文章/聊天记录.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
+                <div class="tool-icon"><i class="fas fa-message"></i></div>
+                <div class="tool-title">神人聊天记录</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">抽象语录 · 精神状态良好</p>
+            </a>
+            <a href="烂梗.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
+                <div class="tool-icon"><i class="fas fa-message"></i></div>
+                <div class="tool-title">神人想法</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">精神状态良好</p>
             </a>
         </div>
     </div>
-	
-	
-	<div class="card">
-        <h2 class="card-title"><i class="fas fa-link"></i> 文章大全</h2>
+
+    <!-- Minemob大全 -->
+    <div class="card">
+        <h2 class="card-title"><i class="fas fa-cubes"></i> Minemob大全</h2>
         <div class="tools-grid">
-		<a href="https://xiaoziyi11{$rthSuffix}/%E6%96%87%E7%AB%A0/%E5%BD%93%E4%BB%A3xiaoziyi11%E7%B2%BE%E7%A5%9E%E7%8A%B6%E6%80%81%E8%89%AF%E5%A5%BD.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-		<div class="tool-icon"><i class="fas fa-brain"></i></div>
-		<div class="tool-title">精神状态良好</div>
-		<p style="color:#666; font-size:14px; margin-bottom:10px;">当代xiaoziyi11抽象实录</p>
-		</a>
-
-		<a href="文章/饿就吃饭.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-			<div class="tool-icon"><i class="fas fa-hamburger"></i></div>
-			<div class="tool-title">饿就吃饭</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">吃饭才是人生大事</p>
-		</a>
-
-		<a href="文章/止战之殇.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-			<div class="tool-icon"><i class="fas fa-skull-crossbones"></i></div>
-			<div class="tool-title">止战之殇</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">雷德王与汉堡之约</p>
-		</a>
-
-		<a href="文章/藏头诗.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-			<div class="tool-icon"><i class="fas fa-scroll"></i></div>
-			<div class="tool-title">神人0分作文</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">高考感怀七十二韵</p>
-		</a>
-
-		<a href="文章/神人对话.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-			<div class="tool-icon"><i class="fas fa-comment-dots"></i></div>
-			<div class="tool-title">神人对话100则</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">精神状态良好日常</p>
-		</a>
-
-		<a href="文章/神人对话2.0.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-			<div class="tool-icon"><i class="fas fa-comment"></i></div>
-			<div class="tool-title">神人对话2.0</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">再续100则抽象语录</p>
-		</a>
-		
-		<a href="文章/聊天记录.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-			<div class="tool-icon"><i class="fas fa-message"></i></div>
-			<div class="tool-title">神人聊天记录</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">抽象语录 · 精神状态良好</p>
-		</a>
-
-		<a href="烂梗.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-			<div class="tool-icon"><i class="fas fa-message"></i></div>
-			<div class="tool-title">神人想法</div>
-			<p style="color:#666; font-size:14px; margin-bottom:10px;">精神状态良好</p>
-		</a>
-		
-    </div>
-
-	<div class="card">
-        <h2 class="card-title"><i class="fas fa-link"></i> Minemob大全</h2>
-        <div class="tools-grid">
-		<a href="https://xiaoziyi11{$rthSuffix}/麦块生物/index.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
-		<div class="tool-icon"><i class="fas fa-brain"></i></div>
-		<div class="tool-title">Minemob</div>
-		<p style="color:#666; font-size:14px; margin-bottom:10px;">当代Minemob百科</p>
-		</a>
-
-    </div>
-
-</div>
-</body>
-    <!-- 便签模态框 -->
-    <div id="notesModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeNotesBtn">×</span>
-            <h3 class="modal-title"><i class="fas fa-clipboard"></i> 便签备忘录</h3>
-            <textarea id="notesTextarea" placeholder="在这里记录你的想法、待办事项..." style="width:100%; height:300px; padding:15px; border:1px solid #ddd; border-radius:8px; font-size:14px; resize:vertical;"></textarea>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button class="tool-btn" id="saveNotesBtn" style="flex:1;">保存便签</button>
-                <button class="counter-btn btn-secondary" id="clearNotesBtn" style="flex:1;">清空内容</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 密码生成器模态框 (保留功能) -->
-    <div id="passwordGeneratorModal" class="modal">
-        <div class="modal-content" style="max-width:700px;">
-            <span class="close-btn" id="closePasswordGeneratorBtn">×</span>
-            <h3 class="modal-title"><i class="fas fa-key"></i> 高级密码生成器</h3>
-            <div class="tool-section">
-                <h4>密码类型</h4>
-                <div class="input-group">
-                    <select id="passwordType" style="width:100%;" onchange="selectPasswordType()"></select>
-                </div>
-                <div id="passwordDescription" style="color:#666; font-size:14px; margin-top:5px; text-align:center;">选择密码类型以自动配置</div>
-            </div>
-            <div class="tool-section">
-                <h4>密码选项</h4>
-                <div style="margin-bottom:15px;">
-                    <label style="display:flex; align-items:center; gap:15px;">
-                        <span style="min-width:80px;">长度:</span>
-                        <input type="range" id="passwordLength" min="4" max="114514" value="12" style="flex:1;">
-                        <span style="min-width:40px;"><span id="lengthValue">12</span> 位</span>
-                    </label>
-                </div>
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px; margin-bottom:20px;">
-                    <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeUppercase" checked> 大写字母</label>
-                    <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeLowercase" checked> 小写字母</label>
-                    <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeNumbers" checked> 数字</label>
-                    <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeSymbols" checked> 符号</label>
-                </div>
-                <div class="action-buttons" style="display:flex; gap:10px;">
-                    <button class="counter-btn btn-primary" id="generatePasswordBtn" style="flex:2;"><i class="fas fa-sync-alt"></i> 生成新密码</button>
-                    <button class="counter-btn btn-secondary" id="refreshPasswordBtn" style="flex:1;"><i class="fas fa-redo"></i> 刷新</button>
-                </div>
-            </div>
-            <div class="tool-section">
-                <h4>生成的密码</h4>
-                <div id="passwordResult" class="result-box" style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:8px; padding:15px; text-align:center; font-family:monospace; font-size:18px; min-height:60px;">点击上方按钮生成密码</div>
-                <div class="action-buttons" style="display:flex; gap:10px; margin-top:10px;">
-                    <button class="counter-btn btn-primary" id="copyPasswordBtn"><i class="fas fa-copy"></i> 复制密码</button>
-                </div>
-            </div>
+            <a href="麦块生物/index.html" class="tool-card" target="_blank" style="text-decoration:none; color:inherit;">
+                <div class="tool-icon"><i class="fas fa-cube"></i></div>
+                <div class="tool-title">Minemob</div>
+                <p style="color:#666; font-size:14px; margin-bottom:10px;">当代Minemob百科</p>
+            </a>
         </div>
     </div>
 
@@ -313,6 +383,61 @@
     </footer>
 </div>
 
+<!-- ========== 便签模态框 ========== -->
+<div id="notesModal" class="modal">
+    <div class="modal-content" id="notesModalContent">
+        <button class="close-btn" id="closeNotesBtn">×</button>
+        <h3 class="modal-title"><i class="fas fa-clipboard"></i> 便签备忘录</h3>
+        <textarea id="notesTextarea" placeholder="在这里记录你的想法、待办事项..." style="width:100%; height:300px; padding:15px; border:1px solid #ddd; border-radius:8px; font-size:14px; resize:vertical; box-sizing:border-box;"></textarea>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="tool-btn" id="saveNotesBtn" style="flex:1;">保存便签</button>
+            <button class="counter-btn btn-secondary" id="clearNotesBtn" style="flex:1;">清空内容</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== 密码生成器模态框 ========== -->
+<div id="passwordGeneratorModal" class="modal">
+    <div class="modal-content" id="passwordModalContent" style="max-width:700px;">
+        <button class="close-btn" id="closePasswordGeneratorBtn">×</button>
+        <h3 class="modal-title"><i class="fas fa-key"></i> 高级密码生成器</h3>
+        <div class="tool-section">
+            <h4>密码类型</h4>
+            <div class="input-group">
+                <select id="passwordType" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid #ddd; font-size:14px;"></select>
+            </div>
+            <div id="passwordDescription" style="color:#666; font-size:14px; margin-top:5px; text-align:center;">选择密码类型以自动配置</div>
+        </div>
+        <div class="tool-section">
+            <h4>密码选项</h4>
+            <div style="margin-bottom:15px;">
+                <label style="display:flex; align-items:center; gap:15px;">
+                    <span style="min-width:80px;">长度:</span>
+                    <input type="range" id="passwordLength" min="4" max="114514" value="12" style="flex:1;">
+                    <span style="min-width:40px;"><span id="lengthValue">12</span> 位</span>
+                </label>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px; margin-bottom:20px;">
+                <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeUppercase" checked> 大写字母</label>
+                <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeLowercase" checked> 小写字母</label>
+                <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeNumbers" checked> 数字</label>
+                <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeSymbols" checked> 符号</label>
+            </div>
+            <div class="action-buttons" style="display:flex; gap:10px;">
+                <button class="counter-btn btn-primary" id="generatePasswordBtn" style="flex:2;"><i class="fas fa-sync-alt"></i> 生成新密码</button>
+                <button class="counter-btn btn-secondary" id="refreshPasswordBtn" style="flex:1;"><i class="fas fa-redo"></i> 刷新</button>
+            </div>
+        </div>
+        <div class="tool-section">
+            <h4>生成的密码</h4>
+            <div id="passwordResult" class="result-box" style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:8px; padding:15px; text-align:center; font-family:monospace; font-size:18px; min-height:60px;">点击上方按钮生成密码</div>
+            <div class="action-buttons" style="display:flex; gap:10px; margin-top:10px;">
+                <button class="counter-btn btn-primary" id="copyPasswordBtn"><i class="fas fa-copy"></i> 复制密码</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     // ==================== 工具函数 ====================
     function addZero(num) { return num < 10 ? '0' + num : num; }
@@ -321,7 +446,8 @@
     function updateTime() {
         const now = new Date();
         const timeStr = `${now.getFullYear()}-${addZero(now.getMonth()+1)}-${addZero(now.getDate())} ${addZero(now.getHours())}:${addZero(now.getMinutes())}:${addZero(now.getSeconds())} CST`;
-        document.getElementById('current-time').innerText = timeStr;
+        const el = document.getElementById('current-time');
+        if (el) el.innerText = timeStr;
     }
     updateTime();
     setInterval(updateTime, 1000);
@@ -329,13 +455,15 @@
     // 页面加载时间
     const pageStartTime = Date.now();
     window.addEventListener('load', () => {
-        document.getElementById('loadTime').textContent = ((Date.now() - pageStartTime) / 1000).toFixed(2);
+        const el = document.getElementById('loadTime');
+        if (el) el.textContent = ((Date.now() - pageStartTime) / 1000).toFixed(2);
     });
 
     // ==================== 计数器系统 ====================
     let count = parseInt(localStorage.getItem('counterNum')) || 0;
     function updateCounterDisplay() {
-        document.getElementById('count-display').textContent = count;
+        const el = document.getElementById('count-display');
+        if (el) el.textContent = count;
         localStorage.setItem('counterNum', count);
     }
     function addCount(value = 1) { count += value; if (count < 0) count = 0; updateCounterDisplay(); }
@@ -356,6 +484,7 @@
     let luckHistory = JSON.parse(localStorage.getItem('luckHistory')) || [];
     function updateLuckHistoryDisplay() {
         const historyListEl = document.getElementById('history-list');
+        if (!historyListEl) return;
         if (luckHistory.length === 0) { historyListEl.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">暂无抽取记录</div>'; return; }
         let html = '';
         luckHistory.slice(0, 5).forEach(item => {
@@ -367,6 +496,7 @@
         const drawBtn = document.getElementById('draw-luck-btn');
         const luckLevelEl = document.getElementById('luck-level');
         const luckDescEl = document.getElementById('luck-desc');
+        if (!drawBtn || !luckLevelEl || !luckDescEl) return;
         drawBtn.disabled = true; drawBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 抽取中...';
         luckLevelEl.textContent = '计算中...'; luckDescEl.textContent = '正在分析你的运势数据...';
         setTimeout(() => {
@@ -392,21 +522,52 @@
         if (luckHistory.length === 0) { alert('暂无运势记录可清空'); return; }
         if (confirm(`确定要清空所有运势记录吗？共${luckHistory.length}条记录`)) {
             luckHistory = []; localStorage.removeItem('luckHistory'); updateLuckHistoryDisplay();
-            document.getElementById('luck-level').className = 'level-0';
-            document.getElementById('luck-level').textContent = '等待抽取';
-            document.getElementById('luck-desc').textContent = '点击上方按钮抽取你的专属运势';
+            const luckLevelEl = document.getElementById('luck-level');
+            const luckDescEl = document.getElementById('luck-desc');
+            if (luckLevelEl) { luckLevelEl.className = 'level-0'; luckLevelEl.textContent = '等待抽取'; }
+            if (luckDescEl) luckDescEl.textContent = '点击上方按钮抽取你的专属运势';
             showNotification('运势记录已清空');
         }
     }
     updateLuckHistoryDisplay();
 
+    // ==================== 模态框管理 ====================
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.style.display = 'flex';
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+    function closeModalOnOutsideClick(event, modalId) {
+        const modal = document.getElementById(modalId);
+        if (event.target === modal) {
+            closeModal(modalId);
+        }
+    }
+
     // ==================== 便签系统 ====================
-    const notesModal = document.getElementById('notesModal');
+    const notesModalEl = document.getElementById('notesModal');
     const notesTextarea = document.getElementById('notesTextarea');
-    function openNotes() { notesTextarea.value = localStorage.getItem('userNotes') || ''; notesModal.style.display = 'flex'; }
-    function closeNotes() { notesModal.style.display = 'none'; }
-    function saveNotes() { localStorage.setItem('userNotes', notesTextarea.value); showNotification('便签已保存到本地'); }
+    function openNotes() {
+        if (notesTextarea) notesTextarea.value = localStorage.getItem('userNotes') || '';
+        openModal('notesModal');
+    }
+    function closeNotes() { closeModal('notesModal'); }
+    function saveNotes() {
+        if (!notesTextarea) return;
+        localStorage.setItem('userNotes', notesTextarea.value);
+        showNotification('便签已保存到本地');
+    }
     function clearNotes() {
+        if (!notesTextarea) return;
         if (notesTextarea.value.trim() === '') { alert('便签内容已经为空'); return; }
         if (confirm('确定要清空便签内容吗？')) { notesTextarea.value = ''; localStorage.removeItem('userNotes'); showNotification('便签内容已清空'); }
     }
@@ -414,29 +575,38 @@
     // ==================== 主题切换 ====================
     let currentTheme = localStorage.getItem('siteTheme') || 'light';
     function toggleTheme() {
+        const body = document.body;
         if (currentTheme === 'light') {
-            document.body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%)';
-            document.body.style.color = '#f8f9fa';
+            body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%)';
+            body.style.color = '#f8f9fa';
+            body.classList.add('dark-theme');
             currentTheme = 'dark';
         } else {
-            document.body.style.background = 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)';
-            document.body.style.color = '#333';
+            body.style.background = 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)';
+            body.style.color = '#333';
+            body.classList.remove('dark-theme');
             currentTheme = 'light';
         }
         localStorage.setItem('siteTheme', currentTheme);
         showNotification(`已切换到${currentTheme === 'light' ? '亮色' : '暗色'}主题`);
     }
-    if (localStorage.getItem('siteTheme') === 'dark') { toggleTheme(); }
+    // 初始化主题
+    if (localStorage.getItem('siteTheme') === 'dark') {
+        document.body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%)';
+        document.body.style.color = '#f8f9fa';
+        document.body.classList.add('dark-theme');
+    }
 
-    // ==================== 密码生成器 (精简版) ====================
+    // ==================== 密码生成器 ====================
     const passwordTypes = {
-        'high-security': { name: '高安全性密码', length: 16, uppercase: true, lowercase: true, numbers: true, symbols: true, special: true, description: '用于银行、支付等重要账户' },
-        'medium-security': { name: '中等安全密码', length: 12, uppercase: true, lowercase: true, numbers: true, symbols: false, special: false, description: '用于邮箱、社交网络等' },
-        'easy-remember': { name: '易记忆密码', length: 10, uppercase: true, lowercase: true, numbers: true, symbols: false, special: false, description: '用于普通网站登录' },
-        'pin-code': { name: '数字PIN码', length: 6, uppercase: false, lowercase: false, numbers: true, symbols: false, special: false, description: '用于手机解锁、简单验证' }
+        'high-security': { name: '高安全性密码', length: 16, uppercase: true, lowercase: true, numbers: true, symbols: true, description: '用于银行、支付等重要账户' },
+        'medium-security': { name: '中等安全密码', length: 12, uppercase: true, lowercase: true, numbers: true, symbols: false, description: '用于邮箱、社交网络等' },
+        'easy-remember': { name: '易记忆密码', length: 10, uppercase: true, lowercase: true, numbers: true, symbols: false, description: '用于普通网站登录' },
+        'pin-code': { name: '数字PIN码', length: 6, uppercase: false, lowercase: false, numbers: true, symbols: false, description: '用于手机解锁、简单验证' }
     };
     function initializePasswordTypes() {
         const typeSelect = document.getElementById('passwordType');
+        if (!typeSelect) return;
         typeSelect.innerHTML = '';
         for (const [key, config] of Object.entries(passwordTypes)) {
             const option = document.createElement('option');
@@ -446,24 +616,37 @@
         }
     }
     function selectPasswordType() {
-        const config = passwordTypes[document.getElementById('passwordType').value];
+        const typeSelect = document.getElementById('passwordType');
+        const config = passwordTypes[typeSelect ? typeSelect.value : 'medium-security'];
         if (!config) return;
-        document.getElementById('passwordLength').value = config.length;
-        document.getElementById('lengthValue').textContent = config.length;
-        document.getElementById('includeUppercase').checked = config.uppercase;
-        document.getElementById('includeLowercase').checked = config.lowercase;
-        document.getElementById('includeNumbers').checked = config.numbers;
-        document.getElementById('includeSymbols').checked = config.symbols;
-        document.getElementById('passwordDescription').textContent = config.description;
+        const lengthInput = document.getElementById('passwordLength');
+        const lengthDisplay = document.getElementById('lengthValue');
+        if (lengthInput) { lengthInput.value = config.length; }
+        if (lengthDisplay) { lengthDisplay.textContent = config.length; }
+        const checkboxes = {
+            includeUppercase: document.getElementById('includeUppercase'),
+            includeLowercase: document.getElementById('includeLowercase'),
+            includeNumbers: document.getElementById('includeNumbers'),
+            includeSymbols: document.getElementById('includeSymbols')
+        };
+        if (checkboxes.includeUppercase) checkboxes.includeUppercase.checked = config.uppercase;
+        if (checkboxes.includeLowercase) checkboxes.includeLowercase.checked = config.lowercase;
+        if (checkboxes.includeNumbers) checkboxes.includeNumbers.checked = config.numbers;
+        if (checkboxes.includeSymbols) checkboxes.includeSymbols.checked = config.symbols;
+        const descEl = document.getElementById('passwordDescription');
+        if (descEl) descEl.textContent = config.description;
         generatePassword();
     }
     function shuffleString(str) { const arr = str.split(''); for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr.join(''); }
     function generatePassword() {
-        const length = parseInt(document.getElementById('passwordLength').value);
-        const includeUppercase = document.getElementById('includeUppercase').checked;
-        const includeLowercase = document.getElementById('includeLowercase').checked;
-        const includeNumbers = document.getElementById('includeNumbers').checked;
-        const includeSymbols = document.getElementById('includeSymbols').checked;
+        const lengthInput = document.getElementById('passwordLength');
+        const length = lengthInput ? parseInt(lengthInput.value) : 12;
+        const includeUppercase = document.getElementById('includeUppercase')?.checked || false;
+        const includeLowercase = document.getElementById('includeLowercase')?.checked || false;
+        const includeNumbers = document.getElementById('includeNumbers')?.checked || false;
+        const includeSymbols = document.getElementById('includeSymbols')?.checked || false;
+        const resultEl = document.getElementById('passwordResult');
+        if (!resultEl) return;
         if (!includeUppercase && !includeLowercase && !includeNumbers && !includeSymbols) { alert('请至少选择一种字符类型！'); return; }
         const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const lowercase = 'abcdefghijklmnopqrstuvwxyz';
@@ -477,16 +660,20 @@
         let password = requiredChars.join('');
         for (let i = password.length; i < length; i++) { password += charPool[Math.floor(Math.random() * charPool.length)]; }
         password = shuffleString(password);
-        document.getElementById('passwordResult').textContent = password;
+        resultEl.textContent = password;
     }
     function openPasswordGenerator() {
-        document.getElementById('passwordGeneratorModal').style.display = 'flex';
-        initializePasswordTypes();
-        setTimeout(generatePassword, 100);
+        openModal('passwordGeneratorModal');
+        setTimeout(() => {
+            initializePasswordTypes();
+            selectPasswordType();
+        }, 100);
     }
-    function closePasswordGenerator() { document.getElementById('passwordGeneratorModal').style.display = 'none'; }
+    function closePasswordGenerator() { closeModal('passwordGeneratorModal'); }
     function copyPassword() {
-        const pwd = document.getElementById('passwordResult').textContent;
+        const resultEl = document.getElementById('passwordResult');
+        if (!resultEl) return;
+        const pwd = resultEl.textContent;
         if (!pwd || pwd === '点击上方按钮生成密码') { alert('请先生成密码！'); return; }
         navigator.clipboard.writeText(pwd).then(() => showNotification('密码已复制到剪贴板！')).catch(() => {
             const ta = document.createElement('textarea'); ta.value = pwd; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showNotification('密码已复制到剪贴板！');
@@ -496,14 +683,17 @@
     // ==================== 通知系统 ====================
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
+        const colors = { success: '#28a745', error: '#dc3545', info: '#007bff' };
         notification.style.cssText = `
             position: fixed; top: 20px; right: 20px;
-            background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#007bff'};
-            color: white; padding: 15px 20px; border-radius: 8px;
+            background: ${colors[type] || colors.info}; color: white;
+            padding: 15px 20px; border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999;
             animation: slideIn 0.3s ease;
+            max-width: 400px;
         `;
-        notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> <span style="margin-left:10px;">${message}</span>`;
+        const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+        notification.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> <span style="margin-left:10px;">${message}</span>`;
         document.body.appendChild(notification);
         setTimeout(() => { notification.style.animation = 'slideOut 0.3s ease'; setTimeout(() => document.body.removeChild(notification), 300); }, 3000);
     }
@@ -511,47 +701,91 @@
     // ==================== 事件绑定 ====================
     document.addEventListener('DOMContentLoaded', () => {
         // 计数器
-        document.getElementById('add-btn').addEventListener('click', () => addCount(1));
-        document.getElementById('minus-btn').addEventListener('click', () => addCount(-1));
-        document.getElementById('add10-btn').addEventListener('click', () => addCount(10));
-        document.getElementById('reset-btn').addEventListener('click', resetCounter);
+        const addBtn = document.getElementById('add-btn');
+        const minusBtn = document.getElementById('minus-btn');
+        const add10Btn = document.getElementById('add10-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        if (addBtn) addBtn.addEventListener('click', () => addCount(1));
+        if (minusBtn) minusBtn.addEventListener('click', () => addCount(-1));
+        if (add10Btn) add10Btn.addEventListener('click', () => addCount(10));
+        if (resetBtn) resetBtn.addEventListener('click', resetCounter);
+
         // 运势
-        document.getElementById('draw-luck-btn').addEventListener('click', drawLuck);
-        document.getElementById('reset-luck-btn').addEventListener('click', resetLuckHistory);
+        const drawLuckBtn = document.getElementById('draw-luck-btn');
+        const resetLuckBtn = document.getElementById('reset-luck-btn');
+        if (drawLuckBtn) drawLuckBtn.addEventListener('click', drawLuck);
+        if (resetLuckBtn) resetLuckBtn.addEventListener('click', resetLuckHistory);
+
         // 便签
-        document.getElementById('openNotesBtn').addEventListener('click', openNotes);
-        document.getElementById('closeNotesBtn').addEventListener('click', closeNotes);
-        document.getElementById('saveNotesBtn').addEventListener('click', saveNotes);
-        document.getElementById('clearNotesBtn').addEventListener('click', clearNotes);
+        const openNotesBtn = document.getElementById('openNotesBtn');
+        const closeNotesBtn = document.getElementById('closeNotesBtn');
+        const saveNotesBtn = document.getElementById('saveNotesBtn');
+        const clearNotesBtn = document.getElementById('clearNotesBtn');
+        if (openNotesBtn) openNotesBtn.addEventListener('click', openNotes);
+        if (closeNotesBtn) closeNotesBtn.addEventListener('click', closeNotes);
+        if (saveNotesBtn) saveNotesBtn.addEventListener('click', saveNotes);
+        if (clearNotesBtn) clearNotesBtn.addEventListener('click', clearNotes);
+
         // 主题
-        document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
+
         // 密码生成器
-        document.getElementById('openPasswordGeneratorBtn').addEventListener('click', openPasswordGenerator);
-        document.getElementById('closePasswordGeneratorBtn').addEventListener('click', closePasswordGenerator);
-        document.getElementById('generatePasswordBtn').addEventListener('click', generatePassword);
-        document.getElementById('refreshPasswordBtn').addEventListener('click', generatePassword);
-        document.getElementById('copyPasswordBtn').addEventListener('click', copyPassword);
-        document.getElementById('passwordLength').addEventListener('input', function() {
-            document.getElementById('lengthValue').textContent = this.value;
-        });
+        const openPwdBtn = document.getElementById('openPasswordGeneratorBtn');
+        const closePwdBtn = document.getElementById('closePasswordGeneratorBtn');
+        const generatePwdBtn = document.getElementById('generatePasswordBtn');
+        const refreshPwdBtn = document.getElementById('refreshPasswordBtn');
+        const copyPwdBtn = document.getElementById('copyPasswordBtn');
+        const pwdLength = document.getElementById('passwordLength');
+        const pwdType = document.getElementById('passwordType');
+        if (openPwdBtn) openPwdBtn.addEventListener('click', openPasswordGenerator);
+        if (closePwdBtn) closePwdBtn.addEventListener('click', closePasswordGenerator);
+        if (generatePwdBtn) generatePwdBtn.addEventListener('click', generatePassword);
+        if (refreshPwdBtn) refreshPwdBtn.addEventListener('click', generatePassword);
+        if (copyPwdBtn) copyPwdBtn.addEventListener('click', copyPassword);
+        if (pwdLength) {
+            pwdLength.addEventListener('input', function() {
+                const display = document.getElementById('lengthValue');
+                if (display) display.textContent = this.value;
+            });
+        }
+        if (pwdType) {
+            pwdType.addEventListener('change', selectPasswordType);
+        }
+
         // 点击模态框外部关闭
-        window.addEventListener('click', (event) => {
-            if (event.target.classList.contains('modal')) {
-                closeNotes();
-                closePasswordGenerator();
-            }
-        });
+        const notesModal = document.getElementById('notesModal');
+        const pwdModal = document.getElementById('passwordGeneratorModal');
+        if (notesModal) {
+            notesModal.addEventListener('click', function(e) {
+                if (e.target === this) closeModal('notesModal');
+            });
+        }
+        if (pwdModal) {
+            pwdModal.addEventListener('click', function(e) {
+                if (e.target === this) closeModal('passwordGeneratorModal');
+            });
+        }
+
         // 键盘快捷键
         document.addEventListener('keydown', (event) => {
             if ((event.ctrlKey || event.metaKey) && event.key === 's') {
                 event.preventDefault();
-                if (notesModal.style.display === 'flex') saveNotes();
+                const notesModal = document.getElementById('notesModal');
+                if (notesModal && notesModal.style.display === 'flex') saveNotes();
             }
-            if (event.key === 'Escape') { closeNotes(); closePasswordGenerator(); }
-            if (event.key === ' ' && !event.target.matches('textarea, input')) { event.preventDefault(); addCount(1); }
+            if (event.key === 'Escape') {
+                closeModal('notesModal');
+                closeModal('passwordGeneratorModal');
+            }
+            if (event.key === ' ' && !event.target.matches('textarea, input, button, select')) {
+                event.preventDefault();
+                addCount(1);
+            }
         });
     });
 </script>
+
 <script type="importmap">
 { "imports": { "anti-debug": "https://cdn.jsdelivr.net/npm/@sgysldz/anti-debug@1.0.0/dist/index.js" } }
 </script>
