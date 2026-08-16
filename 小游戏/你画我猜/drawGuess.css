@@ -1,0 +1,522 @@
+/**
+ * 你画我猜 - 样式文件
+ * 包含随机词汇生成器的UI样式
+ */
+
+/* ===== 词汇生成器容器 ===== */
+.word-generator-container {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+/* ===== 主按钮 ===== */
+.word-generator-toggle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    font-size: 26px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.word-generator-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+}
+
+.word-generator-toggle:active {
+    transform: scale(0.95);
+}
+
+.word-generator-toggle .badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 20px;
+    height: 20px;
+    background: #ff6b6b;
+    border-radius: 50%;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+}
+
+/* ===== 主面板 ===== */
+.word-generator-panel {
+    width: 380px;
+    max-height: 520px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    padding: 24px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.word-generator-panel.open {
+    display: flex;
+    animation: slideUpPanel 0.4s ease;
+}
+
+@keyframes slideUpPanel {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== 面板头部 ===== */
+.word-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.word-panel-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #2d3436;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.word-panel-header h3 i {
+    color: #667eea;
+}
+
+.word-panel-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #b2bec3;
+    cursor: pointer;
+    transition: color 0.3s;
+    padding: 0 4px;
+}
+
+.word-panel-close:hover {
+    color: #e17055;
+}
+
+/* ===== 分类选择器 ===== */
+.word-category-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.word-category-btn {
+    padding: 4px 12px;
+    border: 2px solid #dfe6e9;
+    border-radius: 20px;
+    background: transparent;
+    font-size: 12px;
+    color: #636e72;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.word-category-btn:hover {
+    border-color: #b2bec3;
+    background: #f8f9fa;
+}
+
+.word-category-btn.active {
+    border-color: #667eea;
+    background: #667eea;
+    color: white;
+}
+
+.word-category-btn .count {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-left: 2px;
+}
+
+/* ===== 词汇显示区 ===== */
+.word-display-area {
+    flex: 1;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.word-display-area .word-category-label {
+    font-size: 12px;
+    color: #b2bec3;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.word-display-area .word-text {
+    font-size: 42px;
+    font-weight: 800;
+    color: #2d3436;
+    text-align: center;
+    line-height: 1.2;
+    word-break: break-all;
+    transition: all 0.3s ease;
+}
+
+.word-display-area .word-text.revealing {
+    animation: wordReveal 0.6s ease;
+}
+
+@keyframes wordReveal {
+    0% {
+        transform: scale(0.5) rotate(-5deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(2deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.word-display-area .word-hint {
+    font-size: 13px;
+    color: #adb5bd;
+    margin-top: 6px;
+}
+
+.word-display-area .empty-hint {
+    color: #adb5bd;
+    font-size: 14px;
+}
+
+/* ===== 操作按钮 ===== */
+.word-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.word-action-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.word-action-btn:hover {
+    transform: translateY(-2px);
+}
+
+.word-action-btn:active {
+    transform: scale(0.95);
+}
+
+.word-action-btn.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.word-action-btn.primary:hover {
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+}
+
+.word-action-btn.secondary {
+    background: #dfe6e9;
+    color: #2d3436;
+}
+
+.word-action-btn.secondary:hover {
+    background: #b2bec3;
+}
+
+.word-action-btn.danger {
+    background: #ff6b6b;
+    color: white;
+}
+
+.word-action-btn.danger:hover {
+    background: #ee5a24;
+}
+
+/* ===== 历史记录 ===== */
+.word-history {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 2px solid #f0f0f0;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.word-history::-webkit-scrollbar {
+    width: 4px;
+}
+
+.word-history::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.word-history::-webkit-scrollbar-thumb {
+    background: #dfe6e9;
+    border-radius: 10px;
+}
+
+.word-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.word-history-header span {
+    font-size: 13px;
+    color: #b2bec3;
+    font-weight: 500;
+}
+
+.word-history-clear {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.word-history-clear:hover {
+    background: #fff5f5;
+}
+
+.word-history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #2d3436;
+    transition: background 0.3s;
+}
+
+.word-history-item:hover {
+    background: #f8f9fa;
+}
+
+.word-history-item .word {
+    font-weight: 600;
+}
+
+.word-history-item .category-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: #dfe6e9;
+    color: #636e72;
+}
+
+.word-history-item .time {
+    font-size: 10px;
+    color: #b2bec3;
+}
+
+/* ===== 批量词汇模式 ===== */
+.word-batch-mode {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.word-batch-mode .batch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.word-batch-mode .batch-header span {
+    font-size: 13px;
+    color: #636e72;
+}
+
+.word-batch-mode .batch-words {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.word-batch-mode .batch-word {
+    padding: 2px 10px;
+    background: white;
+    border-radius: 12px;
+    font-size: 13px;
+    border: 1px solid #dfe6e9;
+    color: #2d3436;
+}
+
+/* ===== 暗色主题适配 ===== */
+body.dark-theme .word-generator-panel {
+    background: rgba(45, 52, 54, 0.95);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-theme .word-panel-header {
+    border-bottom-color: #3d3d4a;
+}
+
+body.dark-theme .word-panel-header h3 {
+    color: #dfe6e9;
+}
+
+body.dark-theme .word-display-area {
+    background: linear-gradient(135deg, #2d3436 0%, #3d3d4a 100%);
+}
+
+body.dark-theme .word-display-area .word-text {
+    color: #dfe6e9;
+}
+
+body.dark-theme .word-category-btn {
+    border-color: #3d3d4a;
+    color: #b2bec3;
+}
+
+body.dark-theme .word-category-btn:hover {
+    background: #3d3d4a;
+}
+
+body.dark-theme .word-category-btn.active {
+    border-color: #667eea;
+    background: #667eea;
+    color: white;
+}
+
+body.dark-theme .word-action-btn.secondary {
+    background: #3d3d4a;
+    color: #dfe6e9;
+}
+
+body.dark-theme .word-action-btn.secondary:hover {
+    background: #4d4d5a;
+}
+
+body.dark-theme .word-history {
+    border-top-color: #3d3d4a;
+}
+
+body.dark-theme .word-history-item:hover {
+    background: #3d3d4a;
+}
+
+body.dark-theme .word-history-item .category-tag {
+    background: #3d3d4a;
+    color: #b2bec3;
+}
+
+body.dark-theme .word-batch-mode {
+    background: #3d3d4a;
+}
+
+body.dark-theme .word-batch-mode .batch-word {
+    background: #2d3436;
+    border-color: #4d4d5a;
+    color: #dfe6e9;
+}
+
+/* ===== 响应式适配 ===== */
+@media (max-width: 768px) {
+    .word-generator-container {
+        bottom: 80px;
+        right: 16px;
+    }
+
+    .word-generator-panel {
+        width: 320px;
+        max-height: 480px;
+        padding: 16px;
+    }
+
+    .word-display-area .word-text {
+        font-size: 32px;
+    }
+
+    .word-generator-toggle {
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+    }
+
+    .word-category-btn {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+}
+
+@media (max-width: 420px) {
+    .word-generator-panel {
+        width: 290px;
+        max-height: 440px;
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    .word-display-area {
+        min-height: 100px;
+        padding: 14px;
+    }
+
+    .word-display-area .word-text {
+        font-size: 26px;
+    }
+}

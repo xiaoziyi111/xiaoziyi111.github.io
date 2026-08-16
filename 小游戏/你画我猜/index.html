@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = "UTF-8">
+    <title>绘画板</title>
+    <!-- 引入消息弹框样式 -->
+    <link rel="stylesheet" href="../css/msgBox.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <!-- 在 head 中引入样式 -->
+    <link rel="stylesheet" href="drawGuess.css">
+    <style>
+        *{
+            vertical-align: middle;
+        }
+        .content {
+            margin: 20px;
+            float: left;
+        }
+        .content div{
+            margin-bottom: 15px;
+            width: 80px;
+            text-align: center;
+        }
+        #canvas {
+            background-color: transparent;
+            -webkit-box-shadow: 0px 0px 10px 5px #3b8cf8, 0 0 1px #3b8cf8, 0 0 1px #3b8cf8, 0 0 1px #3b8cf8, 0 0 1px #3b8cf8, 0 0 1px #3b8cf8, 0 0 1px #3b8cf8;
+        }
+        .button1{
+            height: 40px;
+            line-height: 40px;
+            font-size: 15px;
+            color: gold;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            border: none;
+            margin-right: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .button1:hover{
+            color: darkorange;
+        }
+        .button1:active {
+            border: none;
+            color: white;
+            outline: none;
+            background: LightSkyBlue;
+        }
+        .func-button {
+            background: rgba(0,0,0,0.3);
+            margin-top: 10px;
+        }
+        .range1{
+            width: 80px;
+            height: 5px;
+        }
+        label{
+            color: gold;
+        }
+        label span{
+            color: #48c0a4;
+        }
+        .画笔选择{
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin: 0 3px;
+            cursor: pointer;
+        }
+        #画笔{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px 0px;
+        }
+        #画笔:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -23px;
+        }
+        #空心矩形{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -45px;
+        }
+        #实心矩形{
+            width: 18px;
+            height: 18px;
+            background: #E89184;
+            border-radius: 5px;
+        }
+        #空心矩形:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -67px;
+        }
+        #实心矩形:hover{
+            background: #F64524;
+        }
+        #空心圆形{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -90px;
+        }
+        #实心圆形{
+            width: 18px;
+            height: 18px;
+            background: #E89184;
+            border-radius: 50%;
+        }
+        #空心圆形:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -113px;
+        }
+        #实心圆形:hover{
+            background: #F64524;
+        }
+        #直线{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -133px;
+        }
+        #直线:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -300px;
+        }
+        #箭头{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -266px;
+        }
+        #箭头:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -290px;
+        }
+        #文字{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -169px;
+        }
+        #文字:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -192px;
+        }
+        #brushSizeLine {
+			margin: 0;
+			padding: 0;
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color:gold;
+		}
+        #eraserSizeLine{
+            margin: 0;
+            padding: 0;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color:gold;
+        }
+        .shortcut-bar {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            width: 80px;
+            text-align: center;
+        }
+        .shortcut-bar .button1 {
+            display: block;
+            margin: 5px 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="button1" onclick="clearCanvas()">清空</div>
+        <div>
+            <input type="color" id="brushColor" style="width: 78px;">
+        </div>
+        <div>
+            <span class="画笔选择" id="画笔" onclick="切换画笔('画笔',7);"></span>
+            <span class="画笔选择" id="文字" onclick="切换画笔('文字',8);"></span>
+        </div>
+        <div>
+            <span class="画笔选择" id="空心矩形" onclick="切换画笔('空心矩形',1);"></span>
+            <span class="画笔选择" id="实心矩形" onclick="切换画笔('实心矩形',2);"></span>
+        </div>
+        <div>
+            <span class="画笔选择" id="空心圆形" onclick="切换画笔('空心圆形',3);"></span>
+            <span class="画笔选择" id="实心圆形" onclick="切换画笔('实心圆形',4);"></span>
+        </div>
+        <div>
+            <span class="画笔选择" id="直线" onclick="切换画笔('直线',5);"></span>
+            <span class="画笔选择" id="箭头" onclick="切换画笔('箭头',6);"></span>
+        </div>
+        <div>
+            <div>
+                <label for="brushSize">画笔 <span id="brushSizeValue">10</span></label>
+            </div>
+            <div>
+                <input class="range1" type="range" id="brushSize" min="1" max="50" value="10"
+                       onchange="updateValue('brushSize')" oninput="updateLine('brushSize', 'brushSizeLine')">
+                <div style="width: 80px;height: 50px">
+                    <div id="brushSizeLine"></div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="eraserSize">橡皮 <span id="eraserSizeValue">20</span></label>
+            </div>
+            <div>
+                <input  class="range1" type="range" id="eraserSize" min="1" max="80" value="20"
+                        onchange="updateValue('eraserSize')" oninput="updateLine('eraserSize', 'eraserSizeLine')">
+                <div style="width: 80px;height: 80px">
+                    <div id="eraserSizeLine"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能按钮区域 -->
+        <div class="shortcut-bar">
+            <div class="button1 func-button" onclick="enableEraser()">橡皮模式</div>
+            <div class="button1 func-button" onclick="undo()">撤销</div>
+            <div class="button1 func-button" onclick="restore()">恢复</div>
+            <div class="button1 func-button" onclick="saveCanvas()">保存</div>
+        </div>
+    </div>
+    <div style="color: #48c0a4;">
+        <span>橡皮：Ctrl+右键 或 点击"橡皮模式"按钮后绘画</span>&nbsp;&nbsp;
+        <span>撤销：Ctrl+Z 或 点击"撤销"按钮</span>&nbsp;&nbsp;
+        <span>恢复：Ctrl+Y 或 点击"恢复"按钮</span>&nbsp;&nbsp;
+        <span>保存：Ctrl+S 或 点击"保存"按钮</span>
+    </div>
+    <div style="margin: 20px auto;width: 1850px;">
+        <canvas id="canvas" width="1730" height="850"></canvas>
+    </div>
+
+    <!-- 引入动态创建消息弹框的js -->
+    <script type="text/javascript" src="../js/msgBox.js"></script>
+    <!-- 在 body 底部引入脚本 -->
+    <script src="wordGenerator.js"></script>
+    <script src="yb.js"></script>
+<!-- 词汇生成器 UI（放在 body 底部，canvas 之后） -->
+<div class="word-generator-container" id="wordGeneratorContainer">
+    <!-- 主面板 -->
+    <div class="word-generator-panel" id="wordPanel">
+        <!-- 头部 -->
+        <div class="word-panel-header">
+            <h3><i class="fas fa-paint-brush"></i> 你画我猜</h3>
+            <button class="word-panel-close" id="wordPanelClose">✕</button>
+        </div>
+        
+        <!-- 分类选择 -->
+        <div class="word-category-selector" id="categorySelector">
+            <!-- 由 JS 动态生成 -->
+        </div>
+        
+        <!-- 词汇显示 -->
+        <div class="word-display-area" id="wordDisplay">
+            <div class="word-category-label" id="wordCategoryLabel">🎯 点击抽取</div>
+            <div class="word-text" id="wordText">准备开始</div>
+            <div class="word-hint" id="wordHint">点击下方按钮抽取词汇</div>
+        </div>
+        
+        <!-- 操作按钮 -->
+        <div class="word-actions">
+            <button class="word-action-btn primary" id="pickWordBtn">
+                <i class="fas fa-dice"></i> 抽一个
+            </button>
+            <button class="word-action-btn secondary" id="pickBatchBtn">
+                <i class="fas fa-layer-group"></i> 抽5个
+            </button>
+            <button class="word-action-btn danger" id="resetHistoryBtn">
+                <i class="fas fa-trash"></i> 清空
+            </button>
+        </div>
+        
+        <!-- 历史记录 -->
+        <div class="word-history" id="wordHistory">
+            <div class="word-history-header">
+                <span>📋 历史记录</span>
+                <button class="word-history-clear" id="clearHistoryBtn">清空</button>
+            </div>
+            <div id="historyList"></div>
+        </div>
+        
+        <!-- 批量词汇显示 -->
+        <div class="word-batch-mode" id="batchMode" style="display:none;">
+            <div class="batch-header">
+                <span>📝 本次抽取</span>
+                <button class="word-history-clear" id="closeBatchBtn">收起</button>
+            </div>
+            <div class="batch-words" id="batchWordsList"></div>
+        </div>
+    </div>
+    
+    <!-- 浮动按钮 -->
+    <button class="word-generator-toggle" id="wordToggleBtn" title="你画我猜 - 随机词汇">
+        🎨
+        <span class="badge" id="wordBadge">0</span>
+    </button>
+</div>
+
+
+</body>
+</html>
