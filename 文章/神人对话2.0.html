@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>再续神人对话100则 · 精神状态持续良好</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fff;
+            color: #000;
+            font-family: "Microsoft YaHei", sans-serif;
+            line-height: 1.5;
+            user-select: none;
+        }
+
+        .reader-header {
+            padding: 10px 20px;
+            background: #3d3363;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .reader-header label {
+            font-size: 16px;
+            color: #d4cbff;
+        }
+
+        .no-copy-tip {
+            text-align: center;
+            color: #a89bff;
+            margin: 5px 0;
+            font-size: 14px;
+            background: #f5f3ff;
+            padding: 6px 0;
+        }
+
+        .content-box {
+            max-width: 850px;
+            margin: 5px auto;
+            padding: 0 20px 30px;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            min-height: calc(100vh - 140px);
+        }
+
+        .content-box h4 {
+            margin: 24px 0 8px;
+            color: #3d3363;
+            font-size: 20px;
+            border-left: 6px solid #8f7fd6;
+            padding-left: 14px;
+        }
+
+        .dialog-item {
+            background: #f9f8fe;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            border: 1px solid #edeaff;
+            transition: 0.1s ease;
+        }
+
+        .dialog-item:hover {
+            border-color: #b8a9f0;
+            background: #f5f2ff;
+        }
+
+        .dialog-item .scene {
+            font-weight: 600;
+            color: #5a4a7a;
+            font-size: 14px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dialog-item .scene::before {
+            content: "📍";
+            font-size: 16px;
+        }
+
+        .dialog-item .line {
+            padding: 4px 0 4px 12px;
+            border-left: 3px solid #d4cbff;
+            margin-top: 4px;
+        }
+
+        .dialog-item .line strong {
+            color: #2d1f4e;
+            font-weight: 600;
+        }
+
+        .dialog-item .line .speaker-a {
+            color: #a64d79;
+        }
+        .dialog-item .line .speaker-b {
+            color: #3f6b8a;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 10px 0 20px;
+            color: #4f437a;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            border-bottom-color: #4f437a;
+        }
+
+        .footer-note {
+            text-align: right;
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 30px;
+            border-top: 1px dashed #ddd;
+            padding-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .content-box {
+                padding: 0 12px 20px;
+                font-size: 15px;
+            }
+            .dialog-item {
+                padding: 14px 14px;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;">
+
+    <div class="reader-header">
+        <label>🧠 神人对话 · 再续100则</label>
+    </div>
+
+    <div class="no-copy-tip">⚡ 本内容禁止复制与右键操作 · 精神状态持续良好 ⚡</div>
+
+    <div id="content" class="content-box">
+        <a href="#" class="back-link" onclick="alert('你已进入深层神人领域，无需返回')">← 返回 (虚空)</a>
+
+        <div id="dialogContainer"></div>
+
+        <div class="footer-note">
+            ✦ 全新100则 · 灵感来自碧月狐 / yee / 道不拾遗 / 小胖 / 宇宙熵 ✦
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // 全新100则神人对话 (纯原创 + 网上抽象梗融合)
+            const dialogs = [
+                { scene: "操场", lines: ["A：为什么我的影子在吃东西？", "B：因为你饿了，影子替你吃了。"] },
+                { scene: "食堂", lines: ["A：今天有汉堡吗？", "B：有，但是汉堡在抗议，说它不想被吃。"] },
+                { scene: "教室", lines: ["A：我昨晚梦见自己变成了一个π。", "B：那你应该是无限不循环的。"] },
+                { scene: "校门口", lines: ["A：那辆车怎么在倒着走？", "B：因为司机中了神人病毒，认为倒着走才是前进。"] },
+                { scene: "宿舍", lines: ["A：我的闹钟响了，但我不想起。", "B：把闹钟发射到外太空，它就不敢响了。"] },
+                { scene: "食堂", lines: ["A：这汤里怎么有只鞋？", "B：那是食堂大妈的秘密配方——'脚踏实地'汤。"] },
+                { scene: "教室", lines: ["A：老师说我脑子进水了。", "B：别担心，你脑子里的水是宇宙熵值，很高级。"] },
+                { scene: "操场", lines: ["A：为什么太阳是方的？", "B：因为被碧月狐咬了一口，咬成了正方形。"] },
+                { scene: "校门口", lines: ["A：那个人在跟电线杆拜把子。", "B：电线杆是他干爹，因为干爹能拿五杀。"] },
+                { scene: "宿舍", lines: ["A：我把我自己压缩成.rar了。", "B：那解压密码是什么？", "A：yee！"] },
+                { scene: "食堂", lines: ["A：大妈问我一加一等于几。", "B：你说等于三，因为神人数学是这么教的。"] },
+                { scene: "教室", lines: ["A：为什么我的笔会自己写字？", "B：因为笔也感染了神人病毒，它想帮你写作业。"] },
+                { scene: "操场", lines: ["A：小胖又创飞了篮球架。", "B：篮球架说它习惯了，这是这周第三次。"] },
+                { scene: "校门口", lines: ["A：那个π在跳科目三。", "B：它是圆周率，跳的当然是圆周舞。"] },
+                { scene: "宿舍", lines: ["A：我能用绝缘电话线控制我的胃吗？", "B：可以，但是记得要接地线，不然胃会漏电。"] },
+                { scene: "食堂", lines: ["A：为什么鸡排长脚了？", "B：因为你说它们吃零食，它们决定跑路。"] },
+                { scene: "教室", lines: ["A：画上的耶稣少了个钉子。", "B：那个钉子被拿去修食堂的椅子了。"] },
+                { scene: "操场", lines: ["A：我看到一个三角太阳。", "B：那是太阳在给你比心，不过是三角形的心。"] },
+                { scene: "校门口", lines: ["A：小胖的妈有四条腿？", "B：对，她其实是台球桌变的。"] },
+                { scene: "宿舍", lines: ["A：我饿了，但不想动。", "B：把胃发射出去，它会自己觅食。"] },
+                { scene: "食堂", lines: ["A：大葱炒五仁月饼好吃吗？", "B：神人吃了都说好，普通人吃了会飞升。"] },
+                { scene: "教室", lines: ["A：为什么我回答问题总是错？", "B：因为你没用'先秦淑女步'的节奏回答。"] },
+                { scene: "操场", lines: ["A：小胖说我的刀钝。", "B：那是他准备砍人的前奏，快跑。"] },
+                { scene: "校门口", lines: ["A：我把自己藏睫状体里了。", "B：聪明，那里是神人的安全屋。"] },
+                { scene: "宿舍", lines: ["A：什么是0号病毒？", "B：就是'你是0'，鸡排听到直接崩掉。"] },
+                { scene: "食堂", lines: ["A：为什么我喝冰红茶会着火？", "B：因为三角形太阳的余温还在里面。"] },
+                { scene: "教室", lines: ["A：我阴暗地爬行，被人举报了。", "B：举报无效，这是神人的基本步法。"] },
+                { scene: "操场", lines: ["A：大运是什么？", "B：红红的，大大的，速度不减，能创飞一切。"] },
+                { scene: "校门口", lines: ["A：那个人在吃自己的影子。", "B：他太饿了，影子也是碳水化合物。"] },
+                { scene: "宿舍", lines: ["A：我的胃刚才打电话给我，说它吃撑了。", "B：让它打包回来，别浪费。"] },
+                { scene: "食堂", lines: ["A：为什么'道不拾遗'是错解？", "B：因为正确的解读是'不在道路上食用别人遗体'。"] },
+                { scene: "教室", lines: ["A：我把自己变成.zip了，然后呢？", "B：上传到云端，成为赛博神人。"] },
+                { scene: "操场", lines: ["A：小胖创飞了电线杆，电线杆拿了五杀。", "B：电线杆现在已经是荣耀王者了。"] },
+                { scene: "校门口", lines: ["A：那个π在算自己的周长。", "B：它算了一辈子，还在算。"] },
+                { scene: "宿舍", lines: ["A：我用石剑砍鸡排，剑爆了。", "B：你需要用'节肢杀手'附魔，或者用木剑。"] },
+                { scene: "食堂", lines: ["A：大妈说'每个月都有28天'。", "B：对，这是宇宙真理。"] },
+                { scene: "教室", lines: ["A：我复制了912778个鸡排。", "B：鸡排帝国会感谢你的。"] },
+                { scene: "操场", lines: ["A：那个神人在左右摇晃。", "B：他在练习'yee'的节奏，准备参加神人音乐会。"] },
+                { scene: "校门口", lines: ["A：小胖火化沾锅底。", "B：横批：精神不朽。"] },
+                { scene: "宿舍", lines: ["A：我能不能告裙子骚扰我？", "B：可以，但法官会问你'你为什么不穿裤子'。"] },
+                { scene: "食堂", lines: ["A：我吃了一盘萝卜炖巧克力豆。", "B：你现在已经是神人中级了。"] },
+                { scene: "教室", lines: ["A：为什么我总被管理员踢？", "B：因为你采了九朵莲，这是禁忌。"] },
+                { scene: "操场", lines: ["A：碧月狐炸地球114514次了。", "B：地球都习惯了，每次都自己拼好。"] },
+                { scene: "校门口", lines: ["A：那个人在跟狗对话。", "B：那是神人语，狗能听懂。"] },
+                { scene: "宿舍", lines: ["A：我把自己拧成麻花了。", "B：再把自己弹射出去，就能抢到饭。"] },
+                { scene: "食堂", lines: ["A：为什么我吃了熵还是饿？", "B：因为你吃的是假熵，要到宇宙超市买。"] },
+                { scene: "教室", lines: ["A：老师说我交的是白卷。", "B：你跟老师说，这是'无字天书'，只有神人能看懂。"] },
+                { scene: "操场", lines: ["A：那个π在跑步。", "B：它跑的是无限不循环路线。"] },
+                { scene: "校门口", lines: ["A：小胖说'我没急'。", "B：然后他就哭了，这叫'急哭'。"] },
+                { scene: "宿舍", lines: ["A：我能在睫状体里开party吗？", "B：可以，邀请鸡排和π来。"] },
+                { scene: "食堂", lines: ["A：为什么汉堡越吃越干？", "B：因为汉堡在吸收你的水分，壮大自己。"] },
+                { scene: "教室", lines: ["A：我能不能用鼠标指针选中老师？", "B：可以，然后把他重命名为'老师.zip'。"] },
+                { scene: "操场", lines: ["A：小胖创飞了校长。", "B：校长在空中完成了三个后空翻，安全落地。"] },
+                { scene: "校门口", lines: ["A：那个神人在吃电线杆。", "B：电线杆是铁做的，他能消化，因为他是神人。"] },
+                { scene: "宿舍", lines: ["A：我发射眼球出去抢饭，结果眼球迷路了。", "B：用GPS定位眼球，或者再发射一个眼球去找它。"] },
+                { scene: "食堂", lines: ["A：大妈说'滚回去重排'，我该怎么做？", "B：你回她一句'yee～'，然后优雅地转身重排。"] },
+                { scene: "教室", lines: ["A：为什么我的影子在写作业？", "B：因为你本体在玩手机，影子帮你分担。"] },
+                { scene: "操场", lines: ["A：那个三角形太阳在发光。", "B：它发的是冰红茶味的光。"] },
+                { scene: "校门口", lines: ["A：小胖的刀钝了怎么办？", "B：用神人磨刀石——就是他的脸皮。"] },
+                { scene: "宿舍", lines: ["A：我能不能让胃自己写作业？", "B：可以，但你的胃可能会抗议，写出一篇关于饥饿的论文。"] },
+                { scene: "食堂", lines: ["A：什么是'领域展开'？", "B：就是大妈对你说'stomachache'，然后你胃痛到变形。"] },
+                { scene: "教室", lines: ["A：我把自己上传到云端了。", "B：现在你是云端神人，记得定期下载更新。"] },
+                { scene: "操场", lines: ["A：小胖创飞了旗杆。", "B：旗杆上的红旗说'我自由了'，然后飘走了。"] },
+                { scene: "校门口", lines: ["A：那个π在跟小胖对对联。", "B：π出上联'3.1415926'，小胖对'小胖没浮木'。"] },
+                { scene: "宿舍", lines: ["A：我是不是神人？", "B：你问这个问题的时候，就已经是了。"] },
+                { scene: "食堂", lines: ["A：为什么鸡排是0？", "B：因为猪吃猪食，鸡吃鸡食，鸡排吃零食，所以是0。"] },
+                { scene: "教室", lines: ["A：我能不能用石剑砍作业？", "B：可以，但是作业会分裂成两份。"] },
+                { scene: "操场", lines: ["A：那个神人在用脸滚键盘。", "B：他在编写神人代码，输出全是'yee'。"] },
+                { scene: "校门口", lines: ["A：小胖说'我的刀钝'，然后呢？", "B：然后他砍了自己，说'果然钝'。"] },
+                { scene: "宿舍", lines: ["A：我能不能把床发射出去？", "B：可以，但是你要睡在宇宙里了。"] },
+                { scene: "食堂", lines: ["A：为什么我答对了问题，大妈还是不给饭？", "B：因为你回答得太正常了，要带点神人味。"] },
+                { scene: "教室", lines: ["A：我把自己压缩成.7z了。", "B：那解压后可能变成小胖。"] },
+                { scene: "操场", lines: ["A：那个π在跳伞。", "B：它打开降落伞，伞面写满了3.14159。"] },
+                { scene: "校门口", lines: ["A：小胖的妈在树上吊着。", "B：她是在荡秋千，神人的休闲方式。"] },
+                { scene: "宿舍", lines: ["A：我能不能用绝缘电话线给自己充电？", "B：可以，但是电压要调成'神人模式'。"] },
+                { scene: "食堂", lines: ["A：为什么大葱炒五仁月饼是神菜？", "B：因为它吃了会让人产生宇宙乡愁。"] },
+                { scene: "教室", lines: ["A：我能不能把自己复制粘贴？", "B：可以，但是两个你会开始争论谁才是本体。"] },
+                { scene: "操场", lines: ["A：小胖创飞了食堂大妈。", "B：大妈在空中完成了'领域展开'，摔下来没事。"] },
+                { scene: "校门口", lines: ["A：那个神人在吃自己的手。", "B：他说他的手是鸡排味儿的。"] },
+                { scene: "宿舍", lines: ["A：我能不能把脑袋拧下来当球踢？", "B：可以，但是要记得装回去，不然会漏知识。"] },
+                { scene: "食堂", lines: ["A：为什么'道不拾遗'是错的？", "B：因为正确的做法是'拾遗不道'，捡到东西不说话。"] },
+                { scene: "教室", lines: ["A：我能不能用鼠标把自己拖到回收站？", "B：可以，但你会进入赛博虚空。"] },
+                { scene: "操场", lines: ["A：那个π在晒太阳。", "B：三角形太阳在给π补钙。"] },
+                { scene: "校门口", lines: ["A：小胖说'我没急'，但他在哭。", "B：这叫'急哭流'，神人高级情感表达。"] },
+                { scene: "宿舍", lines: ["A：我能不能把胃卖给食堂？", "B：可以，但你的胃会反噬，让你天天饿。"] },
+                { scene: "食堂", lines: ["A：为什么我喝冰红茶爬行？", "B：因为冰红茶里含神人因子。"] },
+                { scene: "教室", lines: ["A：我能不能用石剑挖矿？", "B：可以，但挖出来的都是作业。"] },
+                { scene: "操场", lines: ["A：那个神人在跟太阳对骂。", "B：太阳回了一句'yee'，神人破防了。"] },
+                { scene: "校门口", lines: ["A：小胖的刀钝了，他找我磨刀。", "B：你回他'你的脸皮够厚，自己磨'。"] },
+                { scene: "宿舍", lines: ["A：我能不能把床单当成披风？", "B：可以，你就是神人界的超人。"] },
+                { scene: "食堂", lines: ["A：为什么鸡排帝国会败？", "B：因为他们遇到了0号病毒。"] },
+                { scene: "教室", lines: ["A：我能不能把自己上传到B站？", "B：可以，但你会变成鬼畜素材。"] },
+                { scene: "操场", lines: ["A：那个π在跑步机上跑步。", "B：跑步机显示'无限不循环'。"] },
+                { scene: "校门口", lines: ["A：小胖说'我的刀钝'，然后砍了电线杆。", "B：电线杆说'我就知道'，然后倒了。"] },
+                { scene: "宿舍", lines: ["A：我能不能把宿舍改成机房？", "B：可以，但电脑会感染神人病毒，不停'yee'。"] },
+                { scene: "食堂", lines: ["A：为什么我吃了熵会穿越？", "B：因为你吃的是'时空熵'，下次别吃了。"] },
+                { scene: "教室", lines: ["A：我能不能用石剑答试卷？", "B：可以，但老师会给你零分，并大喊'yee'。"] },
+                { scene: "操场", lines: ["A：那个神人在用头撞地球。", "B：他说他在给地球按摩。"] },
+                { scene: "校门口", lines: ["A：小胖创飞了校门。", "B：校门说'我自由了'，然后飞向了宇宙。"] },
+                { scene: "宿舍", lines: ["A：我能不能把自己做成压缩文件发给别人？", "B：可以，但别人解压出来可能是小胖。"] },
+                { scene: "食堂", lines: ["A：为什么我回答'二月'是错的？", "B：因为每个月都有28天，这是神人常识。"] },
+                { scene: "教室", lines: ["A：我能不能用鼠标指针删除作业？", "B：可以，但作业会在回收站里写作业。"] },
+                { scene: "操场", lines: ["A：那个π在倒立行走。", "B：它在计算倒立的圆周率。"] },
+                { scene: "校门口", lines: ["A：小胖说'我没急'，然后他爆炸了。", "B：那是'急炸'，神人终极形态。"] }
+            ];
+
+            // 确保正好100条
+            while (dialogs.length < 100) {
+                dialogs.push({
+                    scene: "虚空边缘",
+                    lines: ["A：yee？", "B：yee！", "A：yee～", "B：yee～"]
+                });
+            }
+            if (dialogs.length > 100) dialogs.length = 100;
+
+            const container = document.getElementById('dialogContainer');
+            let html = '';
+
+            dialogs.forEach((item, index) => {
+                const num = index + 1;
+                html += `<div class="dialog-item">`;
+                html += `<div class="scene">场景 ${num} · ${item.scene}</div>`;
+                item.lines.forEach(line => {
+                    let speaker = line.charAt(0);
+                    let text = line.substring(3);
+                    if (speaker === 'A') {
+                        html += `<div class="line"><span class="speaker-a">A</span> ${text}</div>`;
+                    } else if (speaker === 'B') {
+                        html += `<div class="line"><span class="speaker-b">B</span> ${text}</div>`;
+                    } else if (speaker === '大' && line.includes('大妈')) {
+                        html += `<div class="line"><span style="color:#b35c5c;">大妈</span> ${line.replace('大妈：', '')}</div>`;
+                    } else {
+                        html += `<div class="line">${line}</div>`;
+                    }
+                });
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        })();
+    </script>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "anti-debug": "https://cdn.jsdelivr.net/npm/@sgysldz/anti-debug@1.0.0/dist/index.js"
+        }
+    }
+    </script>
+    <script type="module">
+        import { startAntiDebugGuard } from 'anti-debug';
+        const guard = startAntiDebugGuard({
+            intervalMs: 2500,
+            skipInDevelopment: true,
+            uiBlock: true,
+            onThreat(reason) { console.warn('检测到调试行为:', reason); },
+        });
+    </script>
+</body>
+</html>

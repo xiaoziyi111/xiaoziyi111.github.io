@@ -1,0 +1,163 @@
+/* ===== 基础重置 + 神人风格（简化版，无粒子/光污染） ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #1a1a2e;
+    color: #e0d6ff;
+    font-family: "Microsoft YaHei", "Comic Sans MS", cursive, sans-serif;
+    line-height: 1.6;
+    user-select: none;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* 主容器 */
+.main-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px 40px;
+}
+
+/* ===== 顶部导航 ===== 扭曲+霓虹（精简） */
+.reader-header {
+    padding: 12px 20px;
+    margin: 12px 0 20px;
+    background: rgba(61, 51, 99, 0.8);
+    border-radius: 40px 12px 40px 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    border: 1px solid #b8a5ff;
+    box-shadow: 0 0 20px rgba(130, 100, 200, 0.25);
+}
+
+.reader-header label {
+    font-size: 18px;
+    color: #d4cbff;
+    letter-spacing: 3px;
+    font-weight: bold;
+    background: #2a1f4a;
+    padding: 0 16px;
+    border-radius: 40px;
+    line-height: 2;
+}
+
+#chapterSelect {
+    padding: 6px 18px;
+    border-radius: 40px 8px 40px 8px;
+    border: 2px solid #a38eff;
+    background: #2e2352;
+    color: #f0eaff;
+    font-size: 16px;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+#chapterSelect option {
+    background: #1f173b;
+    color: #d6ccff;
+}
+
+/* ===== 正文容器 ===== 轻微发光 */
+.content-box {
+    background: rgba(10, 8, 26, 0.6);
+    border-radius: 30px 10px 30px 10px;
+    padding: 24px 22px 30px;
+    margin: 16px 0 30px;
+    border: 1px solid #7f66dd;
+    box-shadow: 0 0 25px #3a2a6a;
+    font-size: 17px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.content-box h4 {
+    margin: 22px 0 10px;
+    color: #d8bdff;
+    font-size: 22px;
+    letter-spacing: 4px;
+    text-shadow: 0 0 12px #6a4fbb;
+    border-left: 8px solid #9a7eff;
+    padding-left: 16px;
+}
+
+.content-box p {
+    margin-bottom: 6px;
+    text-indent: 2.5em;
+    padding: 4px 0;
+    border-bottom: 1px dashed rgba(160, 130, 255, 0.1);
+}
+
+.content-box a {
+    color: #b7a0ff;
+    text-decoration: none;
+    font-weight: bold;
+    background: #2d1f53;
+    padding: 2px 18px;
+    border-radius: 60px;
+    border: 1px solid #7a5edb;
+    display: inline-block;
+    margin: 4px 0 12px;
+    transition: 0.2s;
+}
+.content-box a:hover {
+    background: #543baa;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* ===== 禁止复制提示 ===== 简单闪烁 */
+.no-copy-tip {
+    text-align: center;
+    color: #c3b0ff;
+    font-size: 15px;
+    margin: 8px 0 6px;
+    padding: 6px 16px;
+    background: rgba(50, 30, 80, 0.4);
+    border-radius: 80px;
+    letter-spacing: 4px;
+    border: 1px solid #7055c9;
+    display: inline-block;
+    animation: flicker 3s infinite alternate;
+    font-weight: bold;
+}
+@keyframes flicker {
+    0% { opacity: 0.7; text-shadow: 0 0 4px #a88aff; }
+    100% { opacity: 1; text-shadow: 0 0 16px #bfa9ff; }
+}
+
+/* ===== 随机神人彩蛋文字（简化） ===== */
+.random-echo {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    font-size: 16px;
+    color: #b9a3ff;
+    background: #1f153fcc;
+    padding: 6px 18px;
+    border-radius: 60px;
+    border: 1px solid #a284ff;
+    z-index: 99;
+    font-weight: bold;
+    pointer-events: none;
+    animation: floatPulse 4s infinite alternate;
+}
+@keyframes floatPulse {
+    0% { transform: scale(0.96); opacity: 0.8; }
+    100% { transform: scale(1.06); opacity: 1; }
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 600px) {
+    .content-box { padding: 18px 14px; font-size: 15.5px; }
+    .reader-header { flex-direction: column; gap: 10px; }
+    .random-echo { font-size: 13px; padding: 4px 14px; bottom: 10px; right: 10px; }
+    .content-box h4 { font-size: 19px; }
+}

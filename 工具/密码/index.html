@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>摩斯密码加密解密</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6c5ce7, #a363e6);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #7e57c2, #9575cd);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .input-group, .output-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+            font-size: 16px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 140px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            resize: none;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #7e57c2;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        button {
+            flex: 1;
+            min-width: 140px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-encrypt {
+            background: #7e57c2;
+            color: white;
+        }
+
+        .btn-decrypt {
+            background: #9575cd;
+            color: white;
+        }
+
+        .btn-clear {
+            background: #d1c4e9;
+            color: #4a4a4a;
+        }
+
+        .btn-copy {
+            background: #b39ddb;
+            color: #4a4a4a;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(126, 87, 194, 0.2);
+        }
+
+        .tip {
+            font-size: 14px;
+            color: #7e57c2;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>🔐 摩斯密码加密解密工具</h1>
+            <p>@xiaoziyi11原创</p>
+        </div>
+
+        <div class="content">
+            <!-- 输入框 -->
+            <div class="input-group">
+                <label>📝 输入文本 / 摩斯密码</label>
+                <textarea id="inputText" placeholder="请输入要加密的文本，或要解密的摩斯密码..."></textarea>
+                <div class="tip">摩斯密码格式：用空格分隔字符，/ 分隔单词</div>
+            </div>
+
+            <!-- 功能按钮 -->
+            <div class="btn-group">
+                <button class="btn-encrypt" onclick="encrypt()">🔒 加密为摩斯</button>
+                <button class="btn-decrypt" onclick="decrypt()">🔓 摩斯解密</button>
+                <button class="btn-clear" onclick="clearAll()">🗑️ 清空内容</button>
+                <button class="btn-copy" onclick="copyResult()">📋 复制结果</button>
+            </div>
+
+            <!-- 输出框 -->
+            <div class="output-group">
+                <label>✅ 转换结果</label>
+                <textarea id="outputText" readonly placeholder="转换结果将显示在这里..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 摩斯密码对照表（支持 字母/数字/常用符号）
+        const morseCode = {
+            'a': '.-', 'b': '-...', 'c': '-.-.', 'd': '-..', 'e': '.', 
+            'f': '..-.', 'g': '--.', 'h': '....', 'i': '..', 'j': '.---', 
+            'k': '-.-', 'l': '.-..', 'm': '--', 'n': '-.', 'o': '---', 
+            'p': '.--.', 'q': '--.-', 'r': '.-.', 's': '...', 't': '-', 
+            'u': '..-', 'v': '...-', 'w': '.--', 'x': '-..-', 'y': '-.--', 
+            'z': '--..', '0': '-----', '1': '.----', '2': '..---', 
+            '3': '...--', '4': '....-', '5': '.....', '6': '-....', 
+            '7': '--...', '8': '---..', '9': '----.', '.': '.-.-.-', 
+            ',': '--..--', '?': '..--..', "'": '.----.', '!': '-.-.--', 
+            '/': '-..-.', '(': '-.--.', ')': '-.--.-', '&': '.-...', 
+            ':': '---...', ';': '-.-.-.', '=': '-...-', '+': '.-.-.', 
+            '-': '-....-', '_': '..--.-', '"': '.-..-.', '$': '...-..-', 
+            '@': '.--.-.', ' ': '/'
+        };
+
+        // 反向生成解码对照表
+        const morseReverse = {};
+        for (let [key, value] of Object.entries(morseCode)) {
+            morseReverse[value] = key;
+        }
+
+        // 加密：文本 → 摩斯
+        function encrypt() {
+            const input = document.getElementById('inputText').value.toLowerCase().trim();
+            if (!input) {
+                alert('请输入需要加密的内容！');
+                return;
+            }
+
+            let result = '';
+            for (let char of input) {
+                if (morseCode[char]) {
+                    result += morseCode[char] + ' ';
+                }
+            }
+
+            document.getElementById('outputText').value = result.trim();
+        }
+
+        // 解密：摩斯 → 文本
+        function decrypt() {
+            const input = document.getElementById('inputText').value.trim();
+            if (!input) {
+                alert('请输入需要解密的摩斯密码！');
+                return;
+            }
+
+            const morseArr = input.split(' ');
+            let result = '';
+
+            for (let code of morseArr) {
+                if (morseReverse[code]) {
+                    result += morseReverse[code];
+                } else if (code === '') {
+                    result += ' ';
+                }
+            }
+
+            document.getElementById('outputText').value = result;
+        }
+
+        // 清空所有内容
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+        }
+
+        // 复制结果
+        function copyResult() {
+            const output = document.getElementById('outputText');
+            if (!output.value) {
+                alert('暂无结果可复制！');
+                return;
+            }
+            output.select();
+            document.execCommand('copy');
+            alert('复制成功！');
+        }
+    </script>
+
+</body>
+</html>

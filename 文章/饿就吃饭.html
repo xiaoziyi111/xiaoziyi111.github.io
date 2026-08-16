@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>饿就吃饭</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fff;
+            color: #000;
+            font-family: "Microsoft YaHei", sans-serif;
+            line-height: 1.5;
+            user-select: none;
+        }
+
+        /* 顶部导航栏 */
+        .reader-header {
+            padding: 10px 20px;
+            background: #3d3363;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .reader-header label {
+            font-size: 16px;
+            color: #d4cbff;
+        }
+
+        #chapterSelect {
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: none;
+            background: #4f437a;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        #chapterSelect option {
+            background: #3d3363;
+        }
+
+        /* 正文容器 */
+        .content-box {
+            max-width: 850px;
+            margin: 5px auto;
+            padding: 0 20px 30px;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            min-height: calc(100vh - 140px);
+        }
+
+        .content-box h4 {
+            margin: 16px 0 8px;
+            color: #3d3363;
+        }
+
+        .content-box p {
+            margin-bottom: 2px;
+            text-indent: 2em;
+        }
+
+        .content-box a {
+            color: #4f437a;
+            text-decoration: none;
+        }
+
+        .content-box a:hover {
+            text-decoration: underline;
+        }
+
+        /* 禁止复制提示 */
+        .no-copy-tip {
+            text-align: center;
+            color: #a89bff;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+</head>
+<!-- 禁用右键、复制剪切 -->
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;">
+    
+
+    <div class="no-copy-tip">本内容禁止复制与右键操作</div>
+    <div id="content" class="content-box">
+		<a href="https://xiaoziyi11{$rthSuffix}/index.html">返回</a>
+        <h4>饿就吃饭</h4>
+        <p>
+今天，我照例窝在机房里与代码鏖战。由于课程无限拉长，我的一位同学已经像漏了气的皮球一样，隔三差五地念叨他“饿”。起初只是呢喃，后来演变成一种有节奏的哀鸣，仿佛某种远古的饥饿诅咒正在他身上复苏。
+
+就在这饥馑氛围弥漫之际，我身后突然炸开一个问题，声音不大，却如惊雷贯耳：
+
+“饿了……不应该去吃饭吗？”
+
+这问题问得如此坦荡，如此理直气壮，以至于它刺耳得不可理喻，不可理喻得令人匪夷所思，匪夷所思到我听完之后整个人都开始匪夷所思起来。
+
+我当即将椅子一个漂移转过去，目光如炬地锁定了那位发言者，一场关于生存本质的辩论，就此拉开帷幕。
+
+“饿了——怎么能去吃饭呢？”我率先发难，语气里带着对庸常思维的悲悯。
+
+“吃饭这种效率低到令人发指的缓解饥饿手段，居然至今还在人类社会中广为流传！你算过没有？一个人平均每天光是吃饭就要投入整整一个小时——一小时啊！那是六十分钟，三千六百秒，每一秒都是我们生命里不可再生的资源。人生在世，不过区区数万天，按七十年算，你就足足有将近三年光阴被活活‘吃’掉了！逝者如斯夫，不舍昼夜——孔夫子站在川上看见的是流水，我看见的是我们的生命正顺着筷子往嘴里流！”
+
+我的声音在机房上空回荡，余音绕梁。
+
+同学明显被这组数据震住了，他张了张嘴，喉结滚动了一下——不知道是咽口水还是咽下某种顿悟。他随即站起身来，姿态虔诚如朝圣，毕恭毕敬地抱拳：“大佬！我实在是不想再因吃饭而虚度光阴了，求您教我！”
+
+好在他尚未病入膏肓，孺子尚可教也。我欣慰地点点头，决定将毕生对抗饥饿的无上心法倾囊相授。
+
+“第一法门，你要从根源上理解——我们为什么要吃饭？”
+
+我竖起一根手指，目光深远，仿佛洞穿了物质与能量的本质。
+
+“人体之所以需要不断进食，归根结底是因为——物质与能量每时每刻都在从我们这副躯壳中散失。你呼吸，你在流失；你思考，你在流失；你哪怕只是静静地坐在原地，你的身体也在用一种肉眼不可见的方式，与这冷漠的宇宙进行着不可逆的交换。要破此局，方法其实很简单——将自身包裹在球形强相互作用力场之中，把每一颗原子都牢牢锁死在它该在的位置。这样一来，物质和能量便如同被封进了一座永不开启的宝库，散失率为零，饥饿便无从谈起。”
+
+他听得双眼放光，迫不及待地追问：“那第二呢？第二呢！”
+
+“第二嘛——”我故作沉吟，又伸出一根手指，“人体的所有活动，放大来看无非就是细胞活动。而细胞活动的本质，是有机物的氧化供能。也就是说，‘生命活动需要消耗能量’这条铁律，才是饥饿的真正根源。那么如何破解？答案也简单——让我们的细胞不活动。”
+
+我顿了一顿，让这句话像种子一样落入他的意识深处。
+
+“当所有细胞进入绝对静止，能量的消耗便会精确归零。没有消耗，就不需要补充。不需要补充，就不存在饥饿。这，便是从需求的终点反推起点，可谓釜底抽薪。”
+
+同学已经激动得浑身发抖，几乎要当场拜师。
+
+就在这时，我身后那位最初提出“该吃饭”的同学——那个我一直以为已经被我说服的同桌——缓缓站了起来。
+
+他没有激动，没有反驳，只是用一种令人不安的、近乎悲悯的眼神凝视着我。那目光里没有胜负欲，却有某种穿透表象的智慧。
+
+我的好胜心瞬间被点燃了，急忙回瞪过去：“你这是什么眼神？莫非你还有更高明的办法？”
+
+他轻轻摇了摇头，嘴角浮起一丝若有若无的笑意。
+
+“你的方法，都太危险，太困难了。”
+
+他踱步到窗边，逆光而立，身影被夕阳拉得颀长。
+
+“你们有没有想过——饥饿最直接的原因是什么？是你肚子里没有东西。寻常的食物，无论山珍海味还是粗茶淡饭，最终都会被消化、被吸收、被排出。物质是留不住的，能量也是留不住的，这是热力学第二定律写死的宿命。”
+
+他忽然转过身来，眼中精光一闪。
+
+“但是——熵不一样。”
+
+“熵是无法被‘利用’的。它不能被消化，不能被吸收，不能被排出。它是宇宙间最赖皮的存在——一旦进入一个系统，就会永远赖在那里，与系统共存亡。所以，我们只需要做一件事：一次性摄入大量的宇宙混沌熵值。”
+
+他张开双臂，仿佛在拥抱某种不可名状的存在。
+
+“当熵填满你的肚子，你的胃里就永远‘有东西’了。它不会消失，不会代谢，不会背叛你。你将永远告别饥饿——用一种比你们的‘锁死原子’、‘细胞停摆’都要简单一万倍的方式。”
+
+我愣住了。
+
+窗外的风吹进来，掀起我桌上散落的草稿纸。
+
+我缓缓站起身，目光与他对视。那一刻，我仿佛看见了一个真正的天才——他跳出了“减少消耗”的庸常思维，直接从“让肚子永远不空”这个朴素的原点出发，找到了最优雅的解法。
+
+“妙啊……”我不由自主地喃喃道。
+
+他微微一笑：“妙就妙在——你甚至不用做任何事。宇宙的熵一直都在那里，取之不尽，用之不竭。你只需要张开嘴，然后……等。”
+
+我彻底折服了。
+
+人族有我们二位天才——不，三位——在，说不定真的有救了！
+    </div>
+
+<script type="importmap">
+{ "imports": { "anti-debug": "https://cdn.jsdelivr.net/npm/@sgysldz/anti-debug@1.0.0/dist/index.js" } }
+</script>
+<script type="module">
+import { startAntiDebugGuard } from 'anti-debug';
+const guard = startAntiDebugGuard({
+  intervalMs: 2500,
+  skipInDevelopment: true,
+  uiBlock: true,
+  onThreat(reason) { console.warn('检测到调试行为:', reason); },
+});
+</script>
+</body>
+</html>

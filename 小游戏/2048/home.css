@@ -1,0 +1,32 @@
+.scores {
+    width: 150px;
+    height: 30px;
+    font-size: 25px;
+    position: relative;
+    top: 55px;
+    margin: auto;
+}
+
+.outframe {
+    width: 410px;
+    height: 410px;
+    position: relative;
+    top: 85px;
+    background-color: burlywood;
+    margin: auto;
+}
+
+.frame {
+    width: 90px;
+    height: 90px;
+    background-color: white;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 90px;
+    font-size: 40px;
+    color: cadetblue;
+    opacity: 0.5;
+    float: left;
+    margin: 10px 0px 0px 10px;
+
+}

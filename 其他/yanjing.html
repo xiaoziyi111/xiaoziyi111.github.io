@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爆裂粒子 · 100个动态光点</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            background: #0a0c14;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .container {
+            background: #121624;
+            padding: 20px 20px 28px;
+            border-radius: 48px 48px 32px 32px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+        .canvas-box {
+            background: #0d111b;
+            border-radius: 28px;
+            padding: 6px;
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.7);
+        }
+        canvas {
+            display: block;
+            width: 880px;
+            height: 520px;
+            border-radius: 22px;
+            background: #0a0e17;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            cursor: pointer;
+        }
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 18px;
+            padding: 0 12px 0 18px;
+            color: #a3b9e6;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+        .tag {
+            background: #1e273f;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            border: 1px solid #334466;
+            color: #bdd2ff;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.02);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #7a9cff;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #4f7aff;
+        }
+        .stats {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        .stats span {
+            background: #161f32;
+            padding: 4px 16px;
+            border-radius: 30px;
+            border: 1px solid #2c3e60;
+            color: #b8ceff;
+        }
+        .stats .glow {
+            background: #1d2a44;
+            color: #dce8ff;
+            font-weight: 500;
+            border-color: #4a6c9e;
+        }
+        @media (max-width: 920px) {
+            canvas {
+                width: 92vw;
+                height: auto;
+                aspect-ratio: 880 / 520;
+            }
+            .container {
+                padding: 12px;
+                border-radius: 32px;
+            }
+            .footer {
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="canvas-box">
+        <canvas id="canvas" width="880" height="520"></canvas>
+    </div>
+    <div class="footer">
+        <div class="tag">
+            <span class="dot"></span> 粒子 · 100
+        </div>
+        <div class="stats">
+            <span>⚡ 100 ms</span>
+            <span class="glow">🌈 随机色彩</span>
+            <span>🌀 爆裂位移</span>
+        </div>
+    </div>
+</div>
+<script>
+    (function() {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const W = 1600, H = 820;
+        canvas.width = W;
+        canvas.height = H;
+
+        const COUNT = 100;
+        const BASE_RADIUS = 4;
+
+        // ---------- 粒子池 ----------
+        let particles = [];
+
+        // 工具：随机整数
+        const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+        // 高饱和随机色 (HSL)
+        function vividColor() {
+            const h = rand(0, 360);
+            const s = rand(75, 100);
+            const l = rand(55, 85);
+            return `hsl(${h}, ${s}%, ${l}%)`;
+        }
+
+        // 创建单个粒子 (位置、颜色、半径微变)
+        function createParticle() {
+            return {
+                x: Math.random() * W,
+                y: Math.random() * H,
+                r: BASE_RADIUS + (Math.random() * 4 - 2), // 6~10
+                color: vividColor(),
+                // 用于拖尾/运动模糊效果的辅助属性 (本次不加拖尾，但保留)
+            };
+        }
+
+        // 初始化
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < COUNT; i++) {
+                particles.push(createParticle());
+            }
+        }
+
+        // 更新：位置完全随机，颜色全新，半径轻微变化
+        function burstUpdate() {
+            for (let p of particles) {
+                // 位置完全随机 —— 爆裂感
+                p.x = Math.random() * W;
+                p.y = Math.random() * H;
+                // 颜色全新
+                p.color = vividColor();
+                // 半径轻微浮动 (增加动态)
+                p.r = BASE_RADIUS + (Math.random() * 6 - 3); // 5~11
+            }
+        }
+
+        // 绘制：每个粒子带光晕 + 高光
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+
+            // 绘制极淡的星点背景 (增加深度)
+            ctx.fillStyle = 'rgba(255,255,255,0.015)';
+            for (let i = 0; i < 60; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.random() * W, Math.random() * H, 1 + Math.random() * 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 绘制粒子 (带发光)
+            for (let p of particles) {
+                const { x, y, r, color } = p;
+
+                // 主光晕 (大模糊)
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 28;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                // 内层亮核 (更亮)
+                ctx.shadowBlur = 18;
+                ctx.beginPath();
+                ctx.arc(x, y, r * 0.6, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.fill();
+
+                // 高光点 (左上)
+                ctx.shadowBlur = 6;
+                ctx.beginPath();
+                ctx.arc(x - r * 0.25, y - r * 0.3, r * 0.22, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                ctx.fill();
+
+                // 小高光 (右下)
+                ctx.shadowBlur = 4;
+                ctx.beginPath();
+                ctx.arc(x + r * 0.15, y + r * 0.2, r * 0.1, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.fill();
+
+                // 重置阴影 (避免影响到下一个粒子)
+                ctx.shadowBlur = 0;
+            }
+
+            // 绘制一个超细的扫描线/装饰 (增加科技感)
+            ctx.strokeStyle = 'rgba(120, 180, 255, 0.03)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(0, 0, W, H);
+        }
+
+        // ----- 动画循环 (定时器) -----
+        let timer = null;
+
+        function tick() {
+            burstUpdate();    // 粒子全部随机刷新
+            draw();
+        }
+
+        function start() {
+            if (timer) clearInterval(timer);
+            initParticles();
+            draw(); // 首次绘制
+            timer = setInterval(tick, 100);
+        }
+
+        function stop() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        // ----- 可见性切换 (优化性能) -----
+        function visibilityHandler() {
+            if (document.hidden) {
+                stop();
+            } else {
+                if (!timer) {
+                    // 重新启动时刷新一次，避免卡顿
+                    initParticles();
+                    draw();
+                    timer = setInterval(tick, 100);
+                }
+            }
+        }
+
+        // ----- 点击canvas 手动爆裂重置 (更爽) -----
+        canvas.addEventListener('click', () => {
+            // 瞬间全部重置为全新随机 (位置颜色半径)
+            for (let p of particles) {
+                p.x = Math.random() * W;
+                p.y = Math.random() * H;
+                p.color = vividColor();
+                p.r = BASE_RADIUS + (Math.random() * 6 - 3);
+            }
+            draw();
+        });
+
+        // ----- 启动 -----
+        start();
+
+        document.addEventListener('visibilitychange', visibilityHandler);
+
+        window.addEventListener('beforeunload', () => {
+            stop();
+            document.removeEventListener('visibilitychange', visibilityHandler);
+        });
+
+        // 控制台提示
+        console.log('💥 爆裂粒子模式 · 100个粒子每100ms完全随机位置+色彩');
+        console.log('👆 点击画布可手动触发一次爆裂重置');
+    })();
+</script>
+</body>
+</html>

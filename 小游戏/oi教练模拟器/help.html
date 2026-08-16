@@ -1,0 +1,1200 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📖 完整游戏指南 - OI 教练模拟器</title>
+<link rel="stylesheet" href="https://cdn.rthe.cn/uncached-1786843273/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/styles.css">
+<style>
+  /* ===== 全局样式 ===== */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* ===== 头部 ===== */
+  .guide-header {
+    text-align: center;
+    padding: 40px 20px 30px;
+    background: linear-gradient(135deg, #161b22, #0d1117);
+    border-bottom: 2px solid #30363d;
+    margin-bottom: 30px;
+  }
+  .guide-header h1 {
+    font-size: 2.8rem;
+    margin: 0;
+    background: linear-gradient(135deg, #58a6ff, #f0883e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .guide-header p {
+    color: #8b949e;
+    font-size: 1.1rem;
+    margin-top: 8px;
+  }
+  .guide-header .version {
+    display: inline-block;
+    background: #21262d;
+    color: #58a6ff;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin-top: 10px;
+  }
+
+  /* ===== 导航标签 ===== */
+  .guide-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    background: #161b22;
+    padding: 10px 16px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border: 1px solid #30363d;
+  }
+  .guide-tabs .tab-btn {
+    background: transparent;
+    color: #8b949e;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .guide-tabs .tab-btn:hover {
+    background: #21262d;
+    color: #e6edf3;
+  }
+  .guide-tabs .tab-btn.active {
+    background: #1f6feb;
+    color: #fff;
+  }
+
+  /* ===== 内容卡片 ===== */
+  .guide-content {
+    background: #161b22;
+    border-radius: 12px;
+    padding: 28px 32px;
+    border: 1px solid #30363d;
+    min-height: 400px;
+  }
+  .guide-content .tab-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .guide-content .tab-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== 标题样式 ===== */
+  .guide-content h2 {
+    color: #f0f6fc;
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 6px;
+    border-bottom: 2px solid #30363d;
+    padding-bottom: 12px;
+  }
+  .guide-content h2 .icon {
+    margin-right: 10px;
+  }
+  .guide-content h3 {
+    color: #58a6ff;
+    font-size: 1.2rem;
+    margin-top: 24px;
+    margin-bottom: 10px;
+  }
+  .guide-content h4 {
+    color: #f0883e;
+    font-size: 1rem;
+    margin-top: 16px;
+    margin-bottom: 6px;
+  }
+  .guide-content p {
+    color: #c9d1d9;
+    line-height: 1.8;
+    margin: 8px 0;
+  }
+
+  /* ===== 列表 ===== */
+  .guide-content ul, .guide-content ol {
+    padding-left: 24px;
+    line-height: 1.9;
+    color: #c9d1d9;
+  }
+  .guide-content li {
+    margin-bottom: 6px;
+  }
+  .guide-content li strong {
+    color: #f0883e;
+  }
+
+  /* ===== 提示框 ===== */
+  .tip-box {
+    background: #1c2333;
+    border-left: 4px solid #58a6ff;
+    padding: 14px 20px;
+    border-radius: 6px;
+    margin: 16px 0;
+  }
+  .tip-box.warning {
+    border-left-color: #f0883e;
+    background: #1e1a14;
+  }
+  .tip-box.danger {
+    border-left-color: #f85149;
+    background: #1e1416;
+  }
+  .tip-box.success {
+    border-left-color: #3fb950;
+    background: #14211a;
+  }
+  .tip-box .tip-title {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+  .tip-box .tip-title .icon {
+    margin-right: 6px;
+  }
+  .tip-box.info .tip-title { color: #58a6ff; }
+  .tip-box.warning .tip-title { color: #f0883e; }
+  .tip-box.danger .tip-title { color: #f85149; }
+  .tip-box.success .tip-title { color: #3fb950; }
+
+  /* ===== 标签/徽章 ===== */
+  .badge {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .badge.positive { background: #1a3a2a; color: #3fb950; }
+  .badge.negative { background: #3a1a1a; color: #f85149; }
+  .badge.neutral { background: #1a2a3a; color: #58a6ff; }
+  .badge.rare { background: #2a1a3a; color: #d2a8ff; }
+
+  /* ===== 表格 ===== */
+  .guide-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+  .guide-table th {
+    background: #21262d;
+    color: #e6edf3;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid #30363d;
+  }
+  .guide-table td {
+    padding: 10px 14px;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+  }
+  .guide-table tr:nth-child(even) {
+    background: #0d1117;
+  }
+  .guide-table tr:hover {
+    background: #1c2333;
+  }
+
+  /* ===== 返回按钮 ===== */
+  .back-footer {
+    text-align: center;
+    padding: 30px 0 20px;
+  }
+  .back-footer .btn-back {
+    display: inline-block;
+    background: #1f6feb;
+    color: #fff;
+    padding: 12px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .back-footer .btn-back:hover {
+    background: #388bfd;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 768px) {
+    .guide-header h1 { font-size: 1.8rem; }
+    .guide-content { padding: 18px; }
+    .guide-tabs .tab-btn { font-size: 0.75rem; padding: 6px 10px; }
+    .guide-table { font-size: 0.75rem; }
+    .guide-table th, .guide-table td { padding: 6px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ===== 头部 ===== -->
+  <div class="guide-header">
+    <h1>📖 完整游戏指南</h1>
+    <p>OI 教练模拟器 · 从入门到精通</p>
+    <span class="version">📌 v2.0 · 包含教练成长 &amp; 道具系统</span>
+  </div>
+
+  <!-- ===== 导航标签 ===== -->
+  <div class="guide-tabs" id="guideTabs">
+    <button class="tab-btn active" data-tab="overview">📋 总览</button>
+    <button class="tab-btn" data-tab="students">👨‍🎓 学生</button>
+    <button class="tab-btn" data-tab="training">🏋️ 训练</button>
+    <button class="tab-btn" data-tab="competition">🏆 比赛</button>
+    <button class="tab-btn" data-tab="coach">🧑‍🏫 教练</button>
+    <button class="tab-btn" data-tab="facility">🏗️ 设施</button>
+    <button class="tab-btn" data-tab="items">🎒 道具</button>
+    <button class="tab-btn" data-tab="events">🎲 事件</button>
+    <button class="tab-btn" data-tab="tips">💡 技巧</button>
+	<button class="tab-btn" data-tab="recruit">📩 招生</button>
+	<button class="tab-btn" data-tab="team">🤝 队伍</button>
+	<button class="tab-btn" data-tab="achievement">🏆 成就</button>
+  </div>
+
+  <!-- ===== 内容区域 ===== -->
+  <div class="guide-content">
+
+    <!-- ====== 总览 ====== -->
+    <div class="tab-panel active" id="panel-overview">
+      <h2><span class="icon">📋</span>游戏总览</h2>
+      <p>欢迎来到 <strong>OI 教练模拟器</strong>！你将扮演一名信息学竞赛教练，带领学生从零开始，冲击 NOI 金牌。</p>
+
+      <div class="tip-box success">
+        <div class="tip-title"><span class="icon">🎯</span> 核心目标</div>
+        <p>带领学生通过 <strong>CSP-S → NOIP → 省选 → NOI</strong> 的晋级之路，培养出金牌选手，建立你的教练传奇。</p>
+      </div>
+
+      <h3>📊 核心资源</h3>
+      <table class="guide-table">
+        <tbody><tr>
+          <th>资源</th>
+          <th>说明</th>
+          <th>获取方式</th>
+        </tr>
+        <tr>
+          <td><strong>💰 经费</strong></td>
+          <td>用于训练、集训、购买道具、设施升级</td>
+          <td>初始拨款、比赛奖金、商业活动、赞助</td>
+        </tr>
+        <tr>
+          <td><strong>⭐ 声誉</strong></td>
+          <td>影响事件触发、赞助金额、招生质量</td>
+          <td>比赛成绩、媒体采访、正面事件</td>
+        </tr>
+        <tr>
+          <td><strong>🏅 教练等级</strong></td>
+          <td>提升解锁技能，增强教学效果</td>
+          <td>训练、比赛、事件获得经验</td>
+        </tr>
+        <tr>
+          <td><strong>🎒 道具</strong></td>
+          <td>提供临时或永久增益</td>
+          <td>事件奖励、商店购买</td>
+        </tr>
+      </tbody></table>
+
+      <div class="tip-box warning">
+        <div class="tip-title"><span class="icon">⚠️</span> 游戏结束条件</div>
+        <p>以下情况会导致游戏结束：<br>
+        • <strong>经费归零</strong> — 无法维持运营<br>
+        • <strong>无活跃学生</strong> — 所有学生退队或毕业<br>
+        • <strong>赛季结束</strong> — 完成 26 周赛季自动结算</p>
+      </div>
+    </div>
+
+    <!-- ====== 学生 ====== -->
+    <div class="tab-panel" id="panel-students">
+      <h2><span class="icon">👨‍🎓</span>学生系统</h2>
+
+      <h3>📊 学生属性</h3>
+      <table class="guide-table">
+        <tbody><tr>
+          <th>属性</th>
+          <th>说明</th>
+          <th>范围</th>
+        </tr>
+        <tr>
+          <td><strong>🧠 思维</strong></td>
+          <td>影响解题思路、算法设计能力</td>
+          <td>0 - 100</td>
+        </tr>
+        <tr>
+          <td><strong>💻 编码</strong></td>
+          <td>影响代码实现、调试能力</td>
+          <td>0 - 100</td>
+        </tr>
+        <tr>
+          <td><strong>❤️ 心理</strong></td>
+          <td>影响比赛稳定性、抗压能力</td>
+          <td>0 - 100</td>
+        </tr>
+        <tr>
+          <td><strong>📚 知识</strong></td>
+          <td>五大模块：数据结构/图论/字符串/数学/DP</td>
+          <td>0 - 500+</td>
+        </tr>
+        <tr>
+          <td><strong>😰 压力</strong></td>
+          <td>过高会导致退队、生病、效率下降</td>
+          <td>0 - 100</td>
+        </tr>
+        <tr>
+          <td><strong>😊 舒适</strong></td>
+          <td>影响压力恢复速度</td>
+          <td>0 - 100</td>
+        </tr>
+      </tbody></table>
+
+      <h3>⭐ 天赋系统</h3>
+      <p>每个学生可能拥有 <strong>0-4 个天赋</strong>，天赋分为正面和负面两类：</p>
+      <ul>
+        <li><span class="badge positive">正面</span> <strong>冷静</strong> — 比赛时全能力 +20%</li>
+        <li><span class="badge positive">正面</span> <strong>伽罗瓦</strong> — 数学题爆发，知识 +50%</li>
+        <li><span class="badge positive">正面</span> <strong>抗压奇才</strong> — 压力增幅减半</li>
+        <li><span class="badge negative">负面</span> <strong>高原反应</strong> — 高原集训压力翻倍</li>
+        <li><span class="badge negative">负面</span> <strong>林黛玉</strong> — 持续生病</li>
+        <li><span class="badge negative">负面</span> <strong>庸才</strong> — 无法获得新天赋</li>
+      </ul>
+      <div class="tip-box info">
+        <div class="tip-title"><span class="icon">💡</span> 天赋获取</div>
+        <p>训练、集训、模拟赛后有概率获得新天赋。高压力可能导致<strong>丧失正面天赋</strong>或<strong>获得负面天赋</strong>。</p>
+      </div>
+
+      <h3>🔄 退队机制</h3>
+      <ul>
+        <li>压力 ≥ 90 时获得 <strong>退队倾向</strong>（持续 1 周以上将退队）</li>
+        <li>晋级链断裂（未通过前置比赛）将自动退队</li>
+        <li>退队会降低 <strong>声誉 -10</strong></li>
+      </ul>
+      <div class="tip-box warning">
+        <div class="tip-title"><span class="icon">🛡️</span> 预防退队</div>
+        <p>及时 <strong>娱乐减压</strong>、升级 <strong>电扇/空调</strong> 提升舒适度、使用 <strong>减压药剂</strong> 道具。</p>
+      </div>
+    </div>
+
+    <!-- ====== 训练 ====== -->
+    <div class="tab-panel" id="panel-training">
+      <h2><span class="icon">🏋️</span>训练系统</h2>
+
+      <h3>📋 训练类型</h3>
+      <table class="guide-table">
+        <tbody><tr>
+          <th>行动</th>
+          <th>效果</th>
+          <th>消耗</th>
+          <th>压力变化</th>
+        </tr>
+        <tr>
+          <td><strong>训练</strong></td>
+          <td>提升思维/编码 + 指定知识</td>
+          <td>1周</td>
+          <td>+15 ~ +40</td>
+        </tr>
+        <tr>
+          <td><strong>娱乐</strong></td>
+          <td>大幅降低压力</td>
+          <td>1周</td>
+          <td>-30 ~ -70</td>
+        </tr>
+        <tr>
+          <td><strong>模拟赛</strong></td>
+          <td>检验水平 + 知识点提升</td>
+          <td>1周</td>
+          <td>+10 ~ +30</td>
+        </tr>
+        <tr>
+          <td><strong>集训</strong></td>
+          <td>巨大提升，可激发天赋</td>
+          <td>1周 + 💰</td>
+          <td>+20 ~ +50</td>
+        </tr>
+      </tbody></table>
+
+      <h3>💪 训练强度</h3>
+      <ul>
+        <li><span class="badge neutral">轻</span> 增长慢，压力小，适合恢复期</li>
+        <li><span class="badge neutral">中</span> 平衡选择</li>
+        <li><span class="badge negative">重</span> 增长快，压力大，有退队风险</li>
+      </ul>
+
+      <div class="tip-box success">
+        <div class="tip-title"><span class="icon">📈</span> 训练效率影响因素</div>
+        <p>• <strong>设施</strong>：计算机、资料库等级<br>
+        • <strong>学生状态</strong>：压力、舒适度、是否生病<br>
+        • <strong>天气</strong>：极端天气降低效率<br>
+        • <strong>教练技能</strong>：教学精通、创新教学</p>
+      </div>
+
+      <div class="tip-box warning">
+        <div class="tip-title"><span class="icon">⚠️</span> 强度警告</div>
+        <p>训练前系统会预测压力变化，如果显示 <strong>"强度过大，XX 有退队风险"</strong>，请降低强度或先娱乐减压。</p>
+      </div>
+    </div>
+
+    <!-- ====== 比赛 ====== -->
+    <div class="tab-panel" id="panel-competition">
+      <h2><span class="icon">🏆</span>比赛系统</h2>
+
+      <h3>📅 晋级路线</h3>
+      <div style="background: #0d1117; padding: 16px 20px; border-radius: 8px; margin: 12px 0; text-align: center; font-size: 1.1rem;">
+        <span style="color: #58a6ff;">CSP-S1</span>
+        <span style="color: #8b949e;"> → </span>
+        <span style="color: #58a6ff;">CSP-S2</span>
+        <span style="color: #8b949e;"> → </span>
+        <span style="color: #f0883e;">NOIP</span>
+        <span style="color: #8b949e;"> → </span>
+        <span style="color: #d2a8ff;">省选</span>
+        <span style="color: #8b949e;"> → </span>
+        <span style="color: #ffd700;">NOI</span>
+      </div>
+
+      <h3>🏅 比赛奖励</h3>
+      <table class="guide-table">
+        <tbody><tr>
+          <th>成绩</th>
+          <th>声誉</th>
+          <th>经费</th>
+          <th>教练经验</th>
+        </tr>
+        <tr>
+          <td><span class="badge positive">🥇 金牌</span></td>
+          <td>+50</td>
+          <td>+20000</td>
+          <td>+30</td>
+        </tr>
+        <tr>
+          <td><span class="badge neutral">🥈 银牌</span></td>
+          <td>+30</td>
+          <td>+10000</td>
+          <td>+20</td>
+        </tr>
+        <tr>
+          <td><span class="badge neutral">🥉 铜牌</span></td>
+          <td>+15</td>
+          <td>+5000</td>
+          <td>+15</td>
+        </tr>
+        <tr>
+          <td><span class="badge neutral">✅ 晋级</span></td>
+          <td>+5</td>
+          <td>+2000</td>
+          <td>+10</td>
+        </tr>
+      </tbody></table>
+
+      <div class="tip-box danger">
+        <div class="tip-title"><span class="icon">🚨</span> 晋级链断裂</div>
+        <p>如果学生未通过前置比赛，将 <strong>自动退队</strong>。务必确保每个学生都有足够的实力参加下一场比赛。</p>
+      </div>
+    </div>
+
+    <!-- ====== 教练 ====== -->
+    <div class="tab-panel" id="panel-coach">
+      <h2><span class="icon">🧑‍🏫</span>教练成长系统</h2>
+
+      <h3>📈 经验与等级</h3>
+      <ul>
+        <li>通过 <strong>训练、比赛、事件</strong> 获得经验</li>
+        <li>每升 1 级获得 <strong>1 技能点</strong></li>
+        <li>满级 <strong>50 级</strong></li>
+      </ul>
+
+      <h3>🎯 技能树</h3>
+      <table class="guide-table">
+        <tbody><tr>
+          <th>技能</th>
+          <th>效果（每级）</th>
+          <th>最大等级</th>
+        </tr>
+        <tr>
+          <td><strong>教学精通</strong></td>
+          <td>训练效果 +5%</td>
+          <td>10</td>
+        </tr>
+        <tr>
+          <td><strong>经费管理</strong></td>
+          <td>经费获取 +10%</td>
+          <td>10</td>
+        </tr>
+        <tr>
+          <td><strong>心灵导师</strong></td>
+          <td>压力恢复速度 +5%</td>
+          <td>10</td>
+        </tr>
+        <tr>
+          <td><strong>伯乐之眼</strong></td>
+          <td>新学生初始能力 +3%</td>
+          <td>8</td>
+        </tr>
+        <tr>
+          <td><strong>赛事专家</strong></td>
+          <td>比赛表现 +3%</td>
+          <td>8</td>
+        </tr>
+        <tr>
+          <td><strong>人脉广泛</strong></td>
+          <td>事件收益 +5%</td>
+          <td>8</td>
+        </tr>
+        <tr>
+          <td><strong>铁腕管理</strong></td>
+          <td>退队概率 -5%</td>
+          <td>8</td>
+        </tr>
+        <tr>
+          <td><strong>创新教学</strong></td>
+          <td>模拟赛知识获取 +5%</td>
+          <td>8</td>
+        </tr>
+      </tbody></table>
+
+      <div class="tip-box success">
+        <div class="tip-title"><span class="icon">💡</span> 技能点分配建议</div>
+        <p>新手优先点 <strong>教学精通</strong> 和 <strong>经费管理</strong>，中后期补 <strong>心灵导师</strong> 和 <strong>铁腕管理</strong>。</p>
+      </div>
+    </div>
+
+    <!-- ====== 设施 ====== -->
+    <div class="tab-panel" id="panel-facility">
+      <h2><span class="icon">🏗️</span>设施系统</h2>
+
+      <table class="guide-table">
+        <tbody><tr>
+          <th>设施</th>
+          <th>效果</th>
+          <th>满级</th>
+        </tr>
+        <tr>
+          <td><strong>💻 计算机</strong></td>
+          <td>训练效果提升（每级 +20%）</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><strong>🌐 网络</strong></td>
+          <td>模拟赛效果提升（每级 +15%）</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><strong>🌀 电扇</strong></td>
+          <td>舒适度 +5/级</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><strong>❄️ 空调</strong></td>
+          <td>舒适度 +8/级，缓解极端天气</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><strong>📚 资料库</strong></td>
+          <td>提供额外题目，训练效果 +10%/级</td>
+          <td>5</td>
+        </tr>
+      </tbody></table>
+
+      <div class="tip-box info">
+        <div class="tip-title"><span class="icon">💡</span> 升级优先级</div>
+        <p><strong>计算机</strong> → <strong>资料库</strong> → <strong>空调</strong> → <strong>网络</strong> → <strong>电扇</strong></p>
+      </div>
+    </div>
+	<div class="tip-box info">
+  <div class="tip-title"><span class="icon">🔧</span> 装备槽位说明</div>
+  <p>
+    • <strong>body</strong> — 身体装备（教练服、领带）<br>
+    • <strong>badge</strong> — 徽章（金质徽章、签名照、冠军奖杯）<br>
+    • <strong>tool</strong> — 工具（钻石镐、显示器、激光笔、专业键盘）<br>
+    • <strong>accessory</strong> — 饰品（末影珍珠、下界之星、算法笔记、降噪耳机、智能手表、四叶草）<br>
+    <br>
+    每个槽位只能装备 1 件道具，装备效果永久生效。
+  </p>
+</div>
+    <!-- ====== 道具 ====== -->
+    <div class="tab-panel" id="panel-items">
+      <h2><span class="icon">🎒</span>道具系统</h2>
+
+      <h3>📦 消耗品</h3>
+<table class="guide-table">
+  <tbody><tr>
+    <th>道具</th>
+    <th>效果</th>
+    <th>价格</th>
+    <th>稀有度</th>
+  </tr>
+  <tr>
+    <td>☕ 提神咖啡</td>
+    <td>本周训练效果 +20%，压力恢复 +10</td>
+    <td>¥600</td>
+    <td><span class="badge neutral">普通</span></td>
+  </tr>
+  <tr>
+    <td>⚡ 能量饮料</td>
+    <td>全体学生压力 -15，思维 +3</td>
+    <td>¥500</td>
+    <td><span class="badge neutral">普通</span></td>
+  </tr>
+  <tr>
+    <td>📕 竞赛宝典</td>
+    <td>下周比赛表现 +25%</td>
+    <td>¥3000</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+  <tr>
+    <td>📜 知识卷轴</td>
+    <td>随机一项知识点 +15</td>
+    <td>¥2500</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+  <tr>
+    <td>🧠 心理辅导</td>
+    <td>全体学生心理素质 +10，压力 -20</td>
+    <td>¥2000</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+  <tr>
+    <td>🥠 幸运饼干</td>
+    <td>随机获得一项临时增益</td>
+    <td>¥1500</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+  <tr>
+    <td>🩹 急救包</td>
+    <td>全体学生生病状态立即清除</td>
+    <td>¥1200</td>
+    <td><span class="badge neutral">普通</span></td>
+  </tr>
+  <tr>
+    <td>🧧 红包</td>
+    <td>随机获得 ¥5000-20000</td>
+    <td>¥1000</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+  <tr>
+    <td>📋 训练计划表</td>
+    <td>本周训练效率 +40%</td>
+    <td>¥4000</td>
+    <td><span class="badge rare">史诗</span></td>
+  </tr>
+  <tr>
+    <td>🍱 营养餐</td>
+    <td>全体学生舒适度 +15，压力 -10</td>
+    <td>¥800</td>
+    <td><span class="badge neutral">普通</span></td>
+  </tr>
+  <tr>
+    <td>📖 经验书</td>
+    <td>教练 +10~20 经验</td>
+    <td>¥1000</td>
+    <td><span class="badge neutral">普通</span></td>
+  </tr>
+  <tr>
+    <td>🧪 减压药剂</td>
+    <td>全体学生压力 -20~40</td>
+    <td>¥800</td>
+    <td><span class="badge neutral">普通</span></td>
+  </tr>
+  <tr>
+    <td>🍎 智慧果实</td>
+    <td>全体学生知识点 +3~8</td>
+    <td>¥2500</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+  <tr>
+    <td>🍀 幸运护符</td>
+    <td>本周事件收益翻倍</td>
+    <td>¥3000</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+  <tr>
+    <td>🧪 专注药剂</td>
+    <td>本周训练效果 +30%</td>
+    <td>¥2000</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+</tbody></table>
+
+<h3>🔧 装备（永久增益）</h3>
+<table class="guide-table">
+  <tbody><tr>
+    <th>道具</th>
+    <th>效果</th>
+    <th>价格</th>
+    <th>稀有度</th>
+    <th>槽位</th>
+  </tr>
+  <tr>
+    <td>🧥 教练服</td>
+    <td>教学效果 +5%</td>
+    <td>¥1500</td>
+    <td><span class="badge neutral">普通</span></td>
+    <td>body</td>
+  </tr>
+  <tr>
+    <td>👔 教练领带</td>
+    <td>声誉获取 +15%</td>
+    <td>¥2500</td>
+    <td><span class="badge rare">稀有</span></td>
+    <td>body</td>
+  </tr>
+  <tr>
+    <td>🏅 金质徽章</td>
+    <td>比赛表现 +10%</td>
+    <td>¥5000</td>
+    <td><span class="badge rare">稀有</span></td>
+    <td>badge</td>
+  </tr>
+  <tr>
+    <td>🖊️ 签名照</td>
+    <td>心理素质 +10%</td>
+    <td>¥1200</td>
+    <td><span class="badge neutral">普通</span></td>
+    <td>badge</td>
+  </tr>
+  <tr>
+    <td>🏆 冠军奖杯</td>
+    <td>比赛奖励 +20%</td>
+    <td>¥8000</td>
+    <td><span class="badge rare">史诗</span></td>
+    <td>badge</td>
+  </tr>
+  <tr>
+    <td>⛏️ 钻石镐</td>
+    <td>经费获取 +15%</td>
+    <td>¥4000</td>
+    <td><span class="badge rare">稀有</span></td>
+    <td>tool</td>
+  </tr>
+  <tr>
+    <td>🖥️ 高清显示器</td>
+    <td>训练效率 +10%</td>
+    <td>¥1800</td>
+    <td><span class="badge neutral">普通</span></td>
+    <td>tool</td>
+  </tr>
+  <tr>
+    <td>🔦 激光笔</td>
+    <td>教学效果 +8%</td>
+    <td>¥1500</td>
+    <td><span class="badge neutral">普通</span></td>
+    <td>tool</td>
+  </tr>
+  <tr>
+    <td>⌨️ 专业键盘</td>
+    <td>编码训练效果 +15%</td>
+    <td>¥3500</td>
+    <td><span class="badge rare">稀有</span></td>
+    <td>tool</td>
+  </tr>
+  <tr>
+    <td>💜 末影珍珠</td>
+    <td>事件触发概率 +20%</td>
+    <td>¥8000</td>
+    <td><span class="badge rare">史诗</span></td>
+    <td>accessory</td>
+  </tr>
+  <tr>
+    <td>⭐ 下界之星</td>
+    <td>经验获取 +50%</td>
+    <td>¥10000</td>
+    <td><span class="badge rare">史诗</span></td>
+    <td>accessory</td>
+  </tr>
+  <tr>
+    <td>📓 算法笔记</td>
+    <td>知识获取 +10%</td>
+    <td>¥3000</td>
+    <td><span class="badge rare">稀有</span></td>
+    <td>accessory</td>
+  </tr>
+  <tr>
+    <td>🎧 降噪耳机</td>
+    <td>压力增长 -15%</td>
+    <td>¥2800</td>
+    <td><span class="badge rare">稀有</span></td>
+    <td>accessory</td>
+  </tr>
+  <tr>
+    <td>⌚ 智能手表</td>
+    <td>压力恢复 +20%</td>
+    <td>¥3200</td>
+    <td><span class="badge rare">稀有</span></td>
+    <td>accessory</td>
+  </tr>
+  <tr>
+    <td>🍀 四叶草</td>
+    <td>正面事件概率 +15%</td>
+    <td>¥6000</td>
+    <td><span class="badge rare">史诗</span></td>
+    <td>accessory</td>
+  </tr>
+</tbody></table>
+
+<h3>📦 收藏品</h3>
+<table class="guide-table">
+  <tbody><tr>
+    <th>道具</th>
+    <th>价格</th>
+    <th>稀有度</th>
+  </tr>
+  <tr>
+    <td>🖼️ MC海报</td>
+    <td>¥300</td>
+    <td><span class="badge neutral">普通</span></td>
+  </tr>
+  <tr>
+    <td>🖼️ 老照片</td>
+    <td>¥200</td>
+    <td><span class="badge neutral">普通</span></td>
+  </tr>
+  <tr>
+    <td>🔴 红石电路</td>
+    <td>¥800</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+  <tr>
+    <td>👕 签名球衣</td>
+    <td>¥1500</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+  <tr>
+    <td>🥇 奖牌</td>
+    <td>¥1000</td>
+    <td><span class="badge rare">稀有</span></td>
+  </tr>
+  <tr>
+    <td>✨ 附魔台</td>
+    <td>¥2000</td>
+    <td><span class="badge rare">史诗</span></td>
+  </tr>
+  <tr>
+    <td>💍 冠军戒指</td>
+    <td>¥5000</td>
+    <td><span class="badge rare">史诗</span></td>
+  </tr>
+</tbody></table>
+
+      <div class="tip-box info">
+        <div class="tip-title"><span class="icon">🛒</span> 获取方式</div>
+        <p>• <strong>商店购买</strong> — 消耗经费<br>
+        • <strong>事件奖励</strong> — 随机事件中获得<br>
+        • <strong>特殊成就</strong> — 达成特定条件解锁</p>
+      </div>
+    </div>
+
+    <!-- ====== 事件 ====== -->
+    <div class="tab-panel" id="panel-events">
+      <h2><span class="icon">🎲</span>事件系统</h2>
+
+      <h3>🌈 事件类型</h3>
+      <ul>
+        <li><span class="badge positive">正面</span> 企业赞助、金牌教练来访、优质网课、龙蛋发现</li>
+        <li><span class="badge negative">负面</span> 台风、设备故障、内部矛盾、经费审计</li>
+        <li><span class="badge neutral">选择</span> 友校交流、学生自荐、媒体采访、商业活动</li>
+        <li><span class="badge neutral">Minecraft</span> 苦力怕爆炸、末影人拜访、下界探险、凋灵袭击</li>
+      </ul>
+
+      <h3>🎮 Minecraft 事件</h3>
+      <table class="guide-table">
+        <tbody><tr>
+          <th>事件</th>
+          <th>效果</th>
+          <th>概率</th>
+        </tr>
+        <tr>
+          <td>💥 苦力怕爆炸</td>
+          <td>经费损失 + 压力增加</td>
+          <td>2%</td>
+        </tr>
+        <tr>
+          <td>🏘️ 村庄英雄</td>
+          <td>全能力 +2，心理 +3</td>
+          <td>1.5%</td>
+        </tr>
+        <tr>
+          <td>🔥 下界探险</td>
+          <td>知识点 +3~10，经费 +3000~8000</td>
+          <td>1.2%</td>
+        </tr>
+        <tr>
+          <td>💀 凋灵出现</td>
+          <td>设施受损，压力 +15~25</td>
+          <td>0.8%</td>
+        </tr>
+        <tr>
+          <td>🐉 龙蛋发现</td>
+          <td>全能力 +20，声誉 +10</td>
+          <td>0.5%</td>
+        </tr>
+      </tbody></table>
+
+      <div class="tip-box info">
+        <div class="tip-title"><span class="icon">💡</span> 事件触发条件</div>
+        <p>• 高声誉增加正面事件概率<br>
+        • 特定天赋（扫把星）增加负面事件概率<br>
+        • 装备末影珍珠增加事件触发概率 +20%</p>
+      </div>
+    </div>
+
+    <!-- ====== 技巧 ====== -->
+    <div class="tab-panel" id="panel-tips">
+      <h2><span class="icon">💡</span>实用技巧</h2>
+
+      <div class="tip-box success">
+        <div class="tip-title"><span class="icon">🚀</span> 新手开局</div>
+        <p>1. 选择 <strong>强省</strong> 开局（经费多，容易出成绩）<br>
+        2. 先升级 <strong>计算机</strong> 和 <strong>资料库</strong><br>
+        3. 保持学生压力 <strong>&lt; 60</strong>，每周适当娱乐<br>
+        4. 参加 <strong>模拟赛</strong> 检验水平，不要盲目冲高难度</p>
+      </div>
+
+      <div class="tip-box info">
+        <div class="tip-title"><span class="icon">📈</span> 中期发展</div>
+        <p>1. 重点培养 <strong>1-2 名主力</strong>，资源集中<br>
+        2. 及时升级 <strong>空调</strong> 应对极端天气<br>
+        3. 利用 <strong>集训</strong> 激发天赋，大幅提升<br>
+        4. 攒钱购买 <strong>下界之星</strong> 加速教练成长</p>
+      </div>
+
+      <div class="tip-box warning">
+        <div class="tip-title"><span class="icon">🏆</span> 冲金策略</div>
+        <p>1. 主力学生知识模块 <strong>均衡发展</strong>（五大模块都要练）<br>
+        2. 赛前 <strong>减压</strong>，保持压力 &lt; 40<br>
+        3. 装备 <strong>金质徽章</strong> 提升比赛表现<br>
+        4. 点满 <strong>赛事专家</strong> 技能<br>
+        5. 使用 <strong>专注药剂</strong> 赛前冲刺训练</p>
+      </div>
+
+      <div class="tip-box danger">
+        <div class="tip-title"><span class="icon">🛡️</span> 避坑指南</div>
+        <p>❌ 不要让学生压力 ≥ 90（会触发退队倾向）<br>
+        ❌ 不要忽略设施维护费（会悄悄消耗经费）<br>
+        ❌ 不要在比赛周安排高强度训练（学生状态差）<br>
+        ❌ 不要把所有钱都花在集训上（留足日常开支）</p>
+      </div>
+
+      <h3>📊 快速参考</h3>
+      <table class="guide-table">
+        <tbody><tr>
+          <th>目标</th>
+          <th>推荐行动</th>
+        </tr>
+        <tr>
+          <td>提升能力</td>
+          <td>训练 + 集训</td>
+        </tr>
+        <tr>
+          <td>降低压力</td>
+          <td>娱乐 + 减压药剂</td>
+        </tr>
+        <tr>
+          <td>获取经验</td>
+          <td>比赛 + 正面事件 + 经验书</td>
+        </tr>
+        <tr>
+          <td>获取经费</td>
+          <td>比赛奖金 + 商业活动 + 钻石镐</td>
+        </tr>
+        <tr>
+          <td>激发天赋</td>
+          <td>集训 + 模拟赛</td>
+        </tr>
+      </tbody></table>
+    </div>
+	
+  </div>
+  <!-- ====== 招生系统 ====== -->
+<div class="tab-panel" id="panel-recruit">
+  <h2><span class="icon">📩</span>招生系统</h2>
+  <p>声誉值可以吸引学生主动报名加入队伍。</p>
+  
+  <h3>📊 招生机制</h3>
+  <ul>
+    <li>声誉 ≥ 20 时开始触发招生事件</li>
+    <li>声誉越高，触发概率越大，学生质量越好</li>
+    <li>每名学生报名需要支付一定的费用（声誉高可降低费用）</li>
+    <li>最多同时有 3 名待处理报名</li>
+  </ul>
+  
+  <table class="guide-table">
+    <tbody><tr>
+      <th>声誉</th>
+      <th>触发概率</th>
+      <th>学生质量</th>
+      <th>费用折扣</th>
+    </tr>
+    <tr><td>20</td><td>8%</td><td>普通</td><td>0%</td></tr>
+    <tr><td>50</td><td>18%</td><td>良好</td><td>17%</td></tr>
+    <tr><td>80</td><td>28%</td><td>优秀</td><td>27%</td></tr>
+    <tr><td>100</td><td>35%</td><td>顶尖</td><td>33%</td></tr>
+  </tbody></table>
+  
+  <div class="tip-box success">
+    <div class="tip-title"><span class="icon">💡</span> 招生建议</div>
+    <p>• 高声誉时积极接受优秀学生<br>
+    • 经费紧张时可以拒绝普通学生<br>
+    • 拒绝会轻微降低声誉（-1）</p>
+  </div>
+</div>
+
+<!-- ====== 队伍系统 ====== -->
+<div class="tab-panel" id="panel-team">
+  <h2><span class="icon">🤝</span>队伍系统</h2>
+  <p>学生可以组成队伍，获得协作加成和队伍天赋。</p>
+  
+  <h3>📊 队伍机制</h3>
+  <ul>
+    <li>每支队伍 2-4 人</li>
+    <li>每多一名队友增加 <strong>8%</strong> 训练效率</li>
+    <li>每支队伍拥有随机 <strong>队伍天赋</strong></li>
+  </ul>
+  
+  <h3>🎯 队伍天赋</h3>
+  <table class="guide-table">
+    <tbody><tr><th>天赋</th><th>效果</th></tr>
+    <tr><td>默契配合</td><td>队伍训练效率 +15%</td></tr>
+    <tr><td>攻坚克难</td><td>队伍比赛表现 +20%</td></tr>
+    <tr><td>互帮互助</td><td>队伍压力恢复 +25%</td></tr>
+    <tr><td>薪火相传</td><td>队伍经验获取 +30%</td></tr>
+    <tr><td>团结一心</td><td>队伍退队概率 -40%</td></tr>
+    <tr><td>灵感迸发</td><td>队伍天赋获取概率 +25%</td></tr>
+  </tbody></table>
+  
+  <div class="tip-box info">
+    <div class="tip-title"><span class="icon">💡</span> 队伍操作</div>
+    <p>• <strong>创建队伍</strong>：选择一名学生作为队长<br>
+    • <strong>加入队伍</strong>：选择队伍加入<br>
+    • <strong>转让队长</strong>：队长可以转让给其他成员<br>
+    • <strong>解散队伍</strong>：队长可以解散队伍</p>
+  </div>
+</div>
+
+<!-- ====== 成就系统 ====== -->
+<div class="tab-panel" id="panel-achievement">
+  <h2><span class="icon">🏆</span>成就系统</h2>
+  <p>完成各种挑战，解锁成就，记录你的教练生涯。</p>
+  
+  <h3>📊 成就列表</h3>
+  <table class="guide-table">
+    <tbody><tr><th>成就</th><th>描述</th></tr>
+    <tr><td>🎓 开门弟子</td><td>招收第一名学生</td></tr>
+    <tr><td>🏫 满员班级</td><td>同时拥有 10 名学生</td></tr>
+    <tr><td>🥇 首胜</td><td>在正式比赛中获得金牌</td></tr>
+    <tr><td>👑 NOI 冠军</td><td>在 NOI 中获得金牌</td></tr>
+    <tr><td>🏆 大满贯</td><td>全部比赛获得金牌</td></tr>
+    <tr><td>📈 资深教练</td><td>教练等级达到 10 级</td></tr>
+    <tr><td>🌟 传奇教练</td><td>教练等级达到 30 级</td></tr>
+    <tr><td>👑 巅峰教练</td><td>教练等级达到 50 级</td></tr>
+    <tr><td>🧠 技能大师</td><td>任意技能达到满级</td></tr>
+    <tr><td>💰 富甲一方</td><td>经费达到 100000</td></tr>
+    <tr><td>💎 大亨</td><td>经费达到 500000</td></tr>
+    <tr><td>⭐ 名满天下</td><td>声誉达到 100</td></tr>
+    <tr><td>📦 收藏家</td><td>拥有 10 件不同道具</td></tr>
+    <tr><td>🔧 全副武装</td><td>装备所有 4 个槽位</td></tr>
+    <tr><td>💪 幸存者</td><td>经费低于 1000 存活 5 周</td></tr>
+    <tr><td>🧬 天赋猎手</td><td>累计获得 20 个天赋</td></tr>
+    <tr><td>🤝 团队之星</td><td>创建队伍并获胜 5 场</td></tr>
+  </tbody></table>
+  
+  <div class="tip-box success">
+    <div class="tip-title"><span class="icon">💡</span> 成就奖励</div>
+    <p>解锁成就会获得 <strong>教练经验 +5~20</strong>，部分特殊成就会有额外奖励！</p>
+  </div>
+</div>
+  <!-- ===== 返回按钮 ===== -->
+  <div class="back-footer">
+    <a href="start.html" class="btn-back">🏠 返回开始页面</a>
+    <a href="game.html" class="btn-back" style="background: #238636; margin-left: 12px;">🎮 开始游戏</a>
+  </div>
+
+</div>
+
+<!-- ===== JavaScript 标签切换 ===== -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = {
+    overview: document.getElementById('panel-overview'),
+    students: document.getElementById('panel-students'),
+    training: document.getElementById('panel-training'),
+    competition: document.getElementById('panel-competition'),
+    coach: document.getElementById('panel-coach'),
+    facility: document.getElementById('panel-facility'),
+    items: document.getElementById('panel-items'),
+    events: document.getElementById('panel-events'),
+    tips: document.getElementById('panel-tips')
+  };
+
+  function switchTab(tabId) {
+    // 更新按钮状态
+    tabs.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tabId);
+    });
+    // 更新面板
+    Object.keys(panels).forEach(key => {
+      panels[key].classList.toggle('active', key === tabId);
+    });
+  }
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const tabId = this.dataset.tab;
+      if (tabId && panels[tabId]) {
+        switchTab(tabId);
+        // 保存到 URL hash
+        history.pushState(null, '', '#' + tabId);
+      }
+    });
+  });
+
+  // 从 URL hash 恢复标签
+  const hash = window.location.hash.replace('#', '');
+  if (hash && panels[hash]) {
+    switchTab(hash);
+  }
+});
+</script>
+
+<!-- 反调试（与主游戏保持一致） -->
+<script type="importmap">
+{
+  "imports": {
+    "anti-debug": "https://cdn.jsdelivr.net/npm/@sgysldz/anti-debug@1.0.0/dist/index.js"
+  }
+}
+</script>
+<script type="module">
+import { startAntiDebugGuard } from 'anti-debug';
+const guard = startAntiDebugGuard({
+  intervalMs: 2500,
+  skipInDevelopment: true,
+  uiBlock: true,
+  onThreat(reason) {
+    console.warn('检测到调试行为:', reason);
+  },
+});
+</script>
+
+
+</body></html>

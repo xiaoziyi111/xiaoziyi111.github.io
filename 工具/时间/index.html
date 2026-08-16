@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="标准北京时间在线校准，与国家授时中心同步，提供精确到毫秒的时间显示，支持全球时区对照查询">
+    <meta name="keywords" content="北京时间,标准时间,时间校准,国家授时中心,在线时钟,全球时区,UTC时间,北京时间查询">
+    <meta name="author" content="Beijing Time">
+    <title>标准北京时间 - 国家授时中心官方同步</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="bj123-mark" style="display:none">bj123</div>
+    <div class="container">
+        <div class="header">
+            <h1>标准北京时间</h1>
+            <p>国家授时中心官方同步 <span class="sync-indicator"><span class="sync-dot"></span>xiaoziyi11实时更新</span></p>
+        </div>
+
+        <div class="time-section">
+            <div class="time-display">
+                <button class="fullscreen-btn" id="fullscreenBtn" title="全屏显示">
+                    ⛶
+                </button>
+                <button class="sound-btn" id="soundBtn" title="开关声音">🔊</button>
+                <div class="time-wrapper">
+                    <span class="time-main" id="timeMain">--:--:--</span>
+                    <span class="time-milliseconds" id="timeMilliseconds">.000</span>
+                </div>
+                <div class="date-row">
+                    <div class="date-item" id="dateDisplay">----年--月--日</div>
+                    <div class="date-item" id="weekDay">星期--</div>
+                    <div class="date-item lunar" id="lunarDisplay">农历----年----</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="compare-section">
+            <div class="compare-card server">
+                <div class="label">服务器时间 (标准)</div>
+                <div class="time" id="serverTime">--:--:--</div>
+                <div class="status">✓ 国家授时中心同步</div>
+            </div>
+            <div class="compare-card local">
+                <div class="label">您的电脑时间</div>
+                <div class="time" id="localTime">--:--:--</div>
+                <div class="status">本地系统时间</div>
+                <div class="diff" id="timeDiff">误差: --- ms</div>
+            </div>
+        </div>
+
+        <div class="world-time-section">
+            <h2 class="section-title">🌐 全球主要城市时间</h2>
+            <div class="world-grid" id="worldGrid">
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon">🎯</div>
+                <h3>毫秒级精度</h3>
+                <p>采用高精度时间算法，精确到毫秒级别，满足专业计时需求</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🔄</div>
+                <h3>实时同步</h3>
+                <p>与国家授时中心实时同步，确保时间准确性，误差小于0.5秒</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🌙</div>
+                <h3>农历转换</h3>
+                <p>自动计算并显示农历日期，支持传统节日查询和黄历参考</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🌍</div>
+                <h3>全球时区</h3>
+                <p>覆盖全球主要城市时区，方便国际交流和跨时区协作</p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2 class="section-title">📖 关于北京时间</h2>
+            <p>北京时间是中华人民共和国的标准时间，由位于陕西省西安市的中国科学院国家授时中心负责计算和发布。北京时间采用东八时区（UTC+8），比协调世界时（UTC）早8小时。北京时间是东经120度经线的地方平太阳时，而不是北京当地的地方太阳时。</p>
+            <p>我国幅员辽阔，从西到东横跨五个时区，但为了全国统一和方便管理，自1949年起全国统一使用北京时间作为标准时间。北京时间不仅是日常计时的标准，也是航空、铁路、通信、广播电视等各个领域的时间基准。无论是电视节目播出、列车发车时刻，还是网络服务器同步，都以北京时间为统一标准。</p>
+            <p>中国科学院国家授时中心利用多台高精度原子钟组进行时间测量和计算，通过原子时和世界时的对比协调，确保北京时间的准确性和连续性。该中心还负责发播标准时间信号，服务于国防建设、经济运行和社会生活。普通民众可以通过电视、广播、网络等渠道获取北京时间进行时间校准。</p>
+        </div>
+
+        <div class="info-section">
+            <h2 class="section-title">📚 时间知识科普</h2>
+            <p>协调世界时（UTC）是国际通用的标准时间，以原子时秒长为基础，在时刻上尽量接近世界时。闰秒机制确保UTC与地球自转周期保持一致。每当地球自转速度发生变化时，就会在UTC中加入或删除一个闰秒，这是保持时间准确性的重要机制。</p>
+            <p>时区划分是为了克服地球自转造成的时间差异而建立的标准时间系统。全球共划分为24个时区，每个时区跨越经度15度，相邻时区的时间相差1小时。这种划分方式既保证了各地使用时间的合理性，也便于国际交流和时间统一。</p>
+            <p>网络时间协议（NTP）是用于同步计算机时间的协议，通过层级式时间服务器网络实现毫秒级时间同步。大多数操作系统都内置NTP客户端功能，只需配置相应的时间服务器地址，即可自动与标准时间源保持同步。</p>
+            <p>夏令时是部分国家和地区在夏季实行的时间调整制度，通常将时间拨快1小时以充分利用日光。我国自1992年起停止实行夏令时，全年保持统一的标准时间作息。</p>
+        </div>
+
+        <div class="info-section">
+            <h2 class="section-title">🔧 时间同步应用</h2>
+            <p>在金融交易领域，时间同步的准确性直接关系到交易记录的可靠性和可追溯性。证券交易所、商业银行、保险公司等金融机构都部署了专用的时间服务器，确保各类业务系统的时间高度一致，满足监管合规要求。</p>
+            <p>电力系统对时间同步有严格要求，继电保护、负荷控制、故障录波等设备都需要精确的时间标记。通过统一的时间基准，电力调度部门能够准确分析电网运行状态，快速定位和处理各类故障，保障电力供应的稳定性。</p>
+            <p>通信网络的运行离不开精确的时间同步。移动基站的切换、计费系统的记录、网络协议的协调，都需要统一的时间基准。随着5G网络的发展，对时间精度的要求进一步提高，达到微秒级甚至更高水平。</p>
+            <p>在科研和工业领域，分布式测试系统、科学观测仪器、自动化生产线等设备同样需要时间同步。通过GPS、北斗等卫星导航系统或专用时间服务器，可以实现远距离高精度时间传递，满足各种专业应用需求。</p>
+        </div>
+
+        
+        </div>
+<script type="text/javascript" src="bj123.js"></script>
+        <footer>
+            <p>© 2026 标准北京时间 北京时间校准几时几分几秒几毫秒 | 与国家授时中心同步</p>
+            <div>
+                <a href="#" target="_blank">国家授时中心</a>
+                <a href="#" target="_blank">使用说明</a>
+                <a href="#" target="_blank">时间校准</a>
+            </div>
+        </footer>
+    </div>
+
+
+
+    <script>
+        var worldCities = [
+            { name: "北京", timezone: 8, label: "北京时间" },
+            { name: "东京", timezone: 9, label: "东京时间" },
+            { name: "首尔", timezone: 9, label: "首尔时间" },
+            { name: "悉尼", timezone: 10, label: "悉尼时间" },
+            { name: "新加坡", timezone: 8, label: "新加坡时间" },
+            { name: "迪拜", timezone: 4, label: "迪拜时间" },
+            { name: "伦敦", timezone: 0, label: "伦敦时间" },
+            { name: "巴黎", timezone: 1, label: "巴黎时间" },
+            { name: "柏林", timezone: 1, label: "柏林时间" },
+            { name: "莫斯科", timezone: 3, label: "莫斯科时间" },
+            { name: "纽约", timezone: -5, label: "纽约时间" },
+            { name: "洛杉矶", timezone: -8, label: "洛杉矶时间" },
+            { name: "芝加哥", timezone: -6, label: "芝加哥时间" },
+            { name: "多伦多", timezone: -5, label: "多伦多时间" },
+            { name: "温哥华", timezone: -8, label: "温哥华时间" },
+            { name: "圣保罗", timezone: -3, label: "圣保罗时间" },
+            { name: "开罗", timezone: 2, label: "开罗时间" },
+            { name: "孟买", timezone: 5.5, label: "孟买时间" },
+            { name: "新德里", timezone: 5.5, label: "新德里时间" },
+            { name: "曼谷", timezone: 7, label: "曼谷时间" }
+        ];
+
+        function getLunarDate(year, month, day) {
+            var lunarInfo = [
+                0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
+                0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
+                0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,
+                0x06566, 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950,
+                0x0d4a0, 0x1d8a6, 0x0b550, 0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557,
+                0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5d0, 0x14573, 0x052d0, 0x0a9a8, 0x0e950, 0x06aa0,
+                0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263, 0x0d950, 0x05b57, 0x056a0,
+                0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b5a0, 0x195a6,
+                0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570,
+                0x04af5, 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x055c0, 0x0ab60, 0x096d5, 0x092e0,
+                0x0c960, 0x0d954, 0x0d4a0, 0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5,
+                0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9, 0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930,
+                0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0, 0x0d260, 0x0ea65, 0x0d530,
+                0x05aa0, 0x076a3, 0x096d0, 0x04bd7, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520, 0x0dd45,
+                0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0
+            ];
+            var Gan = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+            var Zhi = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+            var Animals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
+            var lunarMonth = ["正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊"];
+            var lunarDay = ["初", "十", "廿", "三"];
+            var i, leap = 0, temp = 0;
+            var baseYear = 1900;
+            var offset = (Date.UTC(year, month - 1, day) - Date.UTC(baseYear, 0, 31)) / 86400000;
+            for (i = 1900; i < 2101 && offset > 0; i++) {
+                temp = (function(y){var s=348;for(var j=0x8000;j>0x8;j>>=1)s+=lunarInfo[y-1900]&j?1:0;return s+((lunarInfo[y-1900]&0xf)?((lunarInfo[y-1900]&0x10000)?30:29):0);})(i);
+                offset -= temp;
+            }
+            if (offset < 0) { offset += temp; i--; }
+            var lunarYear = i;
+            leap = lunarInfo[lunarYear - 1900] & 0xf;
+            var isLeap = false;
+            for (i = 1; i < 13 && offset > 0; i++) {
+                if (leap > 0 && i == leap + 1 && !isLeap) { --i; isLeap = true; temp = (lunarInfo[lunarYear - 1900] & 0x10000) ? 30 : 29; }
+                else temp = (lunarInfo[lunarYear - 1900] & (0x10000 >> i)) ? 30 : 29;
+                if (isLeap && i == leap + 1) isLeap = false;
+                offset -= temp;
+            }
+            if (offset <= 0) { if (offset < 0) { offset += temp; i--; } }
+            var lunarMonthNum = i;
+            var lunarDayNum = offset + 1;
+            var yearGanZhi = Gan[(lunarYear - 4) % 10] + Zhi[(lunarYear - 4) % 12];
+            var yearAnimal = Animals[(lunarYear - 4) % 12];
+            var monthStr = lunarMonth[lunarMonthNum - 1];
+            var dayStr = lunarDayNum < 11 ? lunarDay[0] + (lunarDayNum == 10 ? "十" : ["", "一", "二", "三", "四", "五", "六", "七", "八", "九"][lunarDayNum])
+                : lunarDayNum < 20 ? lunarDay[1] + ["", "一", "二", "三", "四", "五", "六", "七", "八", "九"][lunarDayNum - 10]
+                : lunarDayNum == 20 ? "二十"
+                : lunarDayNum < 30 ? lunarDay[2] + ["", "一", "二", "三", "四", "五", "六", "七", "八", "九"][lunarDayNum - 20]
+                : "三十";
+            return yearGanZhi + yearAnimal + "年" + monthStr + "月" + dayStr;
+        }
+
+        function formatDate(date) {
+            var year = date.getFullYear();
+            var month = (date.getMonth() + 1).toString().padStart(2, '0');
+            var day = date.getDate().toString().padStart(2, '0');
+            return year + '/' + month + '/' + day;
+        }
+
+        var serverTimeOffset = 0;
+        var syncCompleted = false;
+
+        function updateAllTimes() {
+            var localNow = new Date();
+            var serverNow;
+            
+            if (syncCompleted && serverTimeOffset !== 0) {
+                serverNow = new Date(localNow.getTime() + serverTimeOffset);
+            } else {
+                serverNow = new Date();
+            }
+            
+            var h = serverNow.getHours().toString().padStart(2, '0');
+            var m = serverNow.getMinutes().toString().padStart(2, '0');
+            var s = serverNow.getSeconds().toString().padStart(2, '0');
+            var ms = serverNow.getMilliseconds().toString().padStart(3, '0');
+            
+            document.getElementById('timeMain').textContent = h + ':' + m + ':' + s;
+            document.getElementById('timeMilliseconds').textContent = '.' + ms;
+            document.getElementById('serverTime').textContent = h + ':' + m + ':' + s;
+
+            var lh = localNow.getHours().toString().padStart(2, '0');
+            var lm = localNow.getMinutes().toString().padStart(2, '0');
+            var ls = localNow.getSeconds().toString().padStart(2, '0');
+            document.getElementById('localTime').textContent = lh + ':' + lm + ':' + ls;
+
+            var diff = serverNow.getTime() - localNow.getTime();
+            document.getElementById('timeDiff').textContent = '误差: ' + Math.abs(diff) + ' ms';
+
+            var year = serverNow.getFullYear();
+            var month = (serverNow.getMonth() + 1).toString().padStart(2, '0');
+            var day = serverNow.getDate().toString().padStart(2, '0');
+            var weekDays = ["日", "一", "二", "三", "四", "五", "六"];
+            var weekDay = weekDays[serverNow.getDay()];
+            
+            document.getElementById('dateDisplay').textContent = year + '年' + month + '月' + day + '日';
+            document.getElementById('weekDay').textContent = '星期' + weekDay;
+            document.getElementById('lunarDisplay').textContent = '农历' + getLunarDate(year, serverNow.getMonth() + 1, day);
+
+            if (soundEnabled) {
+                var currentSecond = serverNow.getSeconds();
+                if (currentSecond !== lastSecond) {
+                    lastSecond = currentSecond;
+                    tickAudio.currentTime = 0;
+                    tickAudio.play().catch(function(){});
+                }
+                var currentMinute = serverNow.getMinutes();
+                if (currentMinute !== lastMinute) {
+                    lastMinute = currentMinute;
+                    if (currentMinute === 30 || currentMinute === 0) {
+                        chimeAudio.currentTime = 0;
+                        chimeAudio.play().catch(function(){});
+                    }
+                }
+            }
+
+            updateWorldTimes(serverNow);
+        }
+
+        function updateWorldTimes(baseDate) {
+            var utc = baseDate.getTime() + baseDate.getTimezoneOffset() * 60000;
+            var beijingDate = new Date(utc + 8 * 3600000);
+            var grid = document.getElementById('worldGrid');
+            if (!grid._initialized) {
+                grid._initialized = true;
+                worldCities.forEach(function(city) {
+                    var item = document.createElement('div');
+                    item.className = 'world-item';
+                    item.innerHTML = '<div class="city">' + city.label + '</div><div class="time" id="city_time_' + city.name + '">--:--</div><div class="date" id="city_date_' + city.name + '">----/--/--</div><div class="timezone">UTC' + (city.timezone >= 0 ? '+' : '') + city.timezone + '</div>';
+                    grid.appendChild(item);
+                });
+            }
+            worldCities.forEach(function(city) {
+                var cityDate = new Date(utc + city.timezone * 3600000);
+                var timeStr = cityDate.getHours().toString().padStart(2, '0') + ':' + cityDate.getMinutes().toString().padStart(2, '0');
+                var dateStr = formatDate(cityDate);
+                var dateElem = document.getElementById('city_date_' + city.name);
+                document.getElementById('city_time_' + city.name).textContent = timeStr;
+                dateElem.textContent = dateStr;
+                if (cityDate.getDate() !== beijingDate.getDate()) {
+                    dateElem.className = 'date diff-date';
+                } else {
+                    dateElem.className = 'date';
+                }
+            });
+        }
+
+        function toggleFullscreen() {
+            var elem = document.documentElement;
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch(function(){});
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        document.addEventListener('fullscreenchange', function() {
+            document.body.style.overflow = document.fullscreenElement ? 'hidden' : '';
+        });
+
+        var soundEnabled = false;
+        var tickAudio = new Audio('bo1.mp3');
+        var chimeAudio = new Audio('bo2.mp3');
+        var lastSecond = -1;
+        var lastMinute = -1;
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            var btn = document.getElementById('soundBtn');
+            if (soundEnabled) {
+                btn.textContent = '🔊';
+                btn.classList.remove('muted');
+            } else {
+                btn.textContent = '🔇';
+                btn.classList.add('muted');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var soundBtn = document.getElementById('soundBtn');
+            soundBtn.textContent = '🔇';
+            soundBtn.classList.add('muted');
+        });
+
+        function syncServerTime() {
+            var startTime = Date.now();
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', window.location.href.split('?')[0] + '?t=' + Date.now(), true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var endTime = Date.now();
+                    var serverTime = parseInt(xhr.getResponseHeader('X-Server-Time') || endTime);
+                    var roundTrip = endTime - startTime;
+                    serverTimeOffset = serverTime - endTime + roundTrip / 2;
+                    syncCompleted = true;
+                }
+            };
+            xhr.send();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            syncServerTime();
+            updateAllTimes();
+            setInterval(updateAllTimes, 100);
+            setInterval(syncServerTime, 30000);
+            document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+            document.getElementById('soundBtn').addEventListener('click', toggleSound);
+        });
+    </script>
+</body>
+</html>

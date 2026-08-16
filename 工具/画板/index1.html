@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能画板 · 20种尺寸 & 落笔压力</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f5f7fb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px;
+            min-height: 100vh;
+        }
+        h1 {
+            font-weight: 500;
+            font-size: 2rem;
+            color: #1e293b;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px 28px;
+            background: #ffffff;
+            padding: 14px 28px;
+            border-radius: 48px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.02);
+            margin-bottom: 24px;
+            border: 1px solid #e9edf4;
+        }
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tool-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #334155;
+        }
+        input[type="color"] {
+            width: 36px;
+            height: 36px;
+            border: 2px solid #dce1ec;
+            border-radius: 40px;
+            padding: 2px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        input[type="color"]:hover {
+            border-color: #94a3b8;
+        }
+        input[type="range"] {
+            width: 100px;
+            accent-color: #3b82f6;
+            cursor: pointer;
+        }
+        #brushSizeValue {
+            min-width: 24px;
+            text-align: center;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        select {
+            padding: 6px 14px 6px 12px;
+            font-size: 0.9rem;
+            border: 1.5px solid #dce1ec;
+            border-radius: 30px;
+            background: white;
+            color: #1e293b;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            transition: border 0.2s;
+        }
+        select:focus {
+            border-color: #3b82f6;
+        }
+        canvas {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid #e9edf4;
+            cursor: crosshair;
+            max-width: 100%;
+            height: auto;
+            touch-action: none;
+        }
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .actions button {
+            background: white;
+            border: 1px solid #dce1ec;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e293b;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .actions button:hover {
+            background: #f8fafc;
+            border-color: #b9c4d8;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+        }
+        .actions button:active {
+            transform: scale(0.96);
+        }
+        #clearBtn {
+            color: #b91c1c;
+        }
+        #saveBtn {
+            color: #0b5e42;
+        }
+        .size-presets {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .size-presets button {
+            background: white;
+            border: 1.5px solid #dce1ec;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .size-presets button:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        .size-presets button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        @media (max-width: 640px) {
+            .toolbar {
+                border-radius: 28px;
+                padding: 12px 16px;
+                gap: 12px;
+            }
+            input[type="range"] {
+                width: 70px;
+            }
+            .size-presets button {
+                font-size: 0.7rem;
+                padding: 4px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 智能画板</h1>
+
+    <!-- 画布尺寸预设 -->
+    <div class="size-presets" id="sizePresets"></div>
+
+    <div class="toolbar">
+        <div class="tool-group">
+            <label>颜色</label>
+            <input type="color" id="colorPicker" value="#1e293b">
+        </div>
+        <div class="tool-group">
+            <label>大小</label>
+            <input type="range" id="brushSize" min="1" max="30" value="4">
+            <span id="brushSizeValue">4</span>
+        </div>
+        <div class="tool-group">
+            <label>工具</label>
+            <select id="toolSelector">
+                <option value="pen">✏️ 画笔</option>
+                <option value="eraser">🧹 橡皮擦</option>
+                <option value="line">📏 直线</option>
+                <option value="rectangle">▭ 矩形</option>
+                <option value="circle">⬤ 圆形</option>
+            </select>
+        </div>
+    </div>
+
+    <canvas id="drawingCanvas" width="900" height="560"></canvas>
+
+    <div class="actions">
+        <button id="clearBtn">🗑️ 清空</button>
+        <button id="saveBtn">💾 保存图片</button>
+    </div>
+
+    <script>
+        // ============================================================
+        //  drawing.js  —— 支持20种尺寸预设 + 落笔压力感应
+        //  压力只在落笔时体现（模仿希沃白板）
+        // ============================================================
+        (function() {
+            'use strict';
+
+            // ----- DOM 引用 -----
+            const canvas = document.getElementById('drawingCanvas');
+            const ctx = canvas.getContext('2d');
+            const colorPicker = document.getElementById('colorPicker');
+            const brushSize = document.getElementById('brushSize');
+            const brushSizeValue = document.getElementById('brushSizeValue');
+            const toolSelector = document.getElementById('toolSelector');
+            const clearBtn = document.getElementById('clearBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const sizePresets = document.getElementById('sizePresets');
+
+            // ----- 20种画布尺寸预设 -----
+            const PRESETS = [
+                { name: '方形', w: 600, h: 600 },
+                { name: '手机', w: 400, h: 700 },
+                { name: '平板', w: 800, h: 600 },
+                { name: 'A4竖', w: 600, h: 850 },
+                { name: 'A4横', w: 850, h: 600 },
+                { name: '宽屏', w: 1000, h: 560 },
+                { name: '超宽', w: 1200, h: 500 },
+                { name: '方形大', w: 800, h: 800 },
+                { name: '方形小', w: 400, h: 400 },
+                { name: '电影', w: 1280, h: 720 },
+                { name: 'HD', w: 1920, h: 1080 },
+                { name: '正方形', w: 500, h: 500 },
+                { name: '长卷', w: 700, h: 400 },
+                { name: '竖屏', w: 500, h: 900 },
+                { name: '横屏', w: 900, h: 500 },
+                { name: '迷你', w: 300, h: 300 },
+                { name: '中型', w: 750, h: 550 },
+                { name: '大型', w: 1100, h: 750 },
+                { name: '超大型', w: 1400, h: 900 },
+                { name: '自定义', w: 1000, h: 700 }
+            ];
+
+            // ----- 状态变量 -----
+            let isDrawing = false;
+            let currentTool = 'pen';
+            let startX = 0,
+                startY = 0;
+            let lastX = 0,
+                lastY = 0;
+            let shapeStartX = 0,
+                shapeStartY = 0;
+            let isShapeDrawing = false;
+            let canvasSnapshot = null;
+
+            // 点队列（用于平滑绘制）
+            let points = [];
+            const MAX_POINTS = 5;
+
+            // 压力状态：落笔时记录初始压力
+            let initialPressure = 1.0;
+            let isFirstPoint = true;
+
+            // ----- 画布尺寸管理 -----
+            let canvasWidth = 900;
+            let canvasHeight = 560;
+
+            // ----- 初始化画布 -----
+            function initCanvas(width, height) {
+                canvasWidth = width;
+                canvasHeight = height;
+                canvas.width = width;
+                canvas.height = height;
+                clearCanvasToWhite();
+                updateActivePreset(width, height);
+            }
+
+            // ----- 动态调整画布大小 -----
+            function resizeCanvas(newWidth, newHeight) {
+                // 保存当前画布内容
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                canvasWidth = newWidth;
+                canvasHeight = newHeight;
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+
+                // 恢复内容
+                ctx.putImageData(imageData, 0, 0);
+
+                // 填充白色背景（新画布超出部分）
+                if (newWidth > imageData.width || newHeight > imageData.height) {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(imageData.width, 0, newWidth - imageData.width, newHeight);
+                    ctx.fillRect(0, imageData.height, newWidth, newHeight - imageData.height);
+                }
+
+                updateActivePreset(newWidth, newHeight);
+                console.log(`✅ 画布已调整至 ${newWidth}x${newHeight}`);
+            }
+
+            // ----- 更新预设按钮高亮 -----
+            function updateActivePreset(width, height) {
+                const buttons = sizePresets.querySelectorAll('button');
+                buttons.forEach(btn => {
+                    const w = parseInt(btn.dataset.w);
+                    const h = parseInt(btn.dataset.h);
+                    if (w === width && h === height) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+
+            // ----- 生成预设按钮 -----
+            function createPresetButtons() {
+                PRESETS.forEach((preset, index) => {
+                    const btn = document.createElement('button');
+                    btn.textContent = `${preset.name} (${preset.w}×${preset.h})`;
+                    btn.dataset.w = preset.w;
+                    btn.dataset.h = preset.h;
+                    btn.addEventListener('click', function() {
+                        resizeCanvas(preset.w, preset.h);
+                    });
+                    sizePresets.appendChild(btn);
+                });
+            }
+            createPresetButtons();
+
+            // ----- 清空画布为白色 -----
+            function clearCanvasToWhite() {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // ----- 精准获取画布坐标 -----
+            function getCanvasCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                let clientX, clientY;
+
+                if (e.touches) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else if (e.changedTouches) {
+                    clientX = e.changedTouches[0].clientX;
+                    clientY = e.changedTouches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY
+                };
+            }
+
+            // ----- 平滑插值绘制 (贝塞尔曲线) -----
+            function drawSmoothLine(points, color, baseSize, usePressure = true) {
+                if (points.length < 2) return;
+
+                ctx.beginPath();
+                ctx.moveTo(points[0].x, points[0].y);
+
+                for (let i = 1; i < points.length - 1; i++) {
+                    const p0 = points[i - 1];
+                    const p1 = points[i];
+                    const p2 = points[i + 1];
+
+                    const cpx = (p0.x + p1.x) / 2;
+                    const cpy = (p0.y + p1.y) / 2;
+
+                    let pressure = 1.0;
+                    if (usePressure) {
+                        // 使用落笔时的初始压力，保持恒定
+                        pressure = initialPressure;
+                    } else {
+                        // 动态压力（用于非落笔模式）
+                        const dx = p1.x - p0.x;
+                        const dy = p1.y - p0.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance > 0.5) {
+                            const speed = Math.min(distance / 15, 1.0);
+                            pressure = 0.4 + 1.4 * (1 - Math.pow(speed, 0.7));
+                        } else {
+                            pressure = 0.8 + Math.random() * 0.4;
+                        }
+                        pressure *= (0.92 + Math.random() * 0.16);
+                    }
+
+                    const dynamicSize = Math.max(0.5, baseSize * pressure);
+
+                    ctx.lineWidth = dynamicSize;
+                    ctx.strokeStyle = color;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.quadraticCurveTo(cpx, cpy, p1.x, p1.y);
+                }
+
+                const last = points[points.length - 1];
+                const prev = points[points.length - 2];
+                if (prev) {
+                    let pressure = 1.0;
+                    if (usePressure) {
+                        pressure = initialPressure;
+                    } else {
+                        const dx = last.x - prev.x;
+                        const dy = last.y - prev.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance > 0.5) {
+                            const speed = Math.min(distance / 15, 1.0);
+                            pressure = 0.4 + 1.4 * (1 - Math.pow(speed, 0.7));
+                        }
+                        pressure *= (0.92 + Math.random() * 0.16);
+                    }
+                    const dynamicSize = Math.max(0.5, baseSize * pressure);
+                    ctx.lineWidth = dynamicSize;
+                    ctx.lineTo(last.x, last.y);
+                }
+
+                ctx.stroke();
+                ctx.closePath();
+            }
+
+            // ----- 绘制图形 (直线/矩形/圆形) -----
+            function drawShape(originX, originY, targetX, targetY, tool) {
+                const color = colorPicker.value;
+                const size = parseInt(brushSize.value, 10);
+
+                ctx.beginPath();
+                ctx.lineWidth = size;
+                ctx.strokeStyle = color;
+                ctx.fillStyle = color;
+
+                if (tool === 'line') {
+                    ctx.moveTo(originX, originY);
+                    ctx.lineTo(targetX, targetY);
+                    ctx.stroke();
+                } else if (tool === 'rectangle') {
+                    const w = targetX - originX;
+                    const h = targetY - originY;
+                    ctx.strokeRect(originX, originY, w, h);
+                } else if (tool === 'circle') {
+                    const radius = Math.sqrt(
+                        Math.pow(targetX - originX, 2) + Math.pow(targetY - originY, 2)
+                    );
+                    ctx.arc(originX, originY, radius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                }
+                ctx.closePath();
+            }
+
+            // ----- 快照管理 (用于图形预览) -----
+            function takeSnapshot() {
+                canvasSnapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            }
+
+            function restoreSnapshot() {
+                if (canvasSnapshot) {
+                    ctx.putImageData(canvasSnapshot, 0, 0);
+                }
+            }
+
+            // ----- 添加点并绘制 (落笔压力模式) -----
+            function addPointAndDraw(x, y, color, baseSize, usePressure = true) {
+                points.push({ x, y });
+
+                if (points.length > MAX_POINTS) {
+                    points.shift();
+                }
+
+                drawSmoothLine(points, color, baseSize, usePressure);
+            }
+
+            // ----- 事件处理器 -----
+            function onPointerDown(e) {
+                e.preventDefault();
+                const coord = getCanvasCoords(e);
+                const x = coord.x,
+                    y = coord.y;
+
+                isDrawing = true;
+                startX = x;
+                startY = y;
+                lastX = x;
+                lastY = y;
+                currentTool = toolSelector.value;
+                isFirstPoint = true;
+
+                // 落笔时计算初始压力（基于速度，但这里是落笔点，我们用随机+基准）
+                const baseSize = parseInt(brushSize.value, 10);
+                // 模拟落笔压力：在0.6~1.8之间随机，但更偏向于1.0左右
+                initialPressure = 0.7 + Math.random() * 0.8;
+                // 让压力与画笔大小有关联：小笔压力略小，大笔压力略大
+                initialPressure *= (0.8 + (baseSize / 30) * 0.4);
+
+                points = [{ x, y }];
+
+                if (currentTool === 'line' || currentTool === 'rectangle' || currentTool === 'circle') {
+                    isShapeDrawing = true;
+                    shapeStartX = x;
+                    shapeStartY = y;
+                    takeSnapshot();
+                } else {
+                    isShapeDrawing = false;
+                    // 落笔时立即绘制一个点（体现压力）
+                    if (currentTool === 'pen') {
+                        const color = colorPicker.value;
+                        ctx.beginPath();
+                        ctx.arc(x, y, Math.max(0.5, baseSize * initialPressure * 0.5), 0, 2 * Math.PI);
+                        ctx.fillStyle = color;
+                        ctx.fill();
+                        ctx.closePath();
+                    } else if (currentTool === 'eraser') {
+                        const color = '#ffffff';
+                        ctx.beginPath();
+                        ctx.arc(x, y, Math.max(0.5, baseSize * initialPressure * 0.5), 0, 2 * Math.PI);
+                        ctx.fillStyle = color;
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+
+            function onPointerMove(e) {
+                e.preventDefault();
+                if (!isDrawing) return;
+
+                const coord = getCanvasCoords(e);
+                const x = coord.x,
+                    y = coord.y;
+                currentTool = toolSelector.value;
+
+                if (currentTool === 'pen') {
+                    const baseSize = parseInt(brushSize.value, 10);
+                    const color = colorPicker.value;
+                    // 使用落笔压力 (usePressure = true)
+                    addPointAndDraw(x, y, color, baseSize, true);
+                    lastX = x;
+                    lastY = y;
+                } else if (currentTool === 'eraser') {
+                    const baseSize = parseInt(brushSize.value, 10);
+                    // 橡皮擦使用落笔压力
+                    addPointAndDraw(x, y, '#ffffff', baseSize, true);
+                    lastX = x;
+                    lastY = y;
+                } else if (isShapeDrawing && (currentTool === 'line' || currentTool === 'rectangle' || currentTool ===
+                        'circle')) {
+                    restoreSnapshot();
+                    drawShape(shapeStartX, shapeStartY, x, y, currentTool);
+                }
+            }
+
+            function onPointerUp(e) {
+                e.preventDefault();
+                if (!isDrawing) return;
+
+                const coord = getCanvasCoords(e);
+                const x = coord.x,
+                    y = coord.y;
+                currentTool = toolSelector.value;
+
+                if (isShapeDrawing && (currentTool === 'line' || currentTool === 'rectangle' || currentTool ===
+                        'circle')) {
+                    restoreSnapshot();
+                    drawShape(shapeStartX, shapeStartY, x, y, currentTool);
+                    canvasSnapshot = null;
+                    isShapeDrawing = false;
+                } else if (currentTool === 'pen' || currentTool === 'eraser') {
+                    const baseSize = parseInt(brushSize.value, 10);
+                    const color = currentTool === 'pen' ? colorPicker.value : '#ffffff';
+
+                    if (points.length > 0) {
+                        drawSmoothLine(points, color, baseSize, true);
+                    }
+                    points = [];
+                }
+
+                isDrawing = false;
+                canvasSnapshot = null;
+            }
+
+            function onPointerLeave(e) {
+                if (isDrawing) {
+                    if (isShapeDrawing && canvasSnapshot) {
+                        restoreSnapshot();
+                        canvasSnapshot = null;
+                    }
+                    isDrawing = false;
+                    isShapeDrawing = false;
+                    points = [];
+                }
+            }
+
+            // ----- 注册事件 (鼠标 + 触摸) -----
+            canvas.addEventListener('mousedown', onPointerDown);
+            canvas.addEventListener('mousemove', onPointerMove);
+            canvas.addEventListener('mouseup', onPointerUp);
+            canvas.addEventListener('mouseleave', onPointerLeave);
+
+            canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+            canvas.addEventListener('touchmove', onPointerMove, { passive: false });
+            canvas.addEventListener('touchend', onPointerUp, { passive: false });
+            canvas.addEventListener('touchcancel', onPointerLeave, { passive: false });
+
+            // ----- 清空 & 保存 -----
+            clearBtn.addEventListener('click', function() {
+                clearCanvasToWhite();
+                canvasSnapshot = null;
+                points = [];
+            });
+
+            saveBtn.addEventListener('click', function() {
+                const link = document.createElement('a');
+                link.download = `drawing-${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+
+            // ----- 更新画笔大小显示 -----
+            brushSize.addEventListener('input', function() {
+                brushSizeValue.textContent = this.value;
+            });
+
+            toolSelector.addEventListener('change', function() {
+                if (isDrawing && isShapeDrawing) {
+                    if (canvasSnapshot) {
+                        restoreSnapshot();
+                        canvasSnapshot = null;
+                    }
+                    isDrawing = false;
+                    isShapeDrawing = false;
+                    points = [];
+                }
+            });
+
+            // ----- 初始化画布 (默认 900x560) -----
+            initCanvas(900, 560);
+
+            console.log('✅ 智能画板加载完成');
+            console.log('💡 特点：落笔时体现压力（模仿希沃白板）');
+            console.log('📐 点击预设按钮可快速切换画布尺寸');
+            console.log(`📏 当前画布尺寸: ${canvas.width}x${canvas.height}`);
+
+        })();
+    </script>
+</body>
+</html>

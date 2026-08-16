@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = "UTF-8">
+    <title>绘画板</title>
+    <!-- 引入消息弹框样式 -->
+    <link rel="stylesheet" href="../css/msgBox.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <style>
+        *{
+            vertical-align: middle;
+        }
+        .content {
+            margin: 20px;
+            float: left;
+        }
+        .content div{
+            margin-bottom: 15px;
+            width: 80px;
+            text-align: center;
+        }
+        #canvas {
+            background-color: transparent;
+            -webkit-box-shadow: 0px 0px 10px 5px #3b8cf8, 0 0 1px #3b8cf8, 0 0 1px #3b8cf8, 0 0 1px #3b8cf8, 0 0 1px #3b8cf8, 0 0 1px #3b8cf8, 0 0 1px #3b8cf8;
+        }
+        .button1{
+            height: 40px;
+            line-height: 40px;
+            font-size: 15px;
+            color: gold;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            border: none;
+            margin-right: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .button1:hover{
+            color: darkorange;
+        }
+        .button1:active {
+            border: none;
+            color: white;
+            outline: none;
+            background: LightSkyBlue;
+        }
+        .func-button {
+            background: rgba(0,0,0,0.3);
+            margin-top: 10px;
+        }
+        .range1{
+            width: 80px;
+            height: 5px;
+        }
+        label{
+            color: gold;
+        }
+        label span{
+            color: #48c0a4;
+        }
+        .画笔选择{
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin: 0 3px;
+            cursor: pointer;
+        }
+        #画笔{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px 0px;
+        }
+        #画笔:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -23px;
+        }
+        #空心矩形{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -45px;
+        }
+        #实心矩形{
+            width: 18px;
+            height: 18px;
+            background: #E89184;
+            border-radius: 5px;
+        }
+        #空心矩形:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -67px;
+        }
+        #实心矩形:hover{
+            background: #F64524;
+        }
+        #空心圆形{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -90px;
+        }
+        #实心圆形{
+            width: 18px;
+            height: 18px;
+            background: #E89184;
+            border-radius: 50%;
+        }
+        #空心圆形:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -113px;
+        }
+        #实心圆形:hover{
+            background: #F64524;
+        }
+        #直线{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -133px;
+        }
+        #直线:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -300px;
+        }
+        #箭头{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -266px;
+        }
+        #箭头:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -290px;
+        }
+        #文字{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -169px;
+        }
+        #文字:hover{
+            background: url("https://cdn.luogu.com.cn/upload/image_hosting/eu9u0uio.png");
+            background-repeat: no-repeat;
+            background-position: 0px -192px;
+        }
+        #brushSizeLine {
+			margin: 0;
+			padding: 0;
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color:gold;
+		}
+        #eraserSizeLine{
+            margin: 0;
+            padding: 0;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color:gold;
+        }
+        .shortcut-bar {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            width: 80px;
+            text-align: center;
+        }
+        .shortcut-bar .button1 {
+            display: block;
+            margin: 5px 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="button1" onclick="clearCanvas()">清空</div>
+        <div>
+            <input type="color" id="brushColor" style="width: 78px;">
+        </div>
+        <div>
+            <span class="画笔选择" id="画笔" onclick="切换画笔('画笔',7);"></span>
+            <span class="画笔选择" id="文字" onclick="切换画笔('文字',8);"></span>
+        </div>
+        <div>
+            <span class="画笔选择" id="空心矩形" onclick="切换画笔('空心矩形',1);"></span>
+            <span class="画笔选择" id="实心矩形" onclick="切换画笔('实心矩形',2);"></span>
+        </div>
+        <div>
+            <span class="画笔选择" id="空心圆形" onclick="切换画笔('空心圆形',3);"></span>
+            <span class="画笔选择" id="实心圆形" onclick="切换画笔('实心圆形',4);"></span>
+        </div>
+        <div>
+            <span class="画笔选择" id="直线" onclick="切换画笔('直线',5);"></span>
+            <span class="画笔选择" id="箭头" onclick="切换画笔('箭头',6);"></span>
+        </div>
+        <div>
+            <div>
+                <label for="brushSize">画笔 <span id="brushSizeValue">10</span></label>
+            </div>
+            <div>
+                <input class="range1" type="range" id="brushSize" min="1" max="50" value="10"
+                       onchange="updateValue('brushSize')" oninput="updateLine('brushSize', 'brushSizeLine')">
+                <div style="width: 80px;height: 50px">
+                    <div id="brushSizeLine"></div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="eraserSize">橡皮 <span id="eraserSizeValue">20</span></label>
+            </div>
+            <div>
+                <input  class="range1" type="range" id="eraserSize" min="1" max="80" value="20"
+                        onchange="updateValue('eraserSize')" oninput="updateLine('eraserSize', 'eraserSizeLine')">
+                <div style="width: 80px;height: 80px">
+                    <div id="eraserSizeLine"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能按钮区域 -->
+        <div class="shortcut-bar">
+            <div class="button1 func-button" onclick="enableEraser()">橡皮模式</div>
+            <div class="button1 func-button" onclick="undo()">撤销</div>
+            <div class="button1 func-button" onclick="restore()">恢复</div>
+            <div class="button1 func-button" onclick="saveCanvas()">保存</div>
+        </div>
+    </div>
+    <div style="color: #48c0a4;">
+        <span>橡皮：Ctrl+右键 或 点击"橡皮模式"按钮后绘画</span>&nbsp;&nbsp;
+        <span>撤销：Ctrl+Z 或 点击"撤销"按钮</span>&nbsp;&nbsp;
+        <span>恢复：Ctrl+Y 或 点击"恢复"按钮</span>&nbsp;&nbsp;
+        <span>保存：Ctrl+S 或 点击"保存"按钮</span>
+    </div>
+    <div style="margin: 20px auto;width: 1850px;">
+        <canvas id="canvas" width="1730" height="850"></canvas>
+    </div>
+
+    <!-- 引入动态创建消息弹框的js -->
+    <script type="text/javascript" src="../js/msgBox.js"></script>
+
+    <script>
+        // 当前画笔模式：1 空心矩形 2 实心矩形 3 空心圆形 4 实心圆形 5 直线 6 箭头 7 自由画笔 8 文字
+        let brush = 7;
+        let eraserMode = false; // 橡皮擦模式开关
+
+        // 获取画布和绘画工具
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 跟踪绘画状态
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        let isDrawing = false; //标记是否要绘制
+        let isMouseDown = false; //标记鼠标是否按下
+        let lineColor; // 线条颜色
+        let lineWidth; // 线条粗细
+        let points = []; //存储坐标点
+        let undoStack = []; // 存储画布状态，用于撤销上一步操作
+        let step = 0; // 记录当前步数
+
+        // 启用橡皮擦模式
+        function enableEraser() {
+            eraserMode = !eraserMode;
+            if (eraserMode) {
+                messageplugin({ message: "橡皮擦模式已开启，点击绘画即可擦除", type: "success" });
+                // 临时保存当前画笔模式
+                if (brush !== 7) {
+                    window.tempBrush = brush;
+                }
+                brush = 7; // 切换到画笔模式以使用擦除功能
+            } else {
+                messageplugin({ message: "橡皮擦模式已关闭", type: "success" });
+                if (window.tempBrush) {
+                    brush = window.tempBrush;
+                    window.tempBrush = null;
+                }
+            }
+        }
+
+        // 保存画布
+        function saveCanvas() {
+            const image = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = image;
+            link.download = 'drawing.png';
+            link.click();
+            messageplugin({ message: "图片已保存", type: "success" });
+        }
+
+        // 鼠标按下
+        canvas.onpointerdown = function (e) {
+            if(brush != 8){ // 排除文本模式
+                points = [];
+                isDrawing = true;
+                isMouseDown = true;
+                points.push({ x: e.offsetX, y: e.offsetY });
+                
+                // 检查是否使用橡皮擦（Ctrl键 或 橡皮擦模式开启）
+                if(e.ctrlKey || eraserMode){ 
+                    ctx.globalCompositeOperation = 'destination-out';
+                }else{ 
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                ctx.beginPath();
+            }
+        };
+
+        // 鼠标单击
+        canvas.onclick = function (e) {
+            if(brush === 8){ // 只有当画笔模式为文本模式时
+                points = [];
+                draw(e.offsetX,e.offsetY,e.ctrlKey);
+            }
+        };
+
+        // 鼠标抬起
+        canvas.onpointerup = function (e) {
+            isMouseDown = false;
+            if(brush != 8){ // 排除文本模式
+                points = [];
+                isDrawing = false;
+                ctx.closePath();
+                ctx.globalCompositeOperation = 'source-over';
+                addUndoStack(canvas.toDataURL());
+            }
+        };
+        
+        // 鼠标离开画布
+        canvas.onpointerout = function (e) {
+            if(brush != 8 && isMouseDown){
+                points = [];
+                isDrawing = false;
+                isMouseDown = false;
+                ctx.closePath();
+                ctx.globalCompositeOperation = 'source-over';
+                addUndoStack(canvas.toDataURL());
+            }
+        };
+
+        // 鼠标移动
+        canvas.onpointermove = function (e) {
+            if(brush != 8){
+                if (!isDrawing) return;
+                const brushSize = document.getElementById('brushSize').value;
+                const eraserSize = document.getElementById('eraserSize').value;
+                // 使用橡皮擦的条件：Ctrl键按下 或 橡皮擦模式开启
+                lineWidth = (e.ctrlKey || eraserMode) ? eraserSize : brushSize;
+                lineColor = document.getElementById('brushColor').value;
+                ctx.lineWidth = lineWidth;
+                ctx.strokeStyle = lineColor;
+                draw(e.offsetX,e.offsetY,e.ctrlKey);
+            }
+        };
+
+        // 绘制
+        function draw(mousex, mousey, ctrlKey) {
+            points.push({ x: mousex, y: mousey });
+            // 使用橡皮擦的条件：Ctrl键按下 或 橡皮擦模式开启
+            if((ctrlKey || eraserMode) && brush != 8 || brush === 7){
+                draw画笔();
+            }else{
+                if(brush === 1) draw矩形(false);
+                else if(brush === 2) draw矩形(true);
+                else if(brush === 3) draw圆形(false);
+                else if(brush === 4) draw圆形(true);
+                else if(brush === 5) draw直线();
+                else if(brush === 6) draw箭头();
+                else if(brush === 8) draw文字();
+            }
+            ctx.stroke();
+            points.slice(0, 1);
+        }
+
+        // 绘制自由线条
+        function draw画笔(){
+            ctx.beginPath();
+            let x = (points[points.length - 2].x + points[points.length - 1].x) / 2,
+                y = (points[points.length - 2].y + points[points.length - 1].y) / 2;
+            if (points.length == 2) {
+                ctx.moveTo(points[points.length - 2].x, points[points.length - 2].y);
+                ctx.lineTo(x, y);
+            } else {
+                let lastX = (points[points.length - 3].x + points[points.length - 2].x) / 2,
+                    lastY = (points[points.length - 3].y + points[points.length - 2].y) / 2;
+                ctx.moveTo(lastX, lastY);
+                ctx.quadraticCurveTo(points[points.length - 2].x, points[points.length - 2].y, x, y);
+            }
+        }
+
+        // 绘制矩形
+        function draw矩形(isSolid){
+            const startX = points[0].x;
+            const startY = points[0].y;
+            const endX = points[points.length - 1].x;
+            const endY = points[points.length - 1].y;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            if (isSolid){
+                ctx.fillStyle = lineColor;
+                ctx.fillRect(startX, startY, endX - startX, endY - startY);
+            }else {
+                ctx.rect(startX, startY, endX - startX, endY - startY);
+            }
+            loadImage();
+        }
+
+        // 绘制圆形
+        function draw圆形(isSolid){
+            const startX = points[0].x;
+            const startY = points[0].y;
+            const endX = points[points.length - 1].x;
+            const endY = points[points.length - 1].y;
+            const radius = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+            if (isSolid){
+                ctx.fillStyle = lineColor;
+                ctx.fill();
+            }
+            loadImage();
+        }
+
+        // 绘制直线
+        function draw直线(){
+            const startX = points[0].x;
+            const startY = points[0].y;
+            const endX = points[points.length - 1].x;
+            const endY = points[points.length - 1].y;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            loadImage();
+        }
+
+        // 绘制箭头
+        function draw箭头(){
+            const startX = points[0].x;
+            const startY = points[0].y;
+            const endX = points[points.length - 1].x;
+            const endY = points[points.length - 1].y;
+            const arrowSize = lineWidth * 4;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            const angle = Math.atan2(endY - startY, endX - startX);
+            ctx.lineTo(
+                endX - arrowSize * Math.cos(angle - Math.PI / 6),
+                endY - arrowSize * Math.sin(angle - Math.PI / 6)
+            );
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowSize * Math.cos(angle + Math.PI / 6),
+                endY - arrowSize * Math.sin(angle + Math.PI / 6)
+            );
+            loadImage();
+        }
+
+        // 输入文字
+        function draw文字(){
+            const startX = points[0].x;
+            const startY = points[0].y;
+            const input = document.createElement('textarea');
+            const canvasRect = canvas.getBoundingClientRect();
+            var brushSize = document.getElementById('brushSize').value;
+            var color = document.getElementById('brushColor').value;
+            var fontSize = brushSize / 10
+            if (fontSize < 1 ) fontSize = 1
+
+            input.rows = 10;
+            input.style.position = 'absolute';
+            input.style.left = (canvasRect.left + startX) - 10 + 'px';
+            input.style.top = (canvasRect.top + startY) + 'px';
+            input.style.border = 'none';
+            input.style.background = 'transparent';
+            input.style.font = fontSize+'rem 微软雅黑';
+            input.style.color = color;
+            input.style.outline = 'none';
+            input.style.padding = '0';
+            input.style.margin = '0';
+            input.style.width = 'auto';
+            input.style.height = 'auto';
+            input.style.resize = 'none';
+            input.style.overflow = 'hidden';
+            input.style.zIndex = '100';
+            input.addEventListener('blur', function() {
+                const text = input.value;
+                if(text.length > 0){
+                    ctx.font = fontSize+'rem 微软雅黑';
+                    ctx.fillStyle = color;
+					const lines = text.split('\n');
+					let y = startY;
+					lines.forEach(function(line) {
+						ctx.fillText(line, startX, y);
+						y += (brushSize+5);
+					});
+                    addUndoStack(canvas.toDataURL());
+                }
+                document.body.removeChild(input);
+            });
+            document.body.appendChild(input);
+            input.focus();
+        }
+
+        // 加载图片
+        function loadImage(){
+            if(step>0){
+                var img = new Image();
+                img.src = undoStack[step-1];
+                ctx.drawImage(img,0,0,canvas.width,canvas.height);
+            }
+        }
+
+        // 清空画布
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            step = 0;
+            points = [];
+            undoStack = [];
+            messageplugin({ message: "画布已清空", type: "success" });
+        }
+
+        // 添加操作
+        function addUndoStack(url) {
+            if (step < undoStack.length) {
+                undoStack.length = step;
+            }
+            undoStack.push(url);
+            step++;
+        }
+
+        // 撤销操作
+        function undo() {
+            if (step > 1) {
+                step--;
+                const image = new Image();
+                image.src = undoStack[step-1];
+                image.onload = function() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(image, 0, 0);
+                    messageplugin({ message: "已撤销", type: "success" });
+                }
+            }else {
+                step = 0;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                messageplugin({ message: "没有更多可撤销的操作", type: "warning" });
+            }
+        }
+
+        // 恢复操作
+        function restore() {
+            if (step < undoStack.length) {
+                step++;
+                const image = new Image();
+                image.src = undoStack[step-1];
+                image.onload = function() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(image, 0, 0);
+                    messageplugin({ message: "已恢复", type: "success" });
+                }
+            } else {
+                messageplugin({ message: "没有更多可恢复的操作", type: "warning" });
+            }
+        }
+
+        // 更新滑块值
+		function updateValue(inputId) {
+			var value = document.getElementById(inputId).value;
+            if (value < 10) { value = '0'+value; }
+			document.getElementById(inputId + "Value").textContent = value;
+		}
+
+		// 更新画笔线条宽度
+		function updateLine(inputId, lineId) {
+			var value = document.getElementById(inputId).value;
+			var line = document.getElementById(lineId);
+            line.style.height = value + 'px';
+            line.style.width = value + 'px';
+		}
+
+        function 切换画笔(id,val){
+            brush = val;
+            eraserMode = false; // 切换画笔时自动关闭橡皮擦模式
+            messageplugin({ message: "切换为"+id, type: "success" });
+        }
+
+        // 监听键盘事件，实现撤销操作和保存绘画内容、切换画笔工具
+        window.addEventListener('keydown', (e) => {
+            // 撤销
+            if (e.ctrlKey && e.key === 'z') {
+                e.preventDefault();
+                undo();
+            }
+            // 恢复
+            if (e.ctrlKey && e.key === 'y') {
+                e.preventDefault();
+                restore();
+            }
+            // 保存
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveCanvas();
+            }
+        });
+    </script>
+</body>
+</html>

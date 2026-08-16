@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>响应式长图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+        }
+
+        .image-wrapper {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #f7f8fa;
+        }
+
+        .image-wrapper picture {
+            display: block;
+            width: 100%;
+        }
+
+        .image-wrapper picture img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            .container {
+                padding: 12px;
+                border-radius: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 8px;
+                border-radius: 8px;
+            }
+            .image-wrapper {
+                border-radius: 8px;
+            }
+            .image-wrapper picture img {
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image-wrapper">
+            <picture>
+                <!-- 关键修复：添加 referrerpolicy="no-referrer" -->
+                <img 
+                    src="https://gitee.com/xiaoziyi11/image-bedimage-bed/raw/master/xiaoziyi11.jpg" 
+                    alt="by xiaoziyi11"
+                    loading="lazy"
+                    decoding="async"
+                    referrerpolicy="no-referrer"
+                >
+            </picture>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,840 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OI 教练模拟器</title>
+<link rel="stylesheet" href="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/styles.css">
+
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>OI 教练模拟器</h1>
+    </div>
+    <div class="topline">
+      <div id="header-week" class="small">第 1 周</div>
+      <div id="header-province" class="small">省份: -</div>
+      <div id="header-budget" class="small">经费: ¥0</div>
+      <div id="header-reputation" class="small">声誉: 0</div>
+      <div id="header-weather" class="small">天气: <span id="header-weather-text"></span> / 温度: <span id="header-temp-header">0.0°C</span></div>
+      <div id="header-next-competition" class="small muted">下场比赛: <span id="header-next-comp-small"></span></div>
+    </div>
+  </header>
+
+  <!-- ==================== 教练成长面板（浅色） ==================== -->
+  <div id="coach-panel" style="background: #f8f9fa; color: #222; padding: 12px 16px; border-radius: 8px; margin: 8px 0 8px 0; border: 1px solid #dee2e6;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+      <span style="font-weight: bold; color: #e67700;">🏅 教练</span>
+      <span id="coach-level-display" style="color: #e67700; font-weight: 600;">Lv.1</span>
+      <span id="coach-exp-display" style="color: #666; font-size: 13px;">经验: 0/100</span>
+      <span id="coach-sp-display" style="color: #17a2b8; font-size: 13px;">✨ 技能点: 0</span>
+      <div style="flex: 1; min-width: 100px; height: 6px; background: #e9ecef; border-radius: 3px; overflow: hidden;">
+        <div id="coach-exp-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #ffc107, #e67700); border-radius: 3px; transition: width 0.3s;"></div>
+      </div>
+      <button id="coach-skill-btn" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; padding: 2px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">📊 技能</button>
+    </div>
+    <!-- 技能详情 -->
+    <div id="coach-skills-detail" style="display: none; margin-top: 8px; padding: 8px; background: #fff; border-radius: 4px; font-size: 12px; border: 1px solid #e9ecef;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 4px 12px;">
+        <div><span style="color: #17a2b8;">教学精通:</span> <span id="skill-teaching">0级 (+0%)</span> <button class="skill-upgrade-btn" data-skill="教学精通" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; border-radius: 2px; cursor: pointer; font-size: 10px; padding: 0 6px;">⬆</button></div>
+        <div><span style="color: #17a2b8;">经费管理:</span> <span id="skill-funding">0级 (+0%)</span> <button class="skill-upgrade-btn" data-skill="经费管理" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; border-radius: 2px; cursor: pointer; font-size: 10px; padding: 0 6px;">⬆</button></div>
+        <div><span style="color: #17a2b8;">心灵导师:</span> <span id="skill-recovery">0级 (+0%)</span> <button class="skill-upgrade-btn" data-skill="心灵导师" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; border-radius: 2px; cursor: pointer; font-size: 10px; padding: 0 6px;">⬆</button></div>
+        <div><span style="color: #17a2b8;">伯乐之眼:</span> <span id="skill-recruit">0级 (+0%)</span> <button class="skill-upgrade-btn" data-skill="伯乐之眼" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; border-radius: 2px; cursor: pointer; font-size: 10px; padding: 0 6px;">⬆</button></div>
+        <div><span style="color: #17a2b8;">赛事专家:</span> <span id="skill-competition">0级 (+0%)</span> <button class="skill-upgrade-btn" data-skill="赛事专家" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; border-radius: 2px; cursor: pointer; font-size: 10px; padding: 0 6px;">⬆</button></div>
+        <div><span style="color: #17a2b8;">人脉广泛:</span> <span id="skill-event">0级 (+0%)</span> <button class="skill-upgrade-btn" data-skill="人脉广泛" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; border-radius: 2px; cursor: pointer; font-size: 10px; padding: 0 6px;">⬆</button></div>
+        <div><span style="color: #17a2b8;">铁腕管理:</span> <span id="skill-management">0级 (+0%)</span> <button class="skill-upgrade-btn" data-skill="铁腕管理" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; border-radius: 2px; cursor: pointer; font-size: 10px; padding: 0 6px;">⬆</button></div>
+        <div><span style="color: #17a2b8;">创新教学:</span> <span id="skill-mock">0级 (+0%)</span> <button class="skill-upgrade-btn" data-skill="创新教学" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; border-radius: 2px; cursor: pointer; font-size: 10px; padding: 0 6px;">⬆</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 道具面板（浅色） ==================== -->
+  <div id="inventory-panel" style="background: #f8f9fa; color: #222; padding: 12px 16px; border-radius: 8px; margin: 8px 0 8px 0; border: 1px solid #dee2e6;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+      <span style="font-weight: bold; color: #17a2b8;">🎒 背包</span>
+      <span id="inventory-count" style="color: #666; font-size: 13px;">0 件</span>
+      <span id="inventory-bonus" style="color: #e67700; font-size: 12px;"></span>
+    </div>
+    <div id="inventory-grid" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; min-height: 30px;">
+      <span style="color: #999; font-size: 13px;">背包为空，通过事件或道具获得道具</span>
+    </div>
+  </div>
+
+  <!-- ==================== 商店面板（浅色） ==================== -->
+  <div id="shop-panel" style="background: #f8f9fa; color: #222; padding: 12px 16px; border-radius: 8px; margin: 8px 0 8px 0; border: 1px solid #dee2e6;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+      <span style="font-weight: bold; color: #e67700;">🏪 商店</span>
+      <span style="color: #666; font-size: 13px;">用经费购买道具</span>
+      <button id="shop-refresh-btn" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; padding: 2px 10px; border-radius: 4px; cursor: pointer; font-size: 11px;">🔄 刷新</button>
+    </div>
+    <div id="shop-grid" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;"></div>
+  </div>
+
+  <!-- ==================== 队伍 & 成就面板（浅色） ==================== -->
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0;">
+    <div id="team-panel" style="flex: 1; min-width: 200px; background: #f8f9fa; color: #222; padding: 10px 14px; border-radius: 8px; border: 1px solid #dee2e6;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+        <span style="font-weight: bold; color: #17a2b8;">🤝 队伍</span>
+        <span id="team-count" style="color: #888; font-size: 12px;">0 支队伍</span>
+        <button id="team-create-btn" style="background: #e9ecef; color: #222; border: 1px solid #17a2b8; padding: 2px 10px; border-radius: 4px; cursor: pointer; font-size: 11px;">+ 创建队伍</button>
+      </div>
+      <div id="team-list" style="margin-top: 6px; font-size: 12px; color: #555; min-height: 20px;">暂无队伍</div>
+    </div>
+    <div id="achievement-panel" style="flex: 1; min-width: 200px; background: #f8f9fa; color: #222; padding: 10px 14px; border-radius: 8px; border: 1px solid #dee2e6;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+        <span style="font-weight: bold; color: #e67700;">🏆 成就</span>
+        <span id="achievement-count" style="color: #888; font-size: 12px;">0 / 17 已解锁</span>
+      </div>
+      <div id="achievement-list" style="margin-top: 6px; font-size: 12px; color: #555; min-height: 20px; max-height: 60px; overflow-y: auto;">暂无成就</div>
+    </div>
+  </div>
+
+  <!-- ===== 主面板 ===== -->
+  <div class="row">
+    <div class="col panel" style="flex: 1 1 600px;">
+      <div class="flex-between">
+        <h3 style="margin:0">学生与状态</h3>
+        <div class="small">舒适度: <span id="comfort-val">50</span></div>
+      </div>
+      <div id="student-list" style="margin-top:10px;"></div>
+
+      <!-- 设施升级界面已隐藏 -->
+      <div style="margin-top:12px; display:none;">
+        <h4 style="margin:0">设施</h4>
+        <div class="facility-grid" style="margin-top:8px">
+          <div class="facility">
+            <div class="fac-label">机房</div>
+            <div id="fac-computer-room" class="stat">1</div>
+            <div class="small muted">核心设施</div>
+          </div>
+          <div class="facility">
+            <div class="fac-label">计算机</div>
+            <div id="fac-computer" class="stat">0</div>
+            <div class="small muted">训练效果提升乘区</div>
+          </div>
+          <div class="facility">
+            <div class="fac-label">网络</div>
+            <div id="fac-canteen" class="stat">0</div>
+            <div class="small muted">模拟赛效果提升</div>
+          </div>
+          <div class="facility">
+            <div class="fac-label">电扇</div>
+            <div id="fac-dorm" class="stat">0</div>
+            <div class="small muted">提升舒适度</div>
+          </div>
+          <div class="facility">
+            <div class="fac-label">空调</div>
+            <div id="fac-ac" class="stat">0</div>
+            <div class="small muted">提升舒适度，缓解极端天气</div>
+          </div>
+          <div class="facility">
+            <div class="fac-label">资料库</div>
+            <div id="fac-library" class="stat">0</div>
+            <div class="small muted">提供额外备选题目，提升训练效果</div>
+          </div>
+          <div class="facility">
+            <div class="fac-label">维护费/周</div>
+            <div id="fac-maint" class="stat">0</div>
+            <div class="small muted">所有设施每周维护费</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 周信息、设施面板 -->
+      <div style="margin-top:16px; display:flex; gap:12px; align-items:flex-start">
+        <div style="flex:1">
+          <h4 style="margin:0 0 8px 0">周信息</h4>
+          <div class="small" style="line-height:1.6">
+            <div>第 <span id="info-week">1</span> 周 / 共 26 周</div>
+            <div>天气: <span id="info-weather">晴</span> / 温度: <span id="info-temp">20.0°C</span></div>
+            <div>预测 4 周 开支: ¥<span id="info-future-expense">0</span></div>
+            <div id="info-next-competition" class="small muted"></div>
+          </div>
+        </div>
+        <div id="facilities-panel" style="flex:1">
+          <h4 style="margin:0 0 8px 0">设施状态</h4>
+          <div class="small" style="line-height:1.8">
+            <div>机房</div>
+            <div>计算机 <span id="fac-computer-display">无</span> | 网络 <span id="fac-canteen-display">无</span></div>
+            <div>电扇 <span id="fac-dorm-display">无</span> | 空调 <span id="fac-ac-display">无</span></div>
+            <div>资料库 <span id="fac-library-display">无</span> | 维护费 ¥<span id="fac-maint-display">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; gap:12px; align-items:flex-start">
+        <div style="flex:1">
+          <h4 style="margin:0 0 8px 0">下场比赛</h4>
+          <div id="next-competition-panel" class="next-panel normal" style="margin:0">
+            <div id="next-comp" style="margin-bottom:8px">无</div>
+            <div id="daily-quote" class="small muted">一句话加载中...</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <h4 style="margin:0 0 8px 0">训话</h4>
+        <input type="text" id="coach-speech-input" placeholder="输入训话内容..." style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:14px;box-sizing:border-box">
+      </div>
+
+      <div style="margin-top:16px">
+        <h4 style="margin:0 0 8px 0">日志</h4>
+        <div id="log" style="height:80px;overflow:auto;border:1px solid #eee;padding:8px;border-radius:6px;background:#fff;font-size:13px"></div>
+      </div>
+    </div>
+
+    <div class="col panel side-panel" style="flex: 0 0 360px;">
+      <h3 style="margin-top:0">本周行动（每个行动持续1周）</h3>
+      <div class="action-cards">
+        <div class="action-card" id="action-train" role="button" tabindex="0">
+          <div class="card-title">训练</div>
+          <div class="card-desc">安排学生进行专项训练，提高实力</div>
+        </div>
+        <div class="action-card" id="action-entertain" role="button" tabindex="0">
+          <div class="card-title">娱乐</div>
+          <div class="card-desc">放松娱乐，缓解压力</div>
+        </div>
+        <div class="action-card" id="action-mock" role="button" tabindex="0">
+          <div class="card-title">模拟赛</div>
+          <div class="card-desc">进行内部模拟比赛，检验训练成果，训练能力</div>
+        </div>
+        <div class="action-card" id="action-outing" role="button" tabindex="0">
+          <div class="card-title">集训</div>
+          <div class="card-desc">参加合适的外出集训，集中提升训练效率，</div>
+        </div>
+        <div class="action-card" id="action-resign" role="button" tabindex="0">
+          <div class="card-title">辞职</div>
+          <div class="card-desc">立即结束本赛季并进行结算</div>
+        </div>
+        <div id="event-cards-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="footer-panel" style="display: none;">
+    <div class="row">
+      <div class="col small">
+        <strong>结算/季节设定</strong>
+        <div>赛季总周数: 26</div>
+      </div>
+      <div class="col small">
+        <strong>比赛日程</strong>
+        <div class="small muted" style="margin-top:4px">比赛顺序（每季两轮）：CSP-S1 → CSP-S2 → NOIP → 省选 → NOI</div>
+        <div id="comp-schedule" class="small muted" style="margin-top:6px"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 模态区域 -->
+<div id="modal-root"></div>
+
+<!-- ===== 脚本引用 ===== -->
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/gameA.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/tutorial.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/climate.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/events.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/chinese-convert.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/facilities.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/provinces.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/constants.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/utils.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/models.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/talent.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/task.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/competitions.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/contest-ui.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/contest-integration.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/national-team.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/game.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/render.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/coach-growth.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/minecraft-events.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/items.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/recruit-system.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/team-system.js"></script>
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/lib/achievement-system.js"></script>
+
+<!-- ===== 调试面板（独立模块） ===== -->
+<script src="https://cdn.rthe.cn/uncached-1786843272/xiaoziyi11/%E5%B0%8F%E6%B8%B8%E6%88%8F/oi%E6%95%99%E7%BB%83%E6%A8%A1%E6%8B%9F%E5%99%A8/debug.js"></script>
+
+<!-- ===== 训话 ===== -->
+<script>
+(function() {
+  const input = document.getElementById('coach-speech-input');
+  if (!input) return;
+  input.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' || event.keyCode === 13) {
+      event.preventDefault();
+      const speechText = (input.value || '').trim();
+      if (!speechText) return;
+      const hash = CryptoJS.SHA256(speechText).toString(CryptoJS.enc.Hex);
+      document.dispatchEvent(new CustomEvent('coach-speech', {
+        detail: { text: speechText, hash: hash }
+      }));
+      input.value = '';
+    }
+  });
+})();
+</script>
+
+<!-- ===== 存档检查 ===== -->
+<script>
+  (function(){
+    try{
+      const qs = new URLSearchParams(window.location.search);
+      if(qs && qs.get('new')==='1') return;
+      const raw = localStorage.getItem('oi_coach_save');
+      if(!raw){ window.location.href = 'start.html'; }
+    }catch(e){ /* ignore */ }
+  })();
+  
+  (function(){
+    try{
+      if(window.ChineseConverter && window.ChineseConverter.shouldUseTraditionalChinese()){
+        if(document.readyState === 'loading'){
+          document.addEventListener('DOMContentLoaded', function(){
+            setTimeout(function(){ window.ChineseConverter.convertPageToTraditional(); }, 200);
+          });
+        } else {
+          setTimeout(function(){ window.ChineseConverter.convertPageToTraditional(); }, 200);
+        }
+      }
+    }catch(e){ console.error('繁体中文转换失败:', e); }
+  })();
+</script>
+
+<!-- ===== UI 控制逻辑 ===== -->
+<script>
+// ===== 教练系统UI控制 =====
+document.addEventListener('DOMContentLoaded', function() {
+  const skillBtn = document.getElementById('coach-skill-btn');
+  if (skillBtn) {
+    skillBtn.addEventListener('click', function() {
+      const detail = document.getElementById('coach-skills-detail');
+      if (detail) {
+        detail.style.display = detail.style.display === 'none' ? 'block' : 'none';
+      }
+    });
+  }
+});
+
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.skill-upgrade-btn');
+  if (!btn) return;
+  const skillName = btn.dataset.skill;
+  if (skillName && typeof window.upgradeCoachSkill === 'function') {
+    window.upgradeCoachSkill(skillName);
+  }
+});
+
+// ===== 道具系统 =====
+function ensureInventory() {
+  const game = window.game;
+  if (!game) return false;
+  if (!game.inventory) {
+    console.log('🔧 初始化背包系统...');
+    if (typeof Inventory === 'function') {
+      game.inventory = new Inventory();
+    } else if (typeof window.Inventory === 'function') {
+      game.inventory = new window.Inventory();
+    } else {
+      game.inventory = {
+        items: {}, equipped: {},
+        addItem: function(itemId, count) {
+          this.items[itemId] = (this.items[itemId] || 0) + (count || 1);
+          return true;
+        },
+        removeItem: function(itemId, count) {
+          if (!this.items[itemId] || this.items[itemId] < (count || 1)) return false;
+          this.items[itemId] -= (count || 1);
+          if (this.items[itemId] <= 0) delete this.items[itemId];
+          return true;
+        },
+        getItemCount: function(itemId) { return this.items[itemId] || 0; },
+        hasItem: function(itemId) { return (this.items[itemId] || 0) > 0; },
+        useItem: function(itemId, game) {
+          const item = window.ITEMS ? window.ITEMS[itemId] : null;
+          if (!item) return { success: false, message: '道具不存在' };
+          if (!this.hasItem(itemId)) return { success: false, message: '没有该道具' };
+          if (item.type === 'equipment') return this.equipItem(itemId, game);
+          if (item.type !== 'consumable') return { success: false, message: '该道具无法使用' };
+          const coach = game ? game.coach : null;
+          const result = item.use ? item.use(game, coach) : '使用了道具';
+          this.removeItem(itemId, 1);
+          return { success: true, message: result };
+        },
+        equipItem: function(itemId, game) {
+          const item = window.ITEMS ? window.ITEMS[itemId] : null;
+          if (!item || item.type !== 'equipment') return { success: false, message: '该道具无法装备' };
+          if (!this.hasItem(itemId)) return { success: false, message: '没有该道具' };
+          const slot = item.slot || 'accessory';
+          if (this.equipped[slot]) {
+            const oldId = this.equipped[slot];
+            this.addItem(oldId, 1);
+            delete this.equipped[slot];
+          }
+          this.equipped[slot] = itemId;
+          this.removeItem(itemId, 1);
+          return { success: true, message: '装备了 ' + item.name };
+        },
+        unequipItem: function(slot) {
+          if (!this.equipped[slot]) return false;
+          const itemId = this.equipped[slot];
+          this.addItem(itemId, 1);
+          delete this.equipped[slot];
+          return true;
+        },
+        getEquipBonus: function() {
+          const bonus = {};
+          for (const [slot, itemId] of Object.entries(this.equipped)) {
+            const item = window.ITEMS ? window.ITEMS[itemId] : null;
+            if (item && item.effect) {
+              for (const [key, value] of Object.entries(item.effect)) {
+                bonus[key] = (bonus[key] || 0) + value;
+              }
+            }
+          }
+          return bonus;
+        },
+        getAllItems: function() {
+          const result = [];
+          for (const [id, count] of Object.entries(this.items)) {
+            const item = window.ITEMS ? window.ITEMS[id] : null;
+            if (item) result.push({ ...item, id, count });
+          }
+          for (const [slot, id] of Object.entries(this.equipped)) {
+            const item = window.ITEMS ? window.ITEMS[id] : null;
+            if (item) result.push({ ...item, id, count: 1, equipped: true, slot });
+          }
+          return result;
+        },
+        getEmptySlots: function() {
+          const allSlots = ['body', 'badge', 'tool', 'accessory'];
+          return allSlots.filter(slot => !this.equipped[slot]);
+        }
+      };
+      console.log('⚠️ 使用兜底Inventory对象');
+    }
+    return true;
+  }
+  return true;
+}
+
+function buyItem(itemId, price) {
+  const game = window.game;
+  if (!game) {
+    if (window.pushEvent) window.pushEvent({ name: '购买失败', description: '游戏未初始化', week: 0 });
+    return;
+  }
+  ensureInventory();
+  if ((game.budget || 0) < price) {
+    if (window.pushEvent) window.pushEvent({ name: '购买失败', description: '经费不足！', week: game.week });
+    return;
+  }
+  const item = window.ITEMS ? window.ITEMS[itemId] : null;
+  if (!item) return;
+  game.budget = (game.budget || 0) - price;
+  if (typeof game.recordExpense === 'function') game.recordExpense(price, '购买道具: ' + item.name);
+  let added = false;
+  if (game.inventory && typeof game.inventory.addItem === 'function') {
+    added = game.inventory.addItem(itemId, 1);
+  }
+  if (!added && game.inventory) {
+    game.inventory.items = game.inventory.items || {};
+    game.inventory.items[itemId] = (game.inventory.items[itemId] || 0) + 1;
+  }
+  if (window.pushEvent) window.pushEvent({ name: '购买成功', description: '购买了 ' + item.name + '，花费 ¥' + price, week: game.week });
+  updateShopUI();
+  updateInventoryUI();
+  updateCoachUI();
+  if (typeof renderAll === 'function') renderAll();
+}
+
+function updateCoachUI() {
+  const game = window.game;
+  if (!game || !game.coach) return;
+  const coach = game.coach;
+  const levelEl = document.getElementById('coach-level-display');
+  const expEl = document.getElementById('coach-exp-display');
+  const spEl = document.getElementById('coach-sp-display');
+  const barEl = document.getElementById('coach-exp-bar');
+  if (levelEl) levelEl.textContent = 'Lv.' + coach.level;
+  if (spEl) spEl.textContent = '✨ 技能点: ' + (coach.skillPoints || 0);
+  const expNeeded = coach.getExpToNextLevel ? coach.getExpToNextLevel() : 100;
+  const progress = coach.getExpProgress ? coach.getExpProgress() : 0;
+  if (expEl) {
+    if (expNeeded === Infinity) expEl.textContent = '经验: MAX';
+    else expEl.textContent = '经验: ' + Math.floor(coach.exp || 0) + '/' + expNeeded;
+  }
+  if (barEl) barEl.style.width = Math.min(100, (progress || 0) * 100) + '%';
+  if (coach.skills) {
+    const skillMap = {
+      '教学精通': 'skill-teaching', '经费管理': 'skill-funding', '心灵导师': 'skill-recovery',
+      '伯乐之眼': 'skill-recruit', '赛事专家': 'skill-competition', '人脉广泛': 'skill-event',
+      '铁腕管理': 'skill-management', '创新教学': 'skill-mock'
+    };
+    for (const [name, elId] of Object.entries(skillMap)) {
+      const el = document.getElementById(elId);
+      if (el) {
+        const level = coach.skills[name] || 0;
+        const maxLevel = coach.getSkillMaxLevel ? coach.getSkillMaxLevel(name) : 10;
+        const value = coach.getSkillValue ? coach.getSkillValue(name) : 0;
+        el.textContent = level + '/' + maxLevel + '级 (+' + value + '%)';
+        const parent = el.parentElement;
+        const btn = parent ? parent.querySelector('.skill-upgrade-btn') : null;
+        if (btn) {
+          btn.disabled = !((coach.skillPoints || 0) > 0 && level < maxLevel);
+          btn.style.opacity = ((coach.skillPoints || 0) > 0 && level < maxLevel) ? '1' : '0.4';
+        }
+      }
+    }
+  }
+}
+
+function updateInventoryUI() {
+  const game = window.game;
+  if (!game) return;
+  ensureInventory();
+  const inv = game.inventory;
+  if (!inv) return;
+  let items = [];
+  try { items = inv.getAllItems ? inv.getAllItems() : []; } catch(e) { items = []; }
+  const countEl = document.getElementById('inventory-count');
+  const bonusEl = document.getElementById('inventory-bonus');
+  const gridEl = document.getElementById('inventory-grid');
+  if (countEl) countEl.textContent = items.length + ' 件';
+  let bonus = {};
+  try { bonus = inv.getEquipBonus ? inv.getEquipBonus() : {}; } catch(e) { bonus = {}; }
+  const bonusStr = Object.entries(bonus).filter(([k, v]) => v > 0).map(([k, v]) => k + '+' + Math.round(v * 100) + '%').join(' ');
+  if (bonusEl) bonusEl.textContent = bonusStr ? '加成: ' + bonusStr : '';
+  if (!gridEl) return;
+  if (items.length === 0) {
+    gridEl.innerHTML = '<span style="color: #999; font-size: 13px;">背包为空，通过事件获得道具</span>';
+    return;
+  }
+  let html = '';
+  for (const item of items) {
+    const isEquipped = item.equipped || false;
+    const isConsumable = item.type === 'consumable';
+    const isEquipment = item.type === 'equipment';
+    const itemCount = item.count || 1;
+    const fullItem = window.ITEMS ? window.ITEMS[item.id] : null;
+    const icon = fullItem && fullItem.icon ? fullItem.icon : (item.icon || '📦');
+    const name = fullItem && fullItem.name ? fullItem.name : (item.name || item.id);
+    const rarity = fullItem && fullItem.rarity ? fullItem.rarity : (item.rarity || '普通');
+    html += `
+      <div class="inventory-item" style="display: flex; align-items: center; gap: 4px; background: ${isEquipped ? '#e9ecef' : '#fff'}; padding: 4px 8px; border-radius: 4px; border: 1px solid ${isEquipped ? '#ffc107' : '#dee2e6'}; font-size: 12px;">
+        <span>${icon}</span>
+        <span style="color: ${isEquipped ? '#e67700' : '#222'};">${name}</span>
+        ${itemCount > 1 ? '<span style="color: #666; font-size: 10px;">×' + itemCount + '</span>' : ''}
+        <span style="color: #999; font-size: 10px;">${rarity}</span>
+        <button class="item-action-btn" data-item="${item.id}" style="background: ${isEquipped ? '#dc3545' : '#e9ecef'}; color: ${isEquipped ? '#fff' : '#222'}; border: 1px solid ${isEquipped ? '#dc3545' : '#ced4da'}; border-radius: 2px; cursor: pointer; font-size: 10px; padding: 0 6px;">
+          ${isEquipped ? '卸下' : (isConsumable ? '使用' : (isEquipment ? '装备' : '查看'))}
+        </button>
+      </div>
+    `;
+  }
+  gridEl.innerHTML = html;
+  gridEl.querySelectorAll('.item-action-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const itemId = this.dataset.item;
+      if (typeof window.useInventoryItem === 'function') window.useInventoryItem(itemId);
+      else {
+        const game = window.game;
+        if (game && game.inventory) {
+          const result = game.inventory.useItem(itemId, game);
+          if (result && result.success) { updateInventoryUI(); updateShopUI(); if (typeof renderAll === 'function') renderAll(); }
+        }
+      }
+    });
+  });
+}
+
+function updateShopUI() {
+  const game = window.game;
+  if (!game) return;
+  const gridEl = document.getElementById('shop-grid');
+  if (!gridEl) return;
+  const allItems = Object.entries(window.ITEMS || {});
+  if (allItems.length === 0) {
+    gridEl.innerHTML = '<span style="color: #999; font-size: 13px;">商店暂时没有商品</span>';
+    return;
+  }
+  const shuffled = allItems.sort(() => Math.random() - 0.5);
+  const displayItems = shuffled.slice(0, 6);
+  let html = '';
+  for (const [id, item] of displayItems) {
+    const price = item.price || 100;
+    const canBuy = (game.budget || 0) >= price;
+    html += `
+      <div class="shop-item" style="display: flex; align-items: center; gap: 4px; background: #fff; padding: 4px 8px; border-radius: 4px; border: 1px solid #dee2e6; font-size: 12px;">
+        <span>${item.icon || '📦'}</span>
+        <span style="color: #222;">${item.name}</span>
+        <span style="color: #666; font-size: 10px;">¥${price}</span>
+        <span style="color: #999; font-size: 10px;">${item.rarity}</span>
+        <button class="shop-buy-btn" data-item="${id}" data-price="${price}" ${canBuy ? '' : 'disabled'} style="background: ${canBuy ? '#28a745' : '#e9ecef'}; color: ${canBuy ? '#fff' : '#999'}; border: 1px solid ${canBuy ? '#28a745' : '#ced4da'}; border-radius: 2px; cursor: ${canBuy ? 'pointer' : 'not-allowed'}; font-size: 10px; padding: 0 6px;">
+          ${canBuy ? '购买' : '缺经费'}
+        </button>
+      </div>
+    `;
+  }
+  gridEl.innerHTML = html;
+  gridEl.querySelectorAll('.shop-buy-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const itemId = this.dataset.item;
+      const price = parseInt(this.dataset.price);
+      if (typeof window.buyItem === 'function') window.buyItem(itemId, price);
+    });
+  });
+}
+
+function useInventoryItem(itemId) {
+  const game = window.game;
+  if (!game || !game.inventory) {
+    if (window.pushEvent) window.pushEvent({ name: '错误', description: '道具系统未初始化', week: 0 });
+    return;
+  }
+  const result = game.inventory.useItem(itemId, game);
+  if (result && result.success) {
+    if (window.pushEvent) window.pushEvent({ name: '道具使用', description: result.message, week: game.week });
+    updateInventoryUI();
+    updateShopUI();
+    if (typeof renderAll === 'function') renderAll();
+  }
+}
+
+// ===== 队伍UI =====
+function updateTeamUI() {
+  const game = window.game;
+  if (!game || !game.teamManager) {
+    const countEl = document.getElementById('team-count');
+    const listEl = document.getElementById('team-list');
+    if (countEl) countEl.textContent = '0 支队伍';
+    if (listEl) listEl.innerHTML = '暂无队伍';
+    return;
+  }
+  const teams = game.teamManager.teams || [];
+  const countEl = document.getElementById('team-count');
+  const listEl = document.getElementById('team-list');
+  if (countEl) countEl.textContent = teams.length + ' 支队伍';
+  if (teams.length === 0) {
+    if (listEl) listEl.innerHTML = '暂无队伍';
+    return;
+  }
+  let html = '';
+  for (const team of teams) {
+    const members = team.members.map(m => m.name).join('、');
+    const winRate = team.getWinRate ? (team.getWinRate() * 100).toFixed(0) + '%' : '0%';
+    const talent = team.teamTalent ? '✨' + team.teamTalent.name : '';
+    html += '<div style="padding: 3px 0; border-bottom: 1px solid #e9ecef;">';
+    html += '<span style="color: #17a2b8;">' + team.name + '</span>';
+    html += ' <span style="color: #666;">(' + members + ')</span>';
+    html += ' <span style="color: #e67700; font-size: 10px;">' + talent + '</span>';
+    html += ' <span style="color: #999; font-size: 10px;">胜率 ' + winRate + '</span>';
+    html += '</div>';
+  }
+  if (listEl) listEl.innerHTML = html;
+}
+
+function updateAchievementUI() {
+  const game = window.game;
+  if (!game || !game.achievements) {
+    document.getElementById('achievement-count').textContent = '0 / 17 已解锁';
+    document.getElementById('achievement-list').innerHTML = '暂无成就';
+    return;
+  }
+  const unlocked = game.achievements.getUnlocked ? game.achievements.getUnlocked() : [];
+  const total = Object.keys(window.ACHIEVEMENTS || {}).length || 17;
+  document.getElementById('achievement-count').textContent = unlocked.length + ' / ' + total + ' 已解锁';
+  if (unlocked.length === 0) {
+    document.getElementById('achievement-list').innerHTML = '暂无成就';
+    return;
+  }
+  let html = '';
+  const display = unlocked.slice(-5);
+  for (const ach of display) {
+    html += '<span style="display: inline-block; background: #ffc107; color: #222; padding: 0 10px; border-radius: 12px; font-size: 11px; margin: 2px;">' + ach.icon + ' ' + ach.name + '</span>';
+  }
+  if (unlocked.length > 5) html += '<span style="color: #999; font-size: 11px;">+' + (unlocked.length - 5) + ' 更多</span>';
+  document.getElementById('achievement-list').innerHTML = html;
+}
+
+// ===== 商店刷新 =====
+document.addEventListener('DOMContentLoaded', function() {
+  const refreshBtn = document.getElementById('shop-refresh-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', function() {
+      updateShopUI();
+      if (window.pushEvent) {
+        const game = window.game;
+        if (game) window.pushEvent({ name: '商店刷新', description: '商品列表已更新', week: game.week });
+      }
+    });
+  }
+});
+
+// ===== 创建队伍 =====
+document.getElementById('team-create-btn')?.addEventListener('click', function() {
+  const game = window.game;
+  if (!game || !game.teamManager) { alert('⚠️ 队伍系统未初始化'); return; }
+  const activeStudents = game.students.filter(s => s && s.active);
+  if (activeStudents.length === 0) { alert('⚠️ 没有可加入队伍的学生'); return; }
+  const inTeam = new Set();
+  for (const team of game.teamManager.teams) {
+    for (const m of team.members) inTeam.add(m);
+  }
+  const available = activeStudents.filter(s => !inTeam.has(s));
+  if (available.length === 0) { alert('⚠️ 所有学生已在队伍中'); return; }
+  let optionsHtml = '';
+  for (const s of available) optionsHtml += '<option value="' + s.name + '">' + s.name + '</option>';
+  const modalHtml = `
+    <div style="background: #fff; color: #222; padding: 24px; border-radius: 12px; max-width: 400px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+      <h3 style="color: #17a2b8; margin-top: 0;">🤝 创建队伍</h3>
+      <div style="margin: 12px 0;">
+        <label style="display: block; margin-bottom: 4px; color: #555;">队伍名称</label>
+        <input id="team-name-input" type="text" placeholder="输入队伍名称..." style="width: 100%; padding: 8px 12px; border-radius: 4px; border: 1px solid #ced4da; background: #f8f9fa; color: #222;">
+      </div>
+      <div style="margin: 12px 0;">
+        <label style="display: block; margin-bottom: 4px; color: #555;">选择队长</label>
+        <select id="team-captain-select" style="width: 100%; padding: 8px 12px; border-radius: 4px; border: 1px solid #ced4da; background: #f8f9fa; color: #222;">${optionsHtml}</select>
+      </div>
+      <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: flex-end;">
+        <button id="team-create-cancel" style="background: #e9ecef; color: #222; border: 1px solid #ced4da; padding: 8px 20px; border-radius: 4px; cursor: pointer;">取消</button>
+        <button id="team-create-confirm" style="background: #28a745; color: #fff; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer;">创建</button>
+      </div>
+    </div>
+  `;
+  const overlay = document.createElement('div');
+  overlay.id = 'team-modal-overlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  overlay.innerHTML = modalHtml;
+  document.body.appendChild(overlay);
+  document.getElementById('team-create-cancel').onclick = function() { overlay.remove(); };
+  document.getElementById('team-create-confirm').onclick = function() {
+    const name = document.getElementById('team-name-input').value.trim() || '未命名队伍';
+    const captainName = document.getElementById('team-captain-select').value;
+    const captain = game.students.find(s => s.name === captainName);
+    if (!captain) { alert('⚠️ 请选择有效的队长'); return; }
+    const result = game.teamManager.createTeam(name, captain);
+    if (result.success) {
+      if (window.pushEvent) window.pushEvent({ name: '🤝 队伍创建', description: '创建队伍「' + name + '」，队长：' + captain.name, week: game.week });
+      overlay.remove();
+      updateTeamUI();
+      if (typeof renderAll === 'function') renderAll();
+      alert('✅ 队伍「' + name + '」创建成功！');
+    } else {
+      alert('⚠️ ' + result.message);
+    }
+  };
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+});
+
+// ===== 重写 renderAll =====
+const originalRenderAll = window.renderAll;
+window.renderAll = function() {
+  if (typeof originalRenderAll === 'function') originalRenderAll();
+  try {
+    updateCoachUI();
+    updateInventoryUI();
+    updateShopUI();
+    updateTeamUI();
+    updateAchievementUI();
+  } catch(e) { console.error('❌ 更新UI失败:', e); }
+};
+
+// ===== 暴露全局函数 =====
+window.updateCoachUI = updateCoachUI;
+window.updateInventoryUI = updateInventoryUI;
+window.updateShopUI = updateShopUI;
+window.buyItem = buyItem;
+window.useInventoryItem = useInventoryItem;
+window.ensureInventory = ensureInventory;
+window.updateTeamUI = updateTeamUI;
+window.updateAchievementUI = updateAchievementUI;
+
+// ===== 延迟初始化 =====
+setTimeout(function() {
+  try {
+    ensureInventory();
+    updateCoachUI();
+    updateInventoryUI();
+    updateShopUI();
+    updateTeamUI();
+    updateAchievementUI();
+    console.log('🎮 所有系统 UI 加载完成（浅色主题）');
+  } catch(e) { console.error('❌ 初始化UI失败:', e); }
+}, 500);
+</script>
+
+<!-- ===== 底部链接 ===== -->
+<div class="guide-links" style="margin-top: 16px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+  <a href="help.html" class="link-btn link-help" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-decoration: none; background: #e9ecef; color: #17a2b8; border: 1px solid #17a2b8; transition: all 0.3s;">📖 完整游戏指南</a>
+</div>
+
+<!-- ===== 版权 ===== -->
+<footer style="text-align:center;padding:12px 8px;color:#666;font-size:13px;border-top:1px solid #eee;margin-top:18px">
+  作者 @Dreamers-seve · 洛谷: <a href="https://www.luogu.com.cn/user/668972" target="_blank" rel="noopener">https://www.luogu.com.cn/user/668972</a> · GitHub: <a href="https://github.com/seve42/OItrainer" target="_blank" rel="noopener">https://github.com/seve42/OItrainer</a>
+</footer>
+
+<!-- ===== 冬日计划 ===== -->
+<script>
+  (function(){
+    try{
+      var cutoff = new Date('2026-03-01T00:00:00Z');
+      var now = new Date();
+      if(now >= cutoff) return;
+      var footer = document.querySelector('footer');
+      var linkHtml = '<a href="https://www.luogu.me/article/n4gmkam0" target="_blank" rel="noopener" style="color:#17a2b8;text-decoration:none;font-weight:600;padding:6px 10px;border-radius:6px">冬日绘板计划</a>';
+      var container;
+      if(footer){
+        container = footer.querySelector('#winter-plan');
+        if(!container){
+          container = document.createElement('div');
+          container.id = 'winter-plan';
+          container.style.marginTop = '8px';
+          container.style.fontSize = '13px';
+          container.style.color = '#17a2b8';
+          container.style.textAlign = 'center';
+          footer.appendChild(container);
+        }
+      } else {
+        container = document.getElementById('winter-plan');
+        if(!container){
+          container = document.createElement('div');
+          container.id = 'winter-plan';
+          container.style.position = 'fixed';
+          container.style.left = '0';
+          container.style.right = '0';
+          container.style.bottom = '8px';
+          container.style.textAlign = 'center';
+          container.style.fontSize = '13px';
+          container.style.zIndex = '9999';
+          document.body.appendChild(container);
+        }
+      }
+      container.innerHTML = linkHtml;
+    }catch(e){}
+  })();
+</script>
+
+<!-- ===== 反调试 ===== -->
+<script type="importmap">
+{ "imports": { "anti-debug": "https://cdn.jsdelivr.net/npm/@sgysldz/anti-debug@1.0.0/dist/index.js" } }
+</script>
+<script type="module">
+import { startAntiDebugGuard } from 'anti-debug';
+const guard = startAntiDebugGuard({
+  intervalMs: 2500,
+  skipInDevelopment: true,
+  uiBlock: true,
+  onThreat(reason) { console.warn('检测到调试行为:', reason); },
+});
+</script>
+
+
+</body></html>

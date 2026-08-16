@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 · 神人虚空</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #0d0b1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 宇宙粒子背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(2px 2px at 20% 30%, #a89bff, transparent),
+                radial-gradient(2px 2px at 40% 70%, #d4cbff, transparent),
+                radial-gradient(2px 2px at 60% 20%, #8f7fd6, transparent),
+                radial-gradient(2px 2px at 80% 80%, #b8a9f0, transparent),
+                radial-gradient(1px 1px at 10% 90%, #fff, transparent),
+                radial-gradient(1px 1px at 90% 10%, #fff, transparent),
+                radial-gradient(1px 1px at 50% 50%, #c4b5ff, transparent);
+            background-size: 200px 200px;
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 40px 30px;
+            max-width: 700px;
+            width: 100%;
+            background: rgba(13, 11, 26, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            border: 1px solid rgba(168, 155, 255, 0.15);
+            box-shadow: 0 0 80px rgba(168, 155, 255, 0.05), inset 0 0 80px rgba(168, 155, 255, 0.02);
+            animation: floatIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        @keyframes floatIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* 神人404数字 */
+        .glitch-404 {
+            font-size: clamp(100px, 20vw, 180px);
+            font-weight: 900;
+            line-height: 1;
+            color: #d4cbff;
+            text-shadow:
+                0 0 30px rgba(168, 155, 255, 0.3),
+                0 0 60px rgba(168, 155, 255, 0.1);
+            letter-spacing: 10px;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .glitch-404::before,
+        .glitch-404::after {
+            content: '404';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .glitch-404::before {
+            color: #ff6b9d;
+            transform: translate(-4px, 2px);
+            opacity: 0.6;
+            clip-path: inset(0 0 80% 0);
+            animation: glitch1 2.8s infinite steps(1);
+        }
+
+        .glitch-404::after {
+            color: #6bcfff;
+            transform: translate(4px, -2px);
+            opacity: 0.6;
+            clip-path: inset(80% 0 0 0);
+            animation: glitch2 2.8s infinite steps(1);
+        }
+
+        @keyframes glitch1 {
+            0%, 90%, 100% { transform: translate(-4px, 2px); }
+            92% { transform: translate(6px, -4px); }
+            94% { transform: translate(-2px, 6px); }
+        }
+
+        @keyframes glitch2 {
+            0%, 90%, 100% { transform: translate(4px, -2px); }
+            92% { transform: translate(-6px, 4px); }
+            94% { transform: translate(2px, -6px); }
+        }
+
+        .subtitle {
+            font-size: clamp(20px, 4vw, 34px);
+            color: #a89bff;
+            margin: 6px 0 16px;
+            font-weight: 300;
+            letter-spacing: 4px;
+        }
+
+        .subtitle span {
+            display: inline-block;
+            animation: yee 1.8s infinite ease-in-out;
+        }
+
+        @keyframes yee {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-6deg) scale(1.04); }
+            75% { transform: rotate(6deg) scale(1.04); }
+        }
+
+        .description {
+            font-size: 16px;
+            color: rgba(212, 203, 255, 0.6);
+            line-height: 1.8;
+            margin: 16px 0 30px;
+            padding: 0 10px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .description .highlight {
+            color: #d4cbff;
+            font-weight: 500;
+            background: rgba(168, 155, 255, 0.08);
+            padding: 0 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(168, 155, 255, 0.1);
+        }
+
+        /* 神人按钮组 */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border: 1px solid rgba(168, 155, 255, 0.2);
+            border-radius: 60px;
+            background: rgba(168, 155, 255, 0.05);
+            color: #d4cbff;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            letter-spacing: 1px;
+            backdrop-filter: blur(4px);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: rgba(168, 155, 255, 0.12);
+            border-color: rgba(168, 155, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(168, 155, 255, 0.08);
+        }
+
+        .btn-primary {
+            background: rgba(168, 155, 255, 0.12);
+            border-color: rgba(168, 155, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: rgba(168, 155, 255, 0.2);
+            border-color: #a89bff;
+            box-shadow: 0 0 40px rgba(168, 155, 255, 0.06);
+        }
+
+        /* 漂浮神人元素 */
+        .float-element {
+            position: fixed;
+            font-size: 24px;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatAround 20s infinite alternate ease-in-out;
+        }
+
+        .float-element:nth-child(1) { top: 10%; left: 5%; animation-duration: 22s; font-size: 40px; }
+        .float-element:nth-child(2) { bottom: 15%; right: 8%; animation-duration: 26s; font-size: 36px; }
+        .float-element:nth-child(3) { top: 50%; left: 3%; animation-duration: 18s; font-size: 28px; }
+        .float-element:nth-child(4) { top: 20%; right: 4%; animation-duration: 30s; font-size: 44px; }
+        .float-element:nth-child(5) { bottom: 30%; left: 12%; animation-duration: 24s; font-size: 32px; }
+
+        @keyframes floatAround {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(30px, -20px) rotate(10deg) scale(1.1); }
+            50% { transform: translate(-10px, 30px) rotate(-5deg) scale(0.9); }
+            75% { transform: translate(20px, 10px) rotate(8deg) scale(1.05); }
+            100% { transform: translate(-20px, -10px) rotate(-3deg) scale(0.95); }
+        }
+
+        /* 熵值计数器 - 纯装饰 */
+        .entropy-counter {
+            margin-top: 24px;
+            font-size: 12px;
+            color: rgba(168, 155, 255, 0.2);
+            letter-spacing: 2px;
+            font-family: monospace;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 30px 18px;
+                border-radius: 28px;
+            }
+            .btn {
+                padding: 10px 22px;
+                font-size: 14px;
+            }
+            .description {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 漂浮神人元素 -->
+    <div class="float-element">yee</div>
+    <div class="float-element">π</div>
+    <div class="float-element">✧</div>
+    <div class="float-element">⍟</div>
+    <div class="float-element">⌛</div>
+
+    <div class="container">
+        <!-- 404 神人数字 -->
+        <div class="glitch-404">404</div>
+
+        <!-- 主标题 -->
+        <div class="subtitle">
+            <span>✦</span> 页面被碧月狐炸了 <span>✦</span>
+        </div>
+
+        <!-- 神人描述 -->
+        <div class="description">
+            你来到了<span class="highlight">虚空边缘</span>，这里没有你想要的页面，
+            只有<span class="highlight">无限熵值</span>和<span class="highlight">yee</span>的回响。
+            <br>
+            也许它被<span class="highlight">小胖</span>创飞了，
+            或者被<span class="highlight">鸡排帝国</span>占领了。
+        </div>
+
+        <!-- 按钮 -->
+        <div class="btn-group">
+            <a href="/" class="btn btn-primary">
+                <span>🏠</span> 撤回现实
+            </a>
+            <a href="javascript:history.back()" class="btn">
+                <span>↩</span> 退回上一维度
+            </a>
+            <a href="#" class="btn" onclick="alert('yee～ 什么都没发生，但精神状态良好')">
+                <span>🌀</span> 随机yee一下
+            </a>
+        </div>
+
+        <!-- 熵值计数器 -->
+        <div class="entropy-counter">
+            █ 当前虚空熵值：∞ · 精神状态：良好 █
+        </div>
+    </div>
+
+    <!-- 控制台防调试小彩蛋 -->
+    <script>
+        // 神人防调试（轻量版）
+        (function() {
+            const startTime = Date.now();
+            const check = () => {
+                const diff = Date.now() - startTime;
+                if (diff > 1000) {
+                    // 只是静默记录，不打扰用户
+                    console.log('🧠 检测到时间扭曲，精神状态依然良好');
+                }
+            };
+            setInterval(check, 2000);
+        })();
+
+        // 阻止右键
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // 阻止复制
+        document.addEventListener('copy', e => e.preventDefault());
+
+        console.log('✦ 404 神人虚空 ✦');
+        console.log('yee～ 你已经在精神层面找到了这个页面');
+    </script>
+</body>
+</html>

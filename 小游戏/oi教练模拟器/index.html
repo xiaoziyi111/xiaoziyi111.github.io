@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OI 教练模拟器 — 主菜单</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body {
+      display: flex;
+      background: url('assets/start-bg.jpg') center/cover no-repeat;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    #rain-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      transform: rotate(-12deg) scale(1.5);
+      transform-origin: center center;
+      opacity: 0.85;
+    }
+    #rain-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(10,25,47,0.92), rgba(22,32,54,0.92));
+    }
+    .menu-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 80px;
+      min-width: 360px;
+      max-width: 520px;
+      position: relative;
+      z-index: 2;
+    }
+    .menu-left h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      letter-spacing: 2px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    }
+    .menu-subtitle {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      font-family: "SF Mono", "Fira Code", "Consolas", "Courier New", monospace;
+    }
+    .menu-flavor {
+      font-size: 8px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.12);
+      margin-bottom: 36px;
+      line-height: 1.8;
+      max-width: 380px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      user-select: none;
+      pointer-events: none;
+    }
+    .menu-btn-wrap {
+      position: relative;
+      width: fit-content;
+      margin-bottom: 14px;
+    }
+    .menu-btn-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: rgba(255,255,255,0.5);
+      clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+      z-index: 0;
+      transition: background 0.25s;
+      pointer-events: none;
+    }
+    .menu-btn-wrap:hover::after {
+      background: rgba(255,255,255,0.8);
+    }
+    .menu-btn {
+      display: block;
+      width: fit-content;
+      min-width: 160px;
+      padding: 6px 32px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+      background: rgba(16,29,48,0.85);
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background 0.25s, color 0.25s, padding-left 0.25s, transform 0.1s;
+      font-family: inherit;
+      clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+      position: relative;
+      z-index: 1;
+    }
+    .menu-btn::before {
+      content: '> ';
+      position: absolute;
+      left: 16px;
+      opacity: 0;
+      color: #ffd54f;
+      font-weight: 700;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      transition: opacity 0.15s;
+    }
+    .menu-btn:hover {
+      background: rgba(30,45,68,0.9);
+      color: #ffd54f;
+      padding-left: 48px;
+    }
+    .menu-btn:hover::before {
+      opacity: 1;
+      animation: cursor-blink 0.8s step-end infinite;
+    }
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .menu-btn:active {
+      transform: scale(0.96);
+    }
+    .menu-btn.primary {
+      background: rgba(20,38,60,0.9);
+    }
+    .menu-btn.primary:hover {
+      background: rgba(35,52,78,0.95);
+    }
+    .menu-btn.danger:hover {
+      background: rgba(200,50,50,0.9);
+      color: #ff6b6b;
+    }
+    .menu-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+    .menu-btn:disabled:hover {
+      background: rgba(16,29,48,0.85);
+      color: #fff;
+      padding-left: 32px;
+    }
+    .menu-btn:disabled:hover::before {
+      opacity: 0;
+      animation: none;
+    }
+    .menu-btn-wrap:has(.menu-btn:disabled)::after {
+      background: rgba(255,255,255,0.25);
+    }
+    .menu-btn-wrap:has(.menu-btn:disabled):hover::after {
+      background: rgba(255,255,255,0.25);
+    }
+    .menu-right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 80px;
+      position: relative;
+      z-index: 2;
+    }
+    .changelog-panel {
+      width: 100%;
+      max-width: 480px;
+      max-height: 70vh;
+      background: transparent;
+      color: rgba(255,255,255,0.35);
+      border: none;
+      padding: 24px 28px;
+      overflow-y: auto;
+    }
+    .changelog-panel h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.35);
+      margin: 16px 0 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .changelog-panel h2:first-child {
+      margin-top: 0;
+    }
+    .changelog-panel p {
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.25);
+      margin: 0;
+    }
+    .changelog-panel::-webkit-scrollbar {
+      width: 5px;
+    }
+    .changelog-panel::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .changelog-panel::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.08);
+      border-radius: 3px;
+    }
+    .changelog-loading {
+      font-size: 13px;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+      padding: 20px 0;
+    }
+    .menu-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      padding: 12px 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      z-index: 2;
+    }
+    .menu-footer a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+    }
+    .menu-footer a:hover {
+      color: rgba(255,255,255,0.9);
+    }
+
+    /* ===== 成就弹窗 ===== */
+    .achievement-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+    .achievement-modal {
+      background: #1a1a2e;
+      border: 2px solid #ffd700;
+      border-radius: 16px;
+      padding: 30px 36px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      color: #eee;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    }
+    .achievement-modal h2 {
+      text-align: center;
+      color: #ffd700;
+      font-size: 28px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 12px;
+    }
+    .achievement-modal .close-btn {
+      float: right;
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 28px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .achievement-modal .close-btn:hover {
+      color: #fff;
+    }
+    .achievement-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      margin: 6px 0;
+      background: #0d1b2a;
+      border-radius: 8px;
+      border-left: 4px solid #333;
+      transition: all 0.2s;
+    }
+    .achievement-item.unlocked {
+      border-left-color: #ffd700;
+      background: #1a2332;
+    }
+    .achievement-item .icon {
+      font-size: 28px;
+      width: 40px;
+      text-align: center;
+    }
+    .achievement-item .info {
+      flex: 1;
+    }
+    .achievement-item .info .name {
+      font-weight: 600;
+      color: #eee;
+    }
+    .achievement-item .info .desc {
+      font-size: 12px;
+      color: #888;
+    }
+    .achievement-item .status {
+      font-size: 12px;
+      padding: 2px 10px;
+      border-radius: 12px;
+    }
+    .achievement-item .status.locked {
+      background: #333;
+      color: #666;
+    }
+    .achievement-item .status.unlocked {
+      background: #ffd700;
+      color: #1a1a2e;
+    }
+    .achievement-count {
+      text-align: center;
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+  <!-- Cloudflare Web Analytics loader -->
+  <script>
+    (function(){
+      function injectCF(){
+        var s = document.createElement('script');
+        s.defer = true;
+        s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+        s.setAttribute('data-cf-beacon', '{"token": "cd3db41765ea4c17be0930b3f94e3c3a"}');
+        document.head.appendChild(s);
+      }
+      function shouldLoad(){
+        try{
+          var start = (performance.timing && performance.timing.navigationStart) || 0;
+          var elapsed = performance.now ? performance.now() : (Date.now() - start);
+          return elapsed <= 2000;
+        }catch(e){ return false; }
+      }
+      document.addEventListener('DOMContentLoaded', function(){ if(shouldLoad()) injectCF(); });
+    })();
+  </script>
+</head>
+<body>
+  <canvas id="rain-canvas"></canvas>
+  <div id="rain-overlay"></div>
+  <div class="menu-left">
+    <h1>{OI教练模拟器}</h1>
+    <p class="menu-subtitle">&lt;OI Coach Simulator&gt;</p>
+    <p class="menu-flavor">二NOIP，你被黄紫黑黑创飞原地AFO。一觉醒来，你发现你坐在机房前，成为了你们学校信息学竞赛的总教练。回想起之前构造题没checker，模拟赛没大样例，一个月没有半天假期的训练生活。你决定要改变这一切。</p>
+    <div class="menu-btn-wrap"><a href="start.html" class="menu-btn primary">开始游戏</a></div>
+    <div class="menu-btn-wrap"><button class="menu-btn" id="achievement-btn">🏆 成  就</button></div>
+    <div class="menu-btn-wrap"><button class="menu-btn danger" id="clear-save-btn">🗑️ 清除存档</button></div>
+  </div>
+  <div class="menu-right">
+    <div class="changelog-panel" id="changelog-panel">
+      <p class="changelog-loading">加载更新日志中...</p>
+    </div>
+  </div>
+
+  <footer class="menu-footer">
+    作者 @Dreamers-seve · 洛谷: <a href="https://www.luogu.com.cn/user/668972" target="_blank" rel="noopener">https://www.luogu.com.cn/user/668972</a> · GitHub: <a href="https://github.com/seve42/OItrainer" target="_blank" rel="noopener">https://github.com/seve42/OItrainer</a>
+  </footer>
+
+  <!-- 斜向代码雨动画 -->
+  <script>
+    (function(){
+      var canvas = document.getElementById('rain-canvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d', { alpha: true });
+
+      var charArr = ['0','1'];
+
+      var drops = [];
+      var speeds = [];
+      var columns = 0;
+      var colWidth = 26;
+      var fontSize = 18;
+      var lastTime = 0;
+      var FPS = 22;
+      var frameInterval = 1000 / FPS;
+      var W = 0;
+      var H = 0;
+
+      function resize() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        columns = Math.floor(W / colWidth) + 2;
+        drops = new Array(columns);
+        speeds = new Array(columns);
+        for (var i = 0; i < columns; i++) {
+          drops[i] = Math.random() * -(H / fontSize);
+          speeds[i] = 0.35 + Math.random() * 0.65;
+        }
+      }
+
+      function draw(timestamp) {
+        requestAnimationFrame(draw);
+        if (timestamp - lastTime < frameInterval) return;
+        lastTime = timestamp;
+
+        ctx.fillStyle = 'rgba(10,25,47,0.04)';
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.font = fontSize + 'px "SF Mono","Fira Code","Consolas",monospace';
+
+        for (var i = 0; i < columns; i++) {
+          var x = i * colWidth;
+          var y = drops[i] * fontSize;
+
+          if (y < -fontSize || y > H + fontSize) {
+            drops[i] += speeds[i];
+            if (y > H + fontSize * 3 && Math.random() > 0.97) {
+              drops[i] = Math.random() * -6;
+              speeds[i] = 0.35 + Math.random() * 0.65;
+            }
+            continue;
+          }
+
+          ctx.fillStyle = 'rgba(255,255,255,0.9)';
+          ctx.fillText(charArr[Math.floor(Math.random() * 2)], x, y);
+
+          if (y > fontSize) {
+            ctx.fillStyle = 'rgba(255,255,255,0.32)';
+            ctx.fillText(charArr[Math.floor(Math.random() * 2)], x, y - fontSize);
+          }
+
+          drops[i] += speeds[i];
+
+          if (y > H + fontSize * 3 && Math.random() > 0.97) {
+            drops[i] = Math.random() * -6;
+            speeds[i] = 0.35 + Math.random() * 0.65;
+          }
+        }
+      }
+
+      resize();
+      window.addEventListener('resize', function () {
+        clearTimeout(window._rainRt);
+        window._rainRt = setTimeout(resize, 250);
+      });
+      requestAnimationFrame(draw);
+    })();
+  </script>
+
+  <!-- 加载更新日志 -->
+  <script>
+    (function(){
+      var panel = document.getElementById('changelog-panel');
+      fetch('CHANGELOG.md')
+        .then(function(res){ if(!res.ok) throw new Error('HTTP '+res.status); return res.text(); })
+        .then(function(md){
+          var html = '';
+          var lines = md.split('\n');
+          var i = 0;
+          while(i < lines.length){
+            var line = lines[i];
+            if(line.indexOf('## ') === 0){
+              html += '<h2>' + esc(line.slice(3)) + '</h2>';
+            } else if(line.indexOf('# ') === 0){
+              html += '<h2>' + esc(line.slice(2)) + '</h2>';
+            } else if(line.trim() !== ''){
+              html += '<p>' + esc(line) + '</p>';
+            }
+            i++;
+          }
+          panel.innerHTML = html || '<p class="changelog-loading">暂无更新日志</p>';
+        })
+        .catch(function(){
+          panel.innerHTML = '<p class="changelog-loading">更新日志加载失败</p>';
+        });
+      function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    })();
+  </script>
+
+  <!-- winter plan injection -->
+  <script>
+    (function(){
+      try{
+        var cutoff = new Date('2026-03-01T00:00:00Z');
+        var now = new Date();
+        if(now >= cutoff) return;
+        var footer = document.querySelector('footer');
+        var linkHtml = '<a href="https://www.luogu.me/article/n4gmkam0" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.7);text-decoration:none;font-weight:600;padding:6px 10px;border-radius:6px">冬日绘板计划</a>';
+        var container;
+        if(footer){
+          container = footer.querySelector('#winter-plan');
+          if(!container){
+            container = document.createElement('div');
+            container.id = 'winter-plan';
+            container.style.marginTop = '8px';
+            container.style.fontSize = '13px';
+            container.style.color = 'rgba(255,255,255,0.7)';
+            container.style.textAlign = 'center';
+            footer.appendChild(container);
+          }
+        } else {
+          container = document.getElementById('winter-plan');
+          if(!container){
+            container = document.createElement('div');
+            container.id = 'winter-plan';
+            container.style.position = 'fixed';
+            container.style.left = '0';
+            container.style.right = '0';
+            container.style.bottom = '8px';
+            container.style.textAlign = 'center';
+            container.style.fontSize = '13px';
+            container.style.zIndex = '9999';
+            container.style.pointerEvents = 'auto';
+            document.body.appendChild(container);
+          }
+        }
+        container.innerHTML = linkHtml;
+      }catch(e){}
+    })();
+  </script>
+
+<!-- ===== 成就与清除存档功能 ===== -->
+<script>
+(function() {
+  // ===== 清除存档 =====
+  var clearBtn = document.getElementById('clear-save-btn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function() {
+      // 检查是否有存档
+      var hasSave = localStorage.getItem('oi_coach_save') !== null || sessionStorage.getItem('oi_coach_save') !== null;
+      
+      if (!hasSave) {
+        alert('📭 没有找到存档');
+        return;
+      }
+      
+      if (confirm('⚠️ 确定要清除所有存档吗？\n\n此操作将删除：\n• localStorage 中的游戏存档\n• sessionStorage 中的游戏存档\n• 游戏进度数据\n\n此操作不可恢复！')) {
+        try {
+          localStorage.removeItem('oi_coach_save');
+          sessionStorage.removeItem('oi_coach_save');
+          localStorage.removeItem('oi_coach_ending_reason');
+          sessionStorage.removeItem('oi_coach_ending_reason');
+          localStorage.removeItem('oi_game_active_session');
+          sessionStorage.removeItem('oi_game_active_session');
+          alert('✅ 所有存档已清除');
+          // 刷新页面
+          window.location.reload();
+        } catch(e) {
+          alert('❌ 清除失败：' + e.message);
+        }
+      }
+    });
+  }
+
+  // ===== 成就系统 =====
+  var achievementBtn = document.getElementById('achievement-btn');
+  if (achievementBtn) {
+    achievementBtn.addEventListener('click', function() {
+      showAchievementModal();
+    });
+  }
+
+  // 成就定义（与 achievement-system.js 保持一致）
+  var ACHIEVEMENTS = {
+    'first_student': { id: 'first_student', name: '🎓 开门弟子', description: '招收第一名学生', icon: '🎓' },
+    'class_full': { id: 'class_full', name: '🏫 满员班级', description: '同时拥有 10 名学生', icon: '🏫' },
+    'first_win': { id: 'first_win', name: '🥇 首胜', description: '在正式比赛中获得金牌', icon: '🥇' },
+    'noi_champion': { id: 'noi_champion', name: '👑 NOI 冠军', description: '在 NOI 中获得金牌', icon: '👑' },
+    'grand_slam': { id: 'grand_slam', name: '🏆 大满贯', description: '全部比赛获得金牌', icon: '🏆' },
+    'level_10': { id: 'level_10', name: '📈 资深教练', description: '教练等级达到 10 级', icon: '📈' },
+    'level_30': { id: 'level_30', name: '🌟 传奇教练', description: '教练等级达到 30 级', icon: '🌟' },
+    'max_level': { id: 'max_level', name: '👑 巅峰教练', description: '教练等级达到 50 级', icon: '👑' },
+    'skill_master': { id: 'skill_master', name: '🧠 技能大师', description: '任意技能达到满级', icon: '🧠' },
+    'rich': { id: 'rich', name: '💰 富甲一方', description: '经费达到 100000', icon: '💰' },
+    'tycoon': { id: 'tycoon', name: '💎 大亨', description: '经费达到 500000', icon: '💎' },
+    'reputation_100': { id: 'reputation_100', name: '⭐ 名满天下', description: '声誉达到 100', icon: '⭐' },
+    'collector': { id: 'collector', name: '📦 收藏家', description: '拥有 10 件不同道具', icon: '📦' },
+    'equipped': { id: 'equipped', name: '🔧 全副武装', description: '装备所有 4 个槽位', icon: '🔧' },
+    'survivor': { id: 'survivor', name: '💪 幸存者', description: '经费低于 1000 存活 5 周', icon: '💪' },
+    'talent_collector': { id: 'talent_collector', name: '🧬 天赋猎手', description: '累计获得 20 个天赋', icon: '🧬' },
+    'team_work': { id: 'team_work', name: '🤝 团队之星', description: '创建队伍并获胜 5 场', icon: '🤝' }
+  };
+
+  // 从存档读取已解锁成就
+  function getUnlockedAchievements() {
+    try {
+      var raw = localStorage.getItem('oi_coach_save');
+      if (raw) {
+        var data = JSON.parse(raw);
+        if (data.achievements && typeof data.achievements.unlocked !== 'undefined') {
+          return data.achievements.unlocked || new Set();
+        }
+      }
+    } catch(e) {}
+    return new Set();
+  }
+
+  function showAchievementModal() {
+    var unlocked = getUnlockedAchievements();
+    var total = Object.keys(ACHIEVEMENTS).length;
+    var unlockedCount = unlocked.size || 0;
+    
+    var html = `
+      <div class="achievement-modal-overlay" id="achievement-modal-overlay">
+        <div class="achievement-modal">
+          <button class="close-btn" id="achievement-close-btn">&times;</button>
+          <h2>🏆 成就</h2>
+          <div class="achievement-count">已解锁 ${unlockedCount} / ${total}</div>
+          <div class="achievement-list">
+    `;
+    
+    for (var id in ACHIEVEMENTS) {
+      var ach = ACHIEVEMENTS[id];
+      var isUnlocked = unlocked.has(id);
+      html += `
+        <div class="achievement-item ${isUnlocked ? 'unlocked' : ''}">
+          <span class="icon">${ach.icon || '📌'}</span>
+          <div class="info">
+            <div class="name">${ach.name}</div>
+            <div class="desc">${ach.description}</div>
+          </div>
+          <span class="status ${isUnlocked ? 'unlocked' : 'locked'}">${isUnlocked ? '✅ 已解锁' : '🔒 未解锁'}</span>
+        </div>
+      `;
+    }
+    
+    html += `
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // 添加到页面
+    var container = document.createElement('div');
+    container.innerHTML = html;
+    document.body.appendChild(container.firstElementChild);
+    
+    // 关闭事件
+    var overlay = document.getElementById('achievement-modal-overlay');
+    var closeBtn = document.getElementById('achievement-close-btn');
+    
+    function closeModal() {
+      if (overlay) overlay.remove();
+    }
+    
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closeModal();
+      });
+      // ESC 键关闭
+      overlay.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+      });
+      overlay.focus();
+    }
+  }
+
+})();
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "anti-debug": "https://cdn.jsdelivr.net/npm/@sgysldz/anti-debug@1.0.0/dist/index.js"
+  }
+}
+</script>
+
+<script type="module">
+  import { startAntiDebugGuard } from 'anti-debug';
+  const guard = startAntiDebugGuard({
+    intervalMs: 2500,
+    skipInDevelopment: true,
+    uiBlock: true,
+    onThreat(reason) {
+      console.warn('检测到调试行为:', reason);
+    },
+  });
+</script>
+
+</body>
+</html>

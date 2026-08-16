@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XZY(xiaoziyi11)的网站</title>
+    <!-- 浏览器标签小图标 -->
+    <link rel="icon" type="image/png" href="https://i.imgur.com/8sYFzQx.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        /* 导航栏 */
+        nav {
+            background: #2563eb;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .logo img{
+            height: 36px;
+            width: auto;
+        }
+        .nav-list a {
+            color: white;
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 16px;
+        }
+        .nav-list a:hover {
+            text-decoration: underline;
+        }
+        /* 头部横幅 */
+        .banner {
+            height: 350px;
+            background: linear-gradient(135deg, #2563eb, #60a5fa);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .banner h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+        .banner p {
+            font-size: 18px;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+        .btn {
+            padding: 12px 32px;
+            background: white;
+            color: #2563eb;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #eef2ff;
+            transform: translateY(-3px);
+        }
+        /* 内容区块 */
+        .container {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .title-box {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .title-box h2 {
+            font-size: 32px;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+        .card-wrap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        /* 去掉超链接默认蓝色和下划线 */
+        .card a{
+            text-decoration: none;
+            color: inherit;
+        }
+        .card h3 {
+            font-size: 22px;
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+        /* 页脚 */
+        footer {
+            background: #1e3a8a;
+            color: #ccc;
+            text-align: center;
+            padding: 30px;
+            margin-top: 80px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 首页横幅 -->
+    <section class="banner" id="home">
+        <button class="btn" id="popBtn">点击查看提示</button>
+    </section>
+
+    <!-- 主体内容 -->
+    <div class="container">
+        <div class="title-box" id="service">
+            <h2>功能卡片展示</h2>
+            <p>自适应多列布局，手机自动变成单列</p>
+        </div>
+        <div class="card-wrap">
+            <div class="card">
+                <h3>编程平台</h3>
+                <p>多个编程的网站，点击即进</p>
+                <a href="http://47.104.67.72" target="_blank" style="color:#2563eb;">
+                   flareoj
+                </a>
+                <p></p>
+                 <a href="http://luogu.com.cn" target="_blank" style="color:#2563eb;">
+                   洛谷
+                </a>
+                <p></p>
+                <a href="https://oi-wiki.org/" target="_blank" style="color:#2563eb;">
+                   OI Wiki
+                </a>
+            </div>
+            <div class="card">
+                <h3>Minecraft资料</h3>
+                    <p>多个有关Minecraft的网站</p>
+                    <a href="https://zh.minecraft.wiki/w/Minecraft_Wiki" target="_blank" style="color:#2563eb;">
+                   Minecraft Wiki
+                   </a>
+                <p></p>
+                <a href="https://www.mcmod.cn/" target="_blank" style="color:#2563eb;">
+                   mcmod
+                </a>
+            </div>
+            <div class="card">
+               <h3>其他麦块生物的网站</h3>
+                    <p>陈允琦和肖梓逸的网站</p>
+                    <a href="https://cyq142857{$rthSuffix}/" target="_blank" style="color:#2563eb;">
+                   cyq142857(陈允琦）的网站
+                   </a>
+                <p></p>
+                <a href="https://xiaoziyi11{$rthSuffix}/" target="_blank" style="color:#2563eb;">
+                  xiaoziyi11(肖梓逸）的网站
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer id="contact">
+        <p>© 2026 简易网页演示 | 全部代码开源可修改</p>
+    </footer>
+
+    <!-- JavaScript交互 -->
+    <script>
+        // 弹窗按钮事件
+        const popBtn = document.getElementById('popBtn');
+        popBtn.addEventListener('click', function(){
+            alert('evoker444 is gay');
+        })
+
+        // 平滑滚动（点击导航跳转缓慢滑动）
+        document.querySelectorAll('.nav-list a').forEach(item => {
+            item.addEventListener('click', function(e){
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                })
+            })
+        })
+    </script>
+</body>
+</html>
