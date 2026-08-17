@@ -421,15 +421,15 @@
             <div style="margin-bottom:15px;">
                 <label style="display:flex; align-items:center; gap:15px;">
                     <span style="min-width:80px;">长度:</span>
-                    <input type="range" id="passwordLength" min="4" max="114514" value="12" style="flex:1;">
+                    <input type="range" id="passwordLength" min="1" max="100" value="12" style="flex:1;">
                     <span style="min-width:40px;"><span id="lengthValue">12</span> 位</span>
-                </label>
+                </标签>
             </div>
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px; margin-bottom:20px;">
-                <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeUppercase" checked> 大写字母</label>
-                <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeLowercase" checked> 小写字母</label>
-                <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeNumbers" checked> 数字</label>
-                <label style="display:flex; align-items:center; gap:8px; padding:8px; background:#f8f9fa; border-radius:6px;"><input type="checkbox" id="includeSymbols" checked> 符号</label>
+                <标签 样式="显示:弹性布局; 对齐项目:居中; 间距:8像素; 内边距:8像素; 背景:#f8f9fa; border-radius:6像素;"><input 类型= id“includeUppercase” 已勾选>大写字母</标签>
+                <标签 样式="显示:弹性布局; 对齐项目:居中; 间距:8像素; 内边距:8像素; 背景:#f8f9fa; border-radius:6像素;”><input type=“checkbox” id=“includeLowercase” 已勾选> 小写字母</标签>
+                <标签 样式="显示:弹性布局; 对齐项目:居中; 间距:8像素; 内边距:8像素; 背景:#f8f9fa; border-radius:6像素;"><input type="checkbox" id="includeNumbers" 已勾选> 数字</标签>
+                <标签 样式="display: flex; align-items: center; gap: 8px; padding: 8px; background: #f8f9fa; border-radius: 6px;"><input 类型="checkbox" id="includeSymbols" 已选中> 符号</标签>
             </div>
             <div class="action-buttons" style="display:flex; gap:10px;">
                 <button class="counter-btn btn-primary" id="generatePasswordBtn" style="flex:2;"><i class="fas fa-sync-alt"></i> 生成新密码</button>
@@ -438,7 +438,7 @@
         </div>
         <div class="tool-section">
             <h4>生成的密码</h4>
-            <div id="passwordResult" class="result-box" style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:8px; padding:15px; text-align:center; font-family:monospace; font-size:18px; min-height:60px;">点击上方按钮生成密码</div>
+            <div id="passwordResult" class="result-box" style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:8px; padding:15px; 文本对齐:居中; 字体族:等宽字体; 字体大小:18px; 最小高度:60px;">点击上方按钮生成密码</div>
             <div class="action-buttons" style="display:flex; gap:10px; margin-top:10px;">
                 <button class="counter-btn btn-primary" id="copyPasswordBtn"><i class="fas fa-copy"></i> 复制密码</button>
             </div>
@@ -448,11 +448,11 @@
 
 <script>
     // ==================== 工具函数 ====================
-    function addZero(num) { return num < 10 ? '0' + num : num; }
+    函数 addZero(num) { 返回 num < 10 ? '0' + num : num; }
 
     // ==================== 时间显示 ====================
-    function updateTime() {
-        const now = new Date();
+    函数 updateTime() {
+        常量 now = 新的 日期();
         const timeStr = `${now.getFullYear()}-${addZero(now.getMonth()+1)}-${addZero(now.getDate())} ${addZero(now.getHours())}:${addZero(now.getMinutes())}:${addZero(now.getSeconds())} CST`;
         const el = document.getElementById('current-time');
         if (el) el.innerText = timeStr;
