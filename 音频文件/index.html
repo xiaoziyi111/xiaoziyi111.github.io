@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>· 轻律 · 音乐播放器</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #f6f9fc 0%, #e9f1f8 100%);
+    display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+  }
+  .player-card {
+    max-width: 700px; width: 100%;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 2.5rem; padding: 2rem;
+    box-shadow: 0 25px 40px -12px rgba(0,20,30,0.25), inset 0 1px 2px rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.5);
+  }
+  h1 { font-size: 1.9rem; font-weight: 500; color: #1c3b4f; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+  h1 span { background: #1c3b4f; color: white; font-size: 1rem; padding: 0.2rem 0.9rem; border-radius: 40px; font-weight: 400; }
+  .subhead { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.75rem; color: #4d6a7e; font-size: 0.9rem; border-bottom: 1px dashed rgba(100,130,150,0.2); padding-bottom: 0.75rem; }
+  .track-count { background: #e2eef7; padding: 0.2rem 0.9rem; border-radius: 30px; font-size: 0.8rem; font-weight: 500; color: #1f4b63; }
+  .audio-wrapper {
+    background: #ffffffd9; border-radius: 1.8rem;
+    padding: 0.75rem 0.75rem 0.75rem 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.02), inset 0 1px 4px #ffffff;
+    border: 1px solid #ffffff; margin-bottom: 1.8rem;
+  }
+  audio { flex: 1; height: 48px; border-radius: 40px; outline: none; background: #f0f6fc; min-width: 0; }
+  .btn {
+    background: #ffffff; border: none; width: 48px; height: 48px; border-radius: 40px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02), 0 0 0 1px #ffffff inset, 0 0 0 1px #cbdae6;
+    transition: 0.15s; color: #2a5c7a; flex-shrink: 0; font-size: 1.3rem;
+  }
+  .btn:hover { background: #e3f0fa; }
+  .btn:active { transform: scale(0.94); }
+  .toolbar { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .toolbar .btn { width: auto; padding: 0 1.2rem; height: 42px; font-size: 0.9rem; gap: 0.4rem; }
+  .list-header { display: flex; justify-content: space-between; align-items: center; padding: 0 0.4rem; margin-bottom: 0.75rem; color: #2a5c7a; font-weight: 500; font-size: 0.95rem; }
+  .list-header span:last-child { font-size: 0.75rem; font-weight: 400; background: #d9e8f2; padding: 0.2rem 0.7rem; border-radius: 20px; color: #0e374d; }
+  .playlist-container { max-height: 320px; overflow-y: auto; padding-right: 0.25rem; border-radius: 1rem; }
+  .playlist-container::-webkit-scrollbar { width: 5px; }
+  .playlist-container::-webkit-scrollbar-track { background: #e3edf5; border-radius: 10px; }
+  .playlist-container::-webkit-scrollbar-thumb { background: #b6cfdf; border-radius: 10px; }
+  .playlist { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .playlist li {
+    padding: 0.8rem 1.2rem; background: #ffffffb3; backdrop-filter: blur(2px);
+    border-radius: 1.2rem; display: flex; align-items: center; gap: 0.8rem;
+    font-size: 0.95rem; color: #1a3a4c; border: 1px solid #ffffff;
+    cursor: pointer; transition: all 0.12s ease; word-break: break-all;
+  }
+  .playlist li:hover { background: #ffffff; border-color: #9ec3dc; transform: translateY(-1px); }
+  .playlist li.active { background: #e1f0fc; border: 1px solid #7bb3d4; color: #0a2c40; font-weight: 500; }
+  .playlist li.active::before { content: "♪"; color: #1b6c99; margin-right: 0.2rem; }
+  .empty-message {
+    text-align: center; padding: 2.2rem 1rem; background: #e7f0f7;
+    border-radius: 1.8rem; color: #436d87; font-style: italic;
+    border: 1px dashed #b8d2e4; font-size: 0.95rem;
+  }
+  .footer-note { margin-top: 1.5rem; text-align: center; font-size: 0.7rem; color: #7f9aad; opacity: 0.7; }
+  @media (max-width: 480px) {
+    .player-card { padding: 1.5rem 1.2rem; }
+    h1 { font-size: 1.5rem; }
+    .toolbar .btn { padding: 0 0.8rem; font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+<div class="player-card">
+  <h1>🎧 轻律 <span>auto</span></h1>
+  <div class="subhead">
+    <span>音频播放器</span>
+    <span class="track-count" id="trackCount">0 首</span>
+  </div>
+
+  <div class="audio-wrapper">
+    <audio id="audioPlayer" controls preload="metadata"></audio>
+    <button class="btn" id="refreshBtn" title="重新扫描">⟳</button>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" id="pickFolderBtn" title="选择文件夹">
+      📁 选择文件夹
+    </button>
+    <input type="file" id="fileInput" webkitdirectory directory multiple accept="audio/*" style="display:none">
+    <button class="btn" id="pickFilesBtn" title="选择多个文件">
+      🎵 选择文件
+    </button>
+    <input type="file" id="filesInput" multiple accept="audio/*" style="display:none">
+  </div>
+
+  <div class="list-header">
+    <span>📋 播放列表</span>
+    <span id="listHint">等待扫描</span>
+  </div>
+
+  <div class="playlist-container" id="playlistContainer">
+    <ul class="playlist" id="playlist"></ul>
+    <div class="empty-message" id="emptyMessage">
+      ⚡ 当前没有音频文件<br>
+      <small style="opacity:0.7">请点击上方「选择文件夹」或「选择文件」</small>
+    </div>
+  </div>
+  <div class="footer-note">支持 mp3 / wav / ogg / m4a / flac 等格式</div>
+</div>
+
+<script>
+(function() {
+  const AUDIO_EXTENSIONS = ['mp3','wav','ogg','m4a','flac','aac','opus','webm','mp4','m4b','oga'];
+
+  const audio = document.getElementById('audioPlayer');
+  const playlistEl = document.getElementById('playlist');
+  const emptyMessage = document.getElementById('emptyMessage');
+  const trackCountSpan = document.getElementById('trackCount');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const listHint = document.getElementById('listHint');
+  const pickFolderBtn = document.getElementById('pickFolderBtn');
+  const pickFilesBtn = document.getElementById('pickFilesBtn');
+  const fileInput = document.getElementById('fileInput');
+  const filesInput = document.getElementById('filesInput');
+
+  let tracks = [];          // { name, url }
+  let currentTrackIndex = -1;
+  let currentObjectUrls = []; // 记录需要释放的 blob url
+  let isScanning = false;
+
+  function isAudioFile(filename) {
+    if (!filename) return false;
+    const parts = filename.split('.');
+    if (parts.length < 2) return false;
+    return AUDIO_EXTENSIONS.includes(parts.pop().toLowerCase());
+  }
+
+  function updateTrackCount() {
+    trackCountSpan.textContent = tracks.length + ' 首';
+  }
+
+  function toggleEmptyState(show) {
+    emptyMessage.style.display = show ? 'block' : 'none';
+    playlistEl.style.display = show ? 'none' : 'flex';
+  }
+
+  function resetPlayer() {
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
+    currentTrackIndex = -1;
+    document.querySelectorAll('.playlist li').forEach(li => li.classList.remove('active'));
+  }
+
+  // 释放旧的 blob URL
+  function revokeObjectUrls() {
+    currentObjectUrls.forEach(url => {
+      try { URL.revokeObjectURL(url); } catch(e) {}
+    });
+    currentObjectUrls = [];
+  }
+
+  function highlightTrack(index) {
+    const items = playlistEl.querySelectorAll('li');
+    items.forEach((li, i) => {
+      li.classList.toggle('active', i === index);
+    });
+  }
+
+  function playTrackByIndex(index) {
+    if (index < 0 || index >= tracks.length) return;
+    const track = tracks[index];
+
+    audio.src = track.url;
+    audio.load();
+
+    const p = audio.play();
+    if (p !== undefined) {
+      p.catch(err => {
+        console.warn('自动播放被阻止:', err);
+        listHint.textContent = '点击 ▶ 播放';
+      });
+    }
+
+    currentTrackIndex = index;
+    highlightTrack(index);
+    listHint.textContent = '正在播放';
+  }
+
+  function renderPlaylist() {
+    playlistEl.innerHTML = '';
+
+    if (tracks.length === 0) {
+      toggleEmptyState(true);
+      updateTrackCount();
+      resetPlayer();
+      listHint.textContent = '无音频';
+      return;
+    }
+
+    toggleEmptyState(false);
+
+    tracks.forEach((track, index) => {
+      const li = document.createElement('li');
+      li.textContent = track.name;
+      li.dataset.index = index;
+      li.addEventListener('click', () => playTrackByIndex(index));
+      playlistEl.appendChild(li);
+    });
+
+    updateTrackCount();
+    resetPlayer();
+    listHint.textContent = '点击播放';
+  }
+
+  // ---- 通过服务器扫描目录（http/https 协议时） ----
+  async function scanViaFetch() {
+    const baseUrl = window.location.pathname.replace(/[^/]*$/, '');
+    const found = new Set();
+
+    // 尝试多个可能的入口
+    const candidates = [baseUrl, baseUrl + 'index.html'];
+    for (const url of candidates) {
+      try {
+        const res = await fetch(url, { method: 'GET' });
+        if (!res.ok) continue;
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        doc.querySelectorAll('a[href]').forEach(a => {
+          let href = a.getAttribute('href').split('#')[0].split('?')[0];
+          if (!href) return;
+          let name = href.includes('/') ? href.substring(href.lastIndexOf('/') + 1) : href;
+          try { name = decodeURIComponent(name); } catch(e) {}
+          if (name && isAudioFile(name)) found.add(name);
+        });
+        if (found.size > 0) break;
+      } catch(e) { /* 忽略 */ }
+    }
+
+    if (found.size > 0) {
+      tracks = Array.from(found).sort((a,b)=>a.localeCompare(b)).map(name => ({
+        name,
+        url: encodeURIComponent(name)
+      }));
+      renderPlaylist();
+      listHint.textContent = '准备就绪';
+      return true;
+    }
+    return false;
+  }
+
+  // ---- 通过文件选择器加载 ----
+  function loadFromFileList(fileList) {
+    if (!fileList || fileList.length === 0) return;
+
+    revokeObjectUrls();
+    const newTracks = [];
+
+    Array.from(fileList).forEach(file => {
+      // 优先根据 MIME 判断，其次按扩展名
+      const isAudioByMime = file.type && file.type.startsWith('audio/');
+      if (!isAudioByMime && !isAudioFile(file.name)) return;
+
+      const url = URL.createObjectURL(file);
+      currentObjectUrls.push(url);
+      newTracks.push({ name: file.name, url });
+    });
+
+    if (newTracks.length === 0) {
+      listHint.textContent = '未找到音频';
+      return;
+    }
+
+    // 按文件名排序
+    newTracks.sort((a,b) => a.name.localeCompare(b.name));
+    tracks = newTracks;
+    renderPlaylist();
+    listHint.textContent = '准备就绪';
+  }
+
+  // ---- 主扫描逻辑 ----
+  async function scanAudioFiles() {
+    if (isScanning) return;
+    isScanning = true;
+    listHint.textContent = '扫描中…';
+
+    try {
+      const protocol = window.location.protocol;
+
+      // file:// 协议：无法 fetch 目录，尝试保留已有 tracks，否则提示
+      if (protocol === 'file:') {
+        // 如果用户之前通过选择文件夹加载过，保留
+        if (tracks.length === 0) {
+          renderPlaylist(); // 显示空状态
+          listHint.textContent = '请选择文件夹';
+        } else {
+          listHint.textContent = '本地文件';
+        }
+        return;
+      }
+
+      // http/https：尝试自动扫描
+      const ok = await scanViaFetch();
+      if (!ok) {
+        // 扫描不到，不覆盖已有（可能是用户手动选的）
+        if (tracks.length === 0) {
+          renderPlaylist();
+          listHint.textContent = '未找到，请手动选择';
+        } else {
+          renderPlaylist();
+          listHint.textContent = '本地文件';
+        }
+      }
+    } catch (err) {
+      console.error('扫描失败:', err);
+      if (tracks.length === 0) {
+        renderPlaylist();
+        listHint.textContent = '扫描失败';
+      }
+    } finally {
+      isScanning = false;
+    }
+  }
+
+  // ---- 事件绑定 ----
+  refreshBtn.addEventListener('click', () => {
+    // 刷新：释放旧的 blob，清空重扫
+    revokeObjectUrls();
+    tracks = [];
+    scanAudioFiles();
+  });
+
+  pickFolderBtn.addEventListener('click', () => fileInput.click());
+  pickFilesBtn.addEventListener('click', () => filesInput.click());
+
+  fileInput.addEventListener('change', (e) => {
+    loadFromFileList(e.target.files);
+    fileInput.value = ''; // 允许重复选择同一文件夹
+  });
+
+  filesInput.addEventListener('change', (e) => {
+    loadFromFileList(e.target.files);
+    filesInput.value = '';
+  });
+
+  audio.addEventListener('play', () => { listHint.textContent = '播放中'; });
+  audio.addEventListener('pause', () => { listHint.textContent = '已暂停'; });
+  audio.addEventListener('error', () => {
+    if (audio.src) listHint.textContent = '加载失败';
+  });
+
+  // 页面加载时：http 下自动扫描，file 下提示手动选择
+  window.addEventListener('load', () => {
+    if (window.location.protocol === 'file:') {
+      renderPlaylist();
+      listHint.textContent = '请选择文件夹';
+    } else {
+      scanAudioFiles();
+    }
+  });
+
+  // 释放 blob
+  window.addEventListener('beforeunload', revokeObjectUrls);
+})();
+</script>
+</body>
+</html>
