@@ -6,47 +6,76 @@
 <title>· 轻律 · 音乐播放器</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+
   body {
     min-height: 100vh;
     background: linear-gradient(145deg, #f6f9fc 0%, #e9f1f8 100%);
-    display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+    transition: background 0.4s ease, color 0.4s ease;
   }
+
   .player-card {
     max-width: 700px; width: 100%;
-    background: rgba(255,255,255,0.75);
+    background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(10px);
     border-radius: 2.5rem; padding: 2rem;
-    box-shadow: 0 25px 40px -12px rgba(0,20,30,0.25), inset 0 1px 2px rgba(255,255,255,0.8);
-    border: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 25px 40px -12px rgba(0, 20, 30, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: background 0.4s ease, border-color 0.4s ease;
   }
+
   h1 { font-size: 1.9rem; font-weight: 500; color: #1c3b4f; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
   h1 span { background: #1c3b4f; color: white; font-size: 1rem; padding: 0.2rem 0.9rem; border-radius: 40px; font-weight: 400; }
-  .subhead { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.75rem; color: #4d6a7e; font-size: 0.9rem; border-bottom: 1px dashed rgba(100,130,150,0.2); padding-bottom: 0.75rem; }
+
+  .subhead {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 1.75rem; color: #4d6a7e; font-size: 0.9rem;
+    border-bottom: 1px dashed rgba(100, 130, 150, 0.2); padding-bottom: 0.75rem;
+  }
   .track-count { background: #e2eef7; padding: 0.2rem 0.9rem; border-radius: 30px; font-size: 0.8rem; font-weight: 500; color: #1f4b63; }
+
   .audio-wrapper {
     background: #ffffffd9; border-radius: 1.8rem;
     padding: 0.75rem 0.75rem 0.75rem 1.5rem;
     display: flex; align-items: center; gap: 0.75rem;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.02), inset 0 1px 4px #ffffff;
-    border: 1px solid #ffffff; margin-bottom: 1.8rem;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02), inset 0 1px 4px #ffffff;
+    border: 1px solid #ffffff; margin-bottom: 1.2rem;
   }
   audio { flex: 1; height: 48px; border-radius: 40px; outline: none; background: #f0f6fc; min-width: 0; }
+
   .btn {
     background: #ffffff; border: none; width: 48px; height: 48px; border-radius: 40px;
     display: flex; align-items: center; justify-content: center; cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.02), 0 0 0 1px #ffffff inset, 0 0 0 1px #cbdae6;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02), 0 0 0 1px #ffffff inset, 0 0 0 1px #cbdae6;
     transition: 0.15s; color: #2a5c7a; flex-shrink: 0; font-size: 1.3rem;
   }
   .btn:hover { background: #e3f0fa; }
   .btn:active { transform: scale(0.94); }
-  .toolbar { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+
+  /* 单曲循环按钮：激活态 */
+  .btn.active {
+    background: #1c3b4f;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(28, 59, 79, 0.35), 0 0 0 1px #1c3b4f inset;
+  }
+  .btn.active:hover { background: #2a5c7a; }
+
+  .toolbar { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
   .toolbar .btn { width: auto; padding: 0 1.2rem; height: 42px; font-size: 0.9rem; gap: 0.4rem; }
-  .list-header { display: flex; justify-content: space-between; align-items: center; padding: 0 0.4rem; margin-bottom: 0.75rem; color: #2a5c7a; font-weight: 500; font-size: 0.95rem; }
+
+  .list-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 0.4rem; margin-bottom: 0.75rem;
+    color: #2a5c7a; font-weight: 500; font-size: 0.95rem;
+  }
   .list-header span:last-child { font-size: 0.75rem; font-weight: 400; background: #d9e8f2; padding: 0.2rem 0.7rem; border-radius: 20px; color: #0e374d; }
+
   .playlist-container { max-height: 320px; overflow-y: auto; padding-right: 0.25rem; border-radius: 1rem; }
   .playlist-container::-webkit-scrollbar { width: 5px; }
   .playlist-container::-webkit-scrollbar-track { background: #e3edf5; border-radius: 10px; }
   .playlist-container::-webkit-scrollbar-thumb { background: #b6cfdf; border-radius: 10px; }
+
   .playlist { list-style: none; display: flex; flex-direction: column; gap: 6px; }
   .playlist li {
     padding: 0.8rem 1.2rem; background: #ffffffb3; backdrop-filter: blur(2px);
@@ -57,12 +86,44 @@
   .playlist li:hover { background: #ffffff; border-color: #9ec3dc; transform: translateY(-1px); }
   .playlist li.active { background: #e1f0fc; border: 1px solid #7bb3d4; color: #0a2c40; font-weight: 500; }
   .playlist li.active::before { content: "♪"; color: #1b6c99; margin-right: 0.2rem; }
+
   .empty-message {
     text-align: center; padding: 2.2rem 1rem; background: #e7f0f7;
     border-radius: 1.8rem; color: #436d87; font-style: italic;
     border: 1px dashed #b8d2e4; font-size: 0.95rem;
   }
+
   .footer-note { margin-top: 1.5rem; text-align: center; font-size: 0.7rem; color: #7f9aad; opacity: 0.7; }
+
+  /* ===== 暗色主题 ===== */
+  body.dark-theme { background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); }
+  body.dark-theme .player-card {
+    background: rgba(30, 30, 45, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.6);
+  }
+  body.dark-theme h1 { color: #e0e0e0; }
+  body.dark-theme h1 span { background: #4a90d9; }
+  body.dark-theme .subhead { color: #9ab0c4; border-bottom-color: rgba(255, 255, 255, 0.1); }
+  body.dark-theme .track-count { background: #2a3a4a; color: #b8d4e8; }
+  body.dark-theme .audio-wrapper { background: rgba(40, 40, 55, 0.9); border-color: rgba(255, 255, 255, 0.08); }
+  body.dark-theme audio { background: #2a2a3a; }
+  body.dark-theme .btn {
+    background: #2d2d3a; color: #b8d4e8;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 0 0 1px #2d2d3a inset, 0 0 0 1px #444;
+  }
+  body.dark-theme .btn:hover { background: #3d3d4a; }
+  body.dark-theme .btn.active { background: #4a90d9; color: #fff; box-shadow: 0 4px 12px rgba(74, 144, 217, 0.5); }
+  body.dark-theme .btn.active:hover { background: #357abd; }
+  body.dark-theme .list-header { color: #b8d4e8; }
+  body.dark-theme .list-header span:last-child { background: #2a3a4a; color: #b8d4e8; }
+  body.dark-theme .playlist li { background: rgba(45, 45, 58, 0.7); border-color: rgba(255, 255, 255, 0.06); color: #d0d8e0; }
+  body.dark-theme .playlist li:hover { background: rgba(55, 55, 70, 0.9); border-color: #4a90d9; }
+  body.dark-theme .playlist li.active { background: #2a3a4a; border-color: #4a90d9; color: #e0e0e0; }
+  body.dark-theme .playlist li.active::before { color: #6ab0f7; }
+  body.dark-theme .empty-message { background: #2a2a3a; color: #9ab0c4; border-color: #444; }
+  body.dark-theme .footer-note { color: #6a7a8a; }
+
   @media (max-width: 480px) {
     .player-card { padding: 1.5rem 1.2rem; }
     h1 { font-size: 1.5rem; }
@@ -80,30 +141,25 @@
 
   <div class="audio-wrapper">
     <audio id="audioPlayer" controls preload="metadata"></audio>
-    <button class="btn" id="refreshBtn" title="重新扫描">⟳</button>
+    <button class="btn" id="refreshBtn" title="重新加载列表">⟳</button>
   </div>
 
   <div class="toolbar">
-    <button class="btn" id="pickFolderBtn" title="选择文件夹">
-      📁 选择文件夹
-    </button>
-    <input type="file" id="fileInput" webkitdirectory directory multiple accept="audio/*" style="display:none">
-    <button class="btn" id="pickFilesBtn" title="选择多个文件">
-      🎵 选择文件
-    </button>
+    <button class="btn active" id="loopToggleBtn" title="当前：列表循环">🔁 列表循环</button>
+    <button class="btn" id="pickFilesBtn" title="从本地选择文件">🎵 选择文件</button>
     <input type="file" id="filesInput" multiple accept="audio/*" style="display:none">
   </div>
 
   <div class="list-header">
     <span>📋 播放列表</span>
-    <span id="listHint">等待扫描</span>
+    <span id="listHint">等待加载</span>
   </div>
 
   <div class="playlist-container" id="playlistContainer">
     <ul class="playlist" id="playlist"></ul>
     <div class="empty-message" id="emptyMessage">
       ⚡ 当前没有音频文件<br>
-      <small style="opacity:0.7">请点击上方「选择文件夹」或「选择文件」</small>
+      <small style="opacity:0.7">请检查音频文件是否已上传</small>
     </div>
   </div>
   <div class="footer-note">支持 mp3 / wav / ogg / m4a / flac 等格式</div>
@@ -119,15 +175,50 @@
   const trackCountSpan = document.getElementById('trackCount');
   const refreshBtn = document.getElementById('refreshBtn');
   const listHint = document.getElementById('listHint');
-  const pickFolderBtn = document.getElementById('pickFolderBtn');
+  const loopToggleBtn = document.getElementById('loopToggleBtn');
   const pickFilesBtn = document.getElementById('pickFilesBtn');
-  const fileInput = document.getElementById('fileInput');
   const filesInput = document.getElementById('filesInput');
 
-  let tracks = [];          // { name, url }
+  let tracks = [];
   let currentTrackIndex = -1;
-  let currentObjectUrls = []; // 记录需要释放的 blob url
+  let currentObjectUrls = [];
   let isScanning = false;
+  let loopMode = localStorage.getItem('playerLoopMode') || 'list'; // 'list' | 'single'
+
+  // ===== 写死的音频列表（相对于本页面所在目录） =====
+  const AUDIO_FILES = [
+    '24_7.mp3',
+    'Class Clown.mp3',
+    'Dead Inside.mp3',
+    'Death Is No More.mp3',
+    'exile.mp3',
+    'Far Away From Home.mp3',
+    'Five hundred miles.mp3',
+    'Free Loop.mp3',
+    'GHOST.mp3',
+    'Go Solo.mp3',
+    'hypnotic.mp3',
+    'i walk this earth all by myself.mp3',
+    'Just Like Fire.mp3',
+    'Maybe.mp3',
+    'Normal No More.mp3',
+    'POOR.mp3',
+    'Sea Of Problems.mp3',
+    'Sinos De Natal.mp3',
+    'Six Feet Under.mp3',
+    'So Far Away.mp3',
+    'Take me hand.mp3',
+    'The Way I Still Love You.mp3',
+    'Trip.mp3',
+    'Unchanged Mind.mp3',
+    'Vem Vem.mp3',
+    'Wake Up.mp3',
+    'what are words4.mp3',
+    'What Makes You Beautiful.mp3',
+    'Why not.mp3',
+    'X-cool.mp3',
+    '深渊.mp3'
+  ];
 
   function isAudioFile(filename) {
     if (!filename) return false;
@@ -153,7 +244,6 @@
     document.querySelectorAll('.playlist li').forEach(li => li.classList.remove('active'));
   }
 
-  // 释放旧的 blob URL
   function revokeObjectUrls() {
     currentObjectUrls.forEach(url => {
       try { URL.revokeObjectURL(url); } catch(e) {}
@@ -214,43 +304,21 @@
     listHint.textContent = '点击播放';
   }
 
-  // ---- 通过服务器扫描目录（http/https 协议时） ----
-  async function scanViaFetch() {
-    const baseUrl = window.location.pathname.replace(/[^/]*$/, '');
-    const found = new Set();
-
-    // 尝试多个可能的入口
-    const candidates = [baseUrl, baseUrl + 'index.html'];
-    for (const url of candidates) {
-      try {
-        const res = await fetch(url, { method: 'GET' });
-        if (!res.ok) continue;
-        const html = await res.text();
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        doc.querySelectorAll('a[href]').forEach(a => {
-          let href = a.getAttribute('href').split('#')[0].split('?')[0];
-          if (!href) return;
-          let name = href.includes('/') ? href.substring(href.lastIndexOf('/') + 1) : href;
-          try { name = decodeURIComponent(name); } catch(e) {}
-          if (name && isAudioFile(name)) found.add(name);
-        });
-        if (found.size > 0) break;
-      } catch(e) { /* 忽略 */ }
-    }
-
-    if (found.size > 0) {
-      tracks = Array.from(found).sort((a,b)=>a.localeCompare(b)).map(name => ({
+  // ===== 从写死的列表加载 =====
+  function loadBuiltInTracks() {
+    const valid = AUDIO_FILES.filter(name => isAudioFile(name));
+    tracks = valid
+      .sort((a, b) => a.localeCompare(b))
+      .map(name => ({
         name,
         url: encodeURIComponent(name)
       }));
-      renderPlaylist();
-      listHint.textContent = '准备就绪';
-      return true;
-    }
-    return false;
+
+    renderPlaylist();
+    listHint.textContent = tracks.length > 0 ? '准备就绪' : '未找到音频';
   }
 
-  // ---- 通过文件选择器加载 ----
+  // ===== 从本地文件加载 =====
   function loadFromFileList(fileList) {
     if (!fileList || fileList.length === 0) return;
 
@@ -258,7 +326,6 @@
     const newTracks = [];
 
     Array.from(fileList).forEach(file => {
-      // 优先根据 MIME 判断，其次按扩展名
       const isAudioByMime = file.type && file.type.startsWith('audio/');
       if (!isAudioByMime && !isAudioFile(file.name)) return;
 
@@ -272,72 +339,48 @@
       return;
     }
 
-    // 按文件名排序
-    newTracks.sort((a,b) => a.name.localeCompare(b.name));
+    newTracks.sort((a, b) => a.name.localeCompare(b.name));
     tracks = newTracks;
     renderPlaylist();
     listHint.textContent = '准备就绪';
   }
 
-  // ---- 主扫描逻辑 ----
-  async function scanAudioFiles() {
-    if (isScanning) return;
-    isScanning = true;
-    listHint.textContent = '扫描中…';
+  // ===== 单曲循环 / 列表循环 =====
+  function applyLoopModeToAudio() {
+    // 单曲循环用 audio.loop 控制；列表循环交给 ended 事件
+    audio.loop = (loopMode === 'single');
+  }
 
-    try {
-      const protocol = window.location.protocol;
-
-      // file:// 协议：无法 fetch 目录，尝试保留已有 tracks，否则提示
-      if (protocol === 'file:') {
-        // 如果用户之前通过选择文件夹加载过，保留
-        if (tracks.length === 0) {
-          renderPlaylist(); // 显示空状态
-          listHint.textContent = '请选择文件夹';
-        } else {
-          listHint.textContent = '本地文件';
-        }
-        return;
-      }
-
-      // http/https：尝试自动扫描
-      const ok = await scanViaFetch();
-      if (!ok) {
-        // 扫描不到，不覆盖已有（可能是用户手动选的）
-        if (tracks.length === 0) {
-          renderPlaylist();
-          listHint.textContent = '未找到，请手动选择';
-        } else {
-          renderPlaylist();
-          listHint.textContent = '本地文件';
-        }
-      }
-    } catch (err) {
-      console.error('扫描失败:', err);
-      if (tracks.length === 0) {
-        renderPlaylist();
-        listHint.textContent = '扫描失败';
-      }
-    } finally {
-      isScanning = false;
+  function updateLoopBtnUI() {
+    if (loopMode === 'single') {
+      loopToggleBtn.textContent = '🔂 单曲循环';
+      loopToggleBtn.classList.add('active');
+      loopToggleBtn.title = '当前：单曲循环';
+    } else {
+      loopToggleBtn.textContent = '🔁 列表循环';
+      loopToggleBtn.classList.add('active');
+      loopToggleBtn.title = '当前：列表循环';
     }
   }
 
-  // ---- 事件绑定 ----
+  function toggleLoopMode() {
+    loopMode = (loopMode === 'list') ? 'single' : 'list';
+    localStorage.setItem('playerLoopMode', loopMode);
+    applyLoopModeToAudio();
+    updateLoopBtnUI();
+    listHint.textContent = loopMode === 'single' ? '单曲循环' : '列表循环';
+  }
+
+  // ===== 事件绑定 =====
   refreshBtn.addEventListener('click', () => {
-    // 刷新：释放旧的 blob，清空重扫
     revokeObjectUrls();
     tracks = [];
-    scanAudioFiles();
+    loadBuiltInTracks();
   });
 
-  pickFolderBtn.addEventListener('click', () => fileInput.click());
+  loopToggleBtn.addEventListener('click', toggleLoopMode);
+
   pickFilesBtn.addEventListener('click', () => filesInput.click());
-
-  fileInput.addEventListener('change', (e) => {
-    loadFromFileList(e.target.files);
-    fileInput.value = ''; // 允许重复选择同一文件夹
-  });
 
   filesInput.addEventListener('change', (e) => {
     loadFromFileList(e.target.files);
@@ -345,22 +388,29 @@
   });
 
   audio.addEventListener('play', () => { listHint.textContent = '播放中'; });
-  audio.addEventListener('pause', () => { listHint.textContent = '已暂停'; });
+  audio.addEventListener('pause', () => {
+    if (!audio.ended) listHint.textContent = '已暂停';
+  });
   audio.addEventListener('error', () => {
     if (audio.src) listHint.textContent = '加载失败';
   });
 
-  // 页面加载时：http 下自动扫描，file 下提示手动选择
-  window.addEventListener('load', () => {
-    if (window.location.protocol === 'file:') {
-      renderPlaylist();
-      listHint.textContent = '请选择文件夹';
-    } else {
-      scanAudioFiles();
-    }
+  // 列表循环时，播完自动下一首
+  audio.addEventListener('ended', () => {
+    if (loopMode === 'single') return; // audio.loop 已处理
+    if (tracks.length === 0) return;
+    let next = currentTrackIndex + 1;
+    if (next >= tracks.length) next = 0;
+    playTrackByIndex(next);
   });
 
-  // 释放 blob
+  // ===== 初始化 =====
+  window.addEventListener('load', () => {
+    applyLoopModeToAudio();
+    updateLoopBtnUI();
+    loadBuiltInTracks();
+  });
+
   window.addEventListener('beforeunload', revokeObjectUrls);
 })();
 </script>
